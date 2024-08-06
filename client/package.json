@@ -1,0 +1,53 @@
+{
+  "name": "python-next-app",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "format": "prettier --check . --ignore-path ../../.gitignore",
+    "test": "bun lint && bun prettier:check",
+    "prepare": "husky",
+    "prettier:check": "prettier --check ."
+  },
+  "config": {
+    "commitizen": {
+      "path": "@commitlint/cz-commitlint"
+    }
+  },
+  "validate-branch-name": {
+    "pattern": "^(master|develop){1}$|^(feature|bugfix|hotfix|chore|experiment)\\/([\\w-]+?)(\\/\\d+)?$",
+    "errorMsg": "Branch name format : <type>/<name>/<issue_ID>"
+  },
+  "dependencies": {
+    "@tailwindcss/typography": "^0.5.13",
+    "clsx": "^2.1.1",
+    "commitizen": "^4.3.0",
+    "next": "14.2.5",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "tailwind-merge": "^2.4.0",
+    "tailwindcss-animate": "^1.0.7"
+  },
+  "devDependencies": {
+    "@svgr/webpack": "^8.1.0",
+    "@tanstack/react-query": "^5.51.21",
+    "@types/eslint": "^8.56.11",
+    "@types/node": "^20.14.14",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@typescript-eslint/eslint-plugin": "^7.18.0",
+    "@typescript-eslint/parser": "^7.18.0",
+    "autoprefixer": "^10.4.20",
+    "eslint": "^8.57.0",
+    "eslint-config-next": "14.2.5",
+    "husky": "^9.1.4",
+    "lint-staged": "^15.2.8",
+    "postcss": "^8.4.41",
+    "prettier-plugin-tailwindcss": "^0.6.5",
+    "tailwindcss": "^3.4.7",
+    "typescript": "^5.5.4"
+  }
+}
