@@ -42,16 +42,6 @@ const nextConfig = {
     fileLoaderRule.exclude = /\.svg$/i;
 
     return config;
-  },
-
-  rewrites: async () => {
-    return [
-      {
-        source: '/api/:path*',
-        destination:
-          process.env.NODE_ENV === 'development' ? 'http://172.19.27.170:8080/api/:path*' : '/api/'
-      }
-    ];
   }
 };
 

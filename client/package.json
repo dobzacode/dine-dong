@@ -22,6 +22,7 @@
     "errorMsg": "Branch name format : <type>/<name>/<issue_ID>"
   },
   "dependencies": {
+    "@auth0/nextjs-auth0": "^3.5.0",
     "@tailwindcss/typography": "^0.5.13",
     "clsx": "^2.1.1",
     "commitizen": "^4.3.0",

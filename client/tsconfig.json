@@ -31,8 +31,8 @@
       "@/*": ["./*"]
     },
     "target": "ES2017",
-    "declaration": true,
-    "declarationMap": true,
+    "declaration": false,
+    "declarationMap": false,
     "sourceMap": true,
     "removeComments": true,
     "noFallthroughCasesInSwitch": true,
