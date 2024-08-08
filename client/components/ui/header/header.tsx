@@ -13,7 +13,7 @@ export default function Header() {
 
   return (
     <header>
-      <section className="relative z-50 flex items-center justify-between border-b bg-transparent px-2xl py-xl">
+      <section className="relative z-50 flex items-center justify-between bg-transparent px-2xl py-xl">
         <p className="heading-h1 font-bold">Ding Dong</p>
         <nav>
           {!isLoading ? (
