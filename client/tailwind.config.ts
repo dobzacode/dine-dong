@@ -1,7 +1,8 @@
-const primaryColor = '100, 36%,';
-const secondaryColor = '145, 36%,';
+const primaryColor = '37, 89%,';
+const secondaryColor = '31, 51%,';
+const tertiaryColor = '9, 69%,';
 const errorColor = '352, 95%,';
-const neutralColor = '98, 20%,';
+const neutralColor = '37, 20%,';
 const infoColor = '190, 76%,';
 
 const config = {
@@ -12,6 +13,7 @@ const config = {
     './src/**/*.{ts,tsx}'
   ],
   prefix: '',
+  darkMode: 'class',
   theme: {
     screens: {
       'mobile-sm': '320px',
@@ -29,7 +31,10 @@ const config = {
       }
     },
     extend: {
-      fontFamily: {},
+      fontFamily: {
+        poppins: ['Poppins'],
+        lora: ['Lora']
+      },
       borderRadius: {
         md: '16px',
         sm: '8px',
@@ -145,6 +150,24 @@ const config = {
           fg: `hsl(${secondaryColor}  98%)`,
           container: `hsl(${secondaryColor} 85%)`,
           'container-fg': `hsl(${secondaryColor} 5%)`
+        },
+        tertiary: {
+          1: `hsl(${tertiaryColor} 98%)`,
+          50: `hsl(${tertiaryColor} 95%)`,
+          100: `hsl(${tertiaryColor} 85%)`,
+          200: `hsl(${tertiaryColor} 75%)`,
+          300: `hsl(${tertiaryColor} 65%)`,
+          400: `hsl(${tertiaryColor} 55%)`,
+          500: `hsl(${tertiaryColor} 45%)`,
+          600: `hsl(${tertiaryColor} 35%)`,
+          700: `hsl(${tertiaryColor} 25%)`,
+          800: `hsl(${tertiaryColor} 15%)`,
+          900: `hsl(${tertiaryColor} 5%)`,
+          DEFAULT: `hsl(${tertiaryColor} 55%)`,
+          foreground: `hsl(${tertiaryColor} 98%)`,
+          fg: `hsl(${tertiaryColor}  98%)`,
+          container: `hsl(${tertiaryColor} 85%)`,
+          'container-fg': `hsl(${tertiaryColor} 5%)`
         },
         muted: {
           DEFAULT: `hsl(${secondaryColor} 55%)`,

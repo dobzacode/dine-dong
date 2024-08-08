@@ -1,5 +1,5 @@
 import { AccessTokenError, getAccessToken, withApiAuthRequired } from '@auth0/nextjs-auth0';
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse, type NextRequest } from 'next/server';
 
 const withApiProxy = withApiAuthRequired(async (request) => await apiProxy(request, '/api'));
 export const GET = withApiProxy;
@@ -7,9 +7,12 @@ export const PUT = withApiProxy;
 
 async function apiProxy(request: NextRequest, proxyPath: string): Promise<Response> {
   let accessToken;
+
   try {
-    const accessTokenResult = await getAccessToken(request, new NextResponse());
-    console.log(accessTokenResult);
+    const accessTokenResult = await getAccessToken(request, new NextResponse(), {
+      authorizationParams: { audience: 'http://localhost:8080/api/' }
+    });
+
     accessToken = accessTokenResult.accessToken;
   } catch (e: unknown) {
     if (e instanceof AccessTokenError) {

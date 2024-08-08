@@ -56,6 +56,7 @@ def get_token_auth_header():
                             " Bearer token"}, 401)
 
     token = parts[1]
+    print(token)
     return token
 
 def requires_auth(f):

@@ -1,52 +1,55 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,600,700,700i');
+@import url('@/styles/fonts.css');
+
 @tailwind base;
 @tailwind components;
 
 @layer components {
   .display-2xl {
-    @apply text-10xl leading-10xl font-bold;
+    @apply font-lora text-10xl font-bold leading-9xl;
   }
   .display-xl {
-    @apply leading-9xl text-9xl font-bold;
+    @apply font-lora text-9xl font-bold leading-8xl;
   }
   .display-lg {
-    @apply leading-8xl text-8xl font-bold;
+    @apply font-lora text-8xl font-bold leading-7xl;
   }
   .display-md {
-    @apply leading-7xl text-7xl font-bold;
+    @apply font-lora text-7xl font-bold leading-6xl;
   }
   .display-sm {
-    @apply leading-6xl text-6xl font-bold;
+    @apply font-lora text-6xl font-bold leading-5xl;
   }
   .display-xs {
-    @apply leading-5xl text-5xl font-bold;
+    @apply font-lora text-5xl font-bold leading-4xl;
   }
   .heading-h1 {
-    @apply leading-3xl text-4xl;
+    @apply font-lora text-4xl leading-3xl;
   }
   .heading-h2 {
-    @apply leading-2xl text-3xl;
+    @apply font-lora text-3xl leading-2xl;
   }
   .heading-h3 {
-    @apply leading-xl text-2xl;
+    @apply font-lora text-2xl leading-xl;
   }
   .heading-h4 {
-    @apply leading-lg text-xl;
+    @apply font-lora text-xl leading-lg;
   }
   .heading-h5 {
-    @apply leading-base text-lg;
+    @apply font-lora text-lg leading-base;
   }
   .body {
-    @apply leading-base text-base;
+    @apply font-poppins text-base leading-base;
   }
   .body-sm {
-    @apply leading-sm text-sm;
+    @apply font-poppins text-sm leading-sm;
   }
   .caption {
-    @apply leading-xs text-xs;
+    @apply font-poppins text-xs leading-xs;
   }
 
   .button-txt {
-    @apply leading-base text-base;
+    @apply font-poppins text-base leading-base;
   }
 
   .background {
@@ -54,26 +57,26 @@
   }
 
   .card-neutral {
-    @apply bg-neutral-1 rounded-sm shadow-sm shadow-black dark:border dark:border-neutral-400/[0.2] dark:bg-neutral-900;
+    @apply rounded-sm bg-neutral-1 shadow-sm shadow-black dark:border dark:border-neutral-400/[0.2] dark:bg-neutral-900;
   }
 
   .surface {
-    @apply bg-neutral-1 text-surface-fg dark:text-neutral-1 dark:bg-neutral-950;
+    @apply bg-neutral-1 text-surface-fg dark:bg-neutral-950 dark:text-neutral-1;
   }
   .surface-container-lowest {
-    @apply text-surface-fg dark:text-neutral-1 bg-neutral-50 dark:bg-neutral-900;
+    @apply bg-neutral-50 text-surface-fg dark:bg-neutral-900 dark:text-neutral-1;
   }
   .surface-container-low {
-    @apply text-surface-fg dark:text-neutral-1 bg-neutral-100 dark:bg-neutral-800;
+    @apply bg-neutral-100 text-surface-fg dark:bg-neutral-800 dark:text-neutral-1;
   }
   .surface-container {
-    @apply text-surface-fg dark:text-neutral-1 bg-neutral-200 dark:bg-neutral-700;
+    @apply bg-neutral-200 text-surface-fg dark:bg-neutral-700 dark:text-neutral-1;
   }
   .surface-container-high {
-    @apply text-surface-fg dark:text-neutral-1 bg-neutral-300 dark:bg-neutral-600;
+    @apply bg-neutral-300 text-surface-fg dark:bg-neutral-600 dark:text-neutral-1;
   }
   .surface-container-highest {
-    @apply text-surface-fg dark:text-neutral-1 bg-neutral-400 dark:bg-neutral-500;
+    @apply bg-neutral-400 text-surface-fg dark:bg-neutral-500 dark:text-neutral-1;
   }
   .primary {
     @apply bg-primary text-primary-fg dark:bg-primary-300 dark:text-primary-800;
@@ -178,7 +181,7 @@
 }
 @layer base {
   * {
-    @apply border-border min-w-0;
+    @apply min-w-0 border-border;
   }
   body {
     @apply bg-white text-black;

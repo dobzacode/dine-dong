@@ -1,5 +1,4 @@
-import Providers from '@/components/providers';
-import { UserProvider } from '@auth0/nextjs-auth0/client';
+import Providers from '@/components/wrapper/providers';
 import type { Metadata } from 'next';
 import './globals.css';
 
@@ -14,13 +13,11 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html suppressHydrationWarning lang="en">
       <head />
-      <Providers>
-        <UserProvider>
-          <body>{children}</body>
-        </UserProvider>
-      </Providers>
+      <body className="background">
+        <Providers>{children}</Providers>
+      </body>
     </html>
   );
 }
