@@ -1,10 +1,9 @@
-import GetUserTest from '@/components/get_user_test';
+import MealForm from '@/components/meal/meal-form';
 
 export default async function Home() {
   return (
-    <div>
-      <GetUserTest />
-      {/* <AddUserTest /> */}
-    </div>
+    <section className="container mx-auto flex max-w-[1200px] justify-center">
+      <MealForm />
+    </section>
   );
 }

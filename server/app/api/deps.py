@@ -2,12 +2,13 @@
 from collections.abc import AsyncGenerator
 
 import jwt
-from app.core import database_session
-from app.models import User
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
+
+from app.core import database_session
+from app.models import User
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/token")
 
@@ -32,13 +33,13 @@ async def get_current_user(
     session: AsyncSession = Depends(get_session),
 ) -> User:
 
-
     user = await session.scalar(select(User).where(User.open_id == sub))
 
     if user is None:
         user = User(open_id=sub)
         session.add(user)
         await session.commit()
+        await session.refresh(user)
     return user      
         
         
