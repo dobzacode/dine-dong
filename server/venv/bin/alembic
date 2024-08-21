@@ -1,4 +1,4 @@
-#!/home/dobza/python-next-app/server/venv/bin/python
+#!/home/dobza/ding-dong/server/venv/bin/python
 # -*- coding: utf-8 -*-
 import re
 import sys

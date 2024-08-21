@@ -6,10 +6,15 @@
 # https://docs.sqlalchemy.org/en/20/core/pooling.html#sqlalchemy.pool.Pool
 
 
-from app.core.config import get_settings
 from sqlalchemy.engine.url import URL
-from sqlalchemy.ext.asyncio import (AsyncEngine, AsyncSession,
-                                    async_sessionmaker, create_async_engine)
+from sqlalchemy.ext.asyncio import (
+    AsyncEngine,
+    AsyncSession,
+    async_sessionmaker,
+    create_async_engine,
+)
+
+from app.core.config import get_settings
 
 
 def new_async_engine(uri: URL) -> AsyncEngine:
@@ -29,5 +34,3 @@ _ASYNC_SESSIONMAKER = async_sessionmaker(_ASYNC_ENGINE, expire_on_commit=False)
 
 def get_async_session() -> AsyncSession:  # pragma: no cover
     return _ASYNC_SESSIONMAKER()
-
-

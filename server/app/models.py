@@ -15,8 +15,12 @@
 
 import uuid
 from datetime import datetime
+from enum import Enum
+from typing import Literal
 
-from sqlalchemy import Column, DateTime, ForeignKey, String, Table, Uuid, func
+from sqlalchemy import Column, DateTime, ForeignKey, Integer, String, Table, Uuid, func
+from sqlalchemy import Enum as SqlEnum
+from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 
@@ -37,7 +41,48 @@ class User(Base):
     )
     open_id: Mapped[str] = mapped_column(String(256), nullable=False)
 
-    meals: Mapped[list["Meal"]] = relationship(back_populates="user", lazy="selectin", cascade="all")
+    addresses: Mapped[list["Address"]] = relationship(
+        back_populates="user", lazy="selectin", cascade="all"
+    )
+
+    meals: Mapped[list["Meal"]] = relationship(
+        back_populates="user", lazy="selectin", cascade="all"
+    )
+
+
+class Address(Base):
+    __tablename__ = "address"
+
+    address_id: Mapped[int] = mapped_column(
+        Uuid(as_uuid=False), primary_key=True, default=lambda _: str(uuid.uuid4())
+    )
+
+    address1: Mapped[str] = mapped_column(String(256), nullable=False)
+    address2: Mapped[str] = mapped_column(String(256), nullable=True)
+    formatted_address: Mapped[str] = mapped_column(String(256), nullable=False)
+    city: Mapped[str] = mapped_column(String(256), nullable=False)
+    department: Mapped[str] = mapped_column(String(256), nullable=True)
+    postal_code: Mapped[str] = mapped_column(String(256), nullable=True)
+    country: Mapped[str] = mapped_column(String(256), nullable=False)
+    lat: Mapped[float] = mapped_column(nullable=False)
+    lng: Mapped[float] = mapped_column(nullable=False)
+
+    user: Mapped["User"] = relationship(back_populates="address", lazy="selectin")
+    meals: Mapped[list["Meal"]] = relationship(
+        back_populates="address", lazy="selectin"
+    )
+
+
+class UnitEnum(Enum):
+    MILLIGRAMME = "milligramme"
+    GRAMME = "gramme"
+    KILOGRAMME = "kilogramme"
+    MILLILITRE = "millilitre"
+    CENTILITRE = "centilitre"
+    LITRE = "litre"
+    CUILLEUR = "cuillière à café"
+    CUILLEUR_SOUPE = "cuillière à soupe"
+    UNITE = "unité"
 
 
 ingredient_meal = Table(
@@ -45,6 +90,8 @@ ingredient_meal = Table(
     Base.metadata,
     Column("ingredient_id", ForeignKey("ingredient.ingredient_id"), primary_key=True),
     Column("meal_id", ForeignKey("meal.meal_id"), primary_key=True),
+    Column("quantity", Integer, nullable=True),
+    Column("unit", SqlEnum(UnitEnum), nullable=True),
 )
 
 
@@ -54,11 +101,17 @@ class Ingredient(Base):
     ingredient_id: Mapped[int] = mapped_column(
         Uuid(as_uuid=False), primary_key=True, default=lambda _: str(uuid.uuid4())
     )
-    name: Mapped[str] = mapped_column(String(256), nullable=False, unique=True)
-    
+
+    name: Mapped[str] = mapped_column(String(256), nullable=False, unique=False)
+
     meals: Mapped[list["Meal"]] = relationship(
         back_populates="ingredients", secondary=ingredient_meal, lazy="selectin"
     )
+
+
+Diets = Literal["vegetarian", "vegan", "glutenFree", "lactoseFree"]
+
+PaymentMethods = Literal["online", "inPerson"]
 
 
 class Meal(Base):
@@ -67,15 +120,25 @@ class Meal(Base):
     meal_id: Mapped[int] = mapped_column(
         Uuid(as_uuid=False), primary_key=True, default=lambda _: str(uuid.uuid4())
     )
-    name: Mapped[str] = mapped_column(String(256), nullable=False)
-    
+    name: Mapped[str] = mapped_column(String(60), nullable=False)
+    cooking_date: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False
+    )
+    expiration_date: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False
+    )
+
+    photo_key: Mapped[str] = mapped_column(String(256), nullable=False)
+
+    weight: Mapped[int] = mapped_column(nullable=False)
+    diet: Mapped[list[Diets]] = mapped_column(ARRAY(String(256)), nullable=False)
+    additional_information: Mapped[str] = mapped_column(String(500), nullable=True)
     ingredients: Mapped[list["Ingredient"]] = relationship(
         back_populates="meals", secondary=ingredient_meal, lazy="selectin"
     )
-    
-    picture_key: Mapped[str] = mapped_column(String(256), nullable=True)
-    
+
+    address: Mapped["Address"] = relationship(back_populates="meals", lazy="selectin")
+    payment_method: Mapped[PaymentMethods] = mapped_column(nullable=False)
+
     user: Mapped["User"] = relationship(back_populates="meals", lazy="selectin")
-    user_id: Mapped[str] = mapped_column(
-        ForeignKey("user_account.user_id")
-    )
+    user_id: Mapped[str] = mapped_column(ForeignKey("user_account.user_id"))

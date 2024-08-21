@@ -46,7 +46,6 @@ class Settings(BaseSettings):
     auth0_issuer: str
     auth0_algorithms: str
 
-
     @computed_field  # type: ignore[misc]
     @property
     def sqlalchemy_database_uri(self) -> URL:

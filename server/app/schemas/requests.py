@@ -1,14 +1,14 @@
-from typing import Optional
-
 from pydantic import BaseModel
 
 
 class BaseRequest(BaseModel):
     pass
 
+
 class CreateMealRequest(BaseRequest):
     name: str
-    ingredients: Optional[list[str]] = None
-    
+    ingredients: list[str] | None = None
+
+
 class CreateIngredientRequest(BaseRequest):
     name: str

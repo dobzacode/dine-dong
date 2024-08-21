@@ -42,7 +42,7 @@ const secondStepSchema = z.object({
       message: 'Le poids est requis'
     })
     .min(100, 'Le poids doit être supérieur à 100g')
-    .max(10000, 'Le poids ne doit pas dépasser 10kg'),
+    .max(1000, 'Le poids ne doit pas dépasser 1kg'),
   diet: z.array(z.enum(['vegetarian', 'vegan', 'glutenFree', 'lactoseFree'])).max(3),
   additionalInformation: z
     .string()
@@ -79,7 +79,7 @@ export const addressSchema = z.object({
     .min(1, 'La ville est obligatoire')
     .max(50, 'La ville ne doit pas dépasser 50 caractères'),
   department: z.string().max(50, 'Le département ne doit pas dépasser 50 caractères').optional(),
-  postalCode: z.string().max(5, 'Le code postal ne doit pas dépasser 5 caractères'),
+  postalCode: z.string().max(5, 'Le code postal ne doit pas dépasser 5 caractères').optional(),
   country: z.string().max(50, 'Le pays ne doit pas dépasser 50 caractères'),
   lat: z.number(),
   lng: z.number()
