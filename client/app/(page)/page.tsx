@@ -1,4 +1,4 @@
-import MealForm from '@/components/meal/meal-form';
+import MealForm from '@/components/ui/meal-form';
 
 export default async function Home() {
   return (

@@ -14,7 +14,7 @@ export default function Header() {
   return (
     <header>
       <section className="relative z-50 flex items-center justify-between bg-transparent px-2xl py-xl">
-        <p className="heading-h1 font-bold">Ding Dong</p>
+        <p className="heading-h1 font-bold">Dine Dong</p>
         <nav>
           {!isLoading ? (
             <Button variant={user && 'ghost'} asChild>

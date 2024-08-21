@@ -13,11 +13,12 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import type React from 'react';
 import { useEffect, useState, type FormEvent } from 'react';
-import { z, type ZodError } from 'zod';
+import { type ZodError } from 'zod';
 import type { AddressType } from '.';
 
 import { Loader2 } from 'lucide-react';
-import { FormMessages } from '../form-messages';
+import { addressSchema } from '../meal-form/meal-schema';
+import { FormMessages } from './form-messages';
 
 interface AddressDialogProps {
   open: boolean;
@@ -27,66 +28,6 @@ interface AddressDialogProps {
   adrAddress: string;
   dialogTitle: string;
   isLoading: boolean;
-}
-
-interface AddressFields {
-  address1?: string;
-  address2?: string;
-  city?: string;
-  department?: string;
-  postalCode?: string;
-}
-
-/**
- * Create a Zod schema for validating address fields.
- * Note that, different address vary from place to place.
- * This Schema makes sure that the required fields are filled.
- */
-export function createAddressSchema(address: AddressFields) {
-  let schema = {};
-
-  if (address.address1 !== '') {
-    schema = {
-      ...schema,
-      address1: z.string().min(1, {
-        message: "La ligne d'adresse 1 est obligatoire"
-      })
-    };
-  }
-
-  schema = {
-    ...schema,
-    address2: z.string().optional()
-  };
-
-  if (address.city !== '') {
-    schema = {
-      ...schema,
-      city: z.string().min(1, {
-        message: 'La ville est obligatoire'
-      })
-    };
-  }
-
-  if (address.department !== '') {
-    schema = {
-      ...schema,
-      department: z.string().min(1, {
-        message: 'La région est obligatoire'
-      })
-    };
-  }
-
-  if (address.postalCode !== '') {
-    schema = {
-      ...schema,
-      postalCode: z.string().min(1, {
-        message: 'Le code postal est obligatoire'
-      })
-    };
-  }
-
-  return z.object(schema);
 }
 
 export default function AddressDialog(props: React.PropsWithChildren<AddressDialogProps>) {
@@ -100,13 +41,7 @@ export default function AddressDialog(props: React.PropsWithChildren<AddressDial
   const [postalCode, setPostalCode] = useState('');
   const [errorMap, setErrorMap] = useState<Record<string, string>>({});
 
-  const addressSchema = createAddressSchema({
-    address1: address.address1,
-    address2: address.address2,
-    city: address.city,
-    department: address.department,
-    postalCode: address.postalCode
-  });
+  console.log(address);
 
   /**
    * Update and format the address string with the given components
@@ -160,18 +95,27 @@ export default function AddressDialog(props: React.PropsWithChildren<AddressDial
    * Handle form submission and save the address
    */
   const handleSave = (e: FormEvent) => {
+    e.stopPropagation();
     e.preventDefault();
     try {
-      addressSchema.parse({
-        address1,
-        address2,
-        city,
-        department,
-        postalCode
-      });
+      addressSchema
+        .omit({
+          lat: true,
+          lng: true,
+          country: true,
+          formattedAddress: true
+        })
+        .parse({
+          address1,
+          address2,
+          city,
+          department,
+          postalCode
+        });
     } catch (error) {
       const zodError = error as ZodError;
       const errorMap = zodError.flatten().fieldErrors;
+      console.log(errorMap);
 
       setErrorMap({
         address1: errorMap.address1?.[0] ?? '',
@@ -192,20 +136,22 @@ export default function AddressDialog(props: React.PropsWithChildren<AddressDial
       department !== address.department
     ) {
       const newFormattedAddress = updateAndFormatAddress(adrAddress, {
-        'street-address': address1,
-        address2,
-        locality: city,
-        department,
-        'postal-code': postalCode
+        'street-address': address1 || address.address1,
+        address2: address2 || address.address2,
+        locality: city || address.city,
+        department: department ?? address.department,
+        'postal-code': postalCode || address.postalCode
       });
+
+      console.log(Boolean(address1), address.address1);
 
       setAddress({
         ...address,
-        city,
-        department,
-        address2,
-        address1,
-        postalCode,
+        city: city || address.city,
+        department: department || address.department,
+        address1: address1 || address.address1,
+        address2: address2 || address.address2,
+        postalCode: postalCode || address.postalCode,
         formattedAddress: newFormattedAddress
       });
     }
@@ -217,7 +163,7 @@ export default function AddressDialog(props: React.PropsWithChildren<AddressDial
     setAddress2(address.address2 || '');
     setPostalCode(address.postalCode);
     setCity(address.city);
-    setDepartment(address.department);
+    setDepartment(address.department ?? '');
 
     if (!open) {
       setErrorMap({});
@@ -227,7 +173,7 @@ export default function AddressDialog(props: React.PropsWithChildren<AddressDial
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent>
+      <DialogContent className="rounded-xs">
         <DialogHeader>
           <DialogTitle>{dialogTitle}</DialogTitle>
         </DialogHeader>
@@ -344,11 +290,18 @@ export default function AddressDialog(props: React.PropsWithChildren<AddressDial
               </div>
             </div>
 
-            <DialogFooter>
-              <Button type="reset" onClick={() => setOpen(false)} className="" variant={'outline'}>
+            <DialogFooter className="flex flex-row gap-xs">
+              <Button
+                className="w-1/2 gap-xs rounded-r-none"
+                type="reset"
+                onClick={() => setOpen(false)}
+                variant={'outline'}
+              >
                 Annuler
               </Button>
-              <Button type="submit">Enregistrer</Button>
+              <Button className="w-1/2 rounded-l-none" type="submit">
+                Enregistrer
+              </Button>
             </DialogFooter>
           </form>
         )}

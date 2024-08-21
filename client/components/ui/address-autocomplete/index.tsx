@@ -1,8 +1,8 @@
 'use client';
 
+import { FormMessages } from '@/components/ui/address-autocomplete/form-messages';
 import { Button } from '@/components/ui/button';
 import { Command, CommandEmpty, CommandGroup, CommandList } from '@/components/ui/command';
-import { FormMessages } from '@/components/ui/form-messages';
 import { Input } from '@/components/ui/input';
 import { useDebounce } from '@/hooks/use-debounce';
 import { fetcher } from '@/lib/utils';
@@ -12,14 +12,17 @@ import useSWR from 'swr';
 import AddressDialog from './address-dialog';
 
 import { Command as CommandPrimitive } from 'cmdk';
+import type { UseFormReturn } from 'react-hook-form';
+import { FormLabel } from '../form';
 import { Label } from '../label';
+import type { MealSchema } from '../meal-form/meal-schema';
 
 export interface AddressType {
   address1: string;
   address2: string;
   formattedAddress: string;
   city: string;
-  department: string;
+  department?: string;
   postalCode: string;
   country: string;
   lat: number;
@@ -27,25 +30,33 @@ export interface AddressType {
 }
 
 interface AddressAutoCompleteProps {
-  address: AddressType;
-  setAddress: (address: AddressType) => void;
+  form: UseFormReturn<MealSchema>;
   searchInput: string;
   setSearchInput: (searchInput: string) => void;
   dialogTitle: string;
   showInlineError?: boolean;
   placeholder?: string;
+  setMapCoord: (mapCoord: { lat: number; lng: number }) => void;
 }
 
 export default function AddressAutoComplete(props: AddressAutoCompleteProps) {
   const {
-    address,
-    setAddress,
+    form,
     dialogTitle,
     showInlineError = true,
     searchInput,
     setSearchInput,
-    placeholder
+    placeholder,
+    setMapCoord
   } = props;
+
+  const { address } = form.getValues('stepThree');
+  const setAddress = useCallback(
+    (address: AddressType) => {
+      form.setValue('stepThree.address', address);
+    },
+    [form]
+  );
 
   const [selectedPlaceId, setSelectedPlaceId] = useState('');
   const [isOpen, setIsOpen] = useState(false);
@@ -67,6 +78,12 @@ export default function AddressAutoComplete(props: AddressAutoCompleteProps) {
     if (data?.data.address) {
       //eslint-disable-next-line
       setAddress(data.data.address as AddressType);
+      setMapCoord({
+        //eslint-disable-next-line
+        lat: data.data.address.lat,
+        //eslint-disable-next-line
+        lng: data.data.address.lng
+      });
     }
   }, [data, setAddress]);
 
@@ -74,11 +91,11 @@ export default function AddressAutoComplete(props: AddressAutoCompleteProps) {
 
   return (
     <>
-      {selectedPlaceId !== '' || address.formattedAddress ? (
-        <div className="flex flex-col pb-8 pt-2">
-          <Label htmlFor="address1" className="pb-4">
-            Adresse
-          </Label>
+      {selectedPlaceId !== '' || address?.formattedAddress ? (
+        <div className="flex flex-col">
+          <FormLabel htmlFor="address1" className="pb-2 text-black">
+            Adresse de retrait *
+          </FormLabel>
           <div className="flex items-center gap-2">
             <Input value={address?.formattedAddress} readOnly />
             <AddressDialog
@@ -96,8 +113,12 @@ export default function AddressAutoComplete(props: AddressAutoCompleteProps) {
             </AddressDialog>
             <Button
               type="reset"
-              onClick={() => {
+              onClick={async () => {
                 setSelectedPlaceId('');
+                setMapCoord({
+                  lat: 0,
+                  lng: 0
+                });
                 setAddress({
                   address1: '',
                   address2: '',
@@ -180,10 +201,10 @@ function AddressAutoCompleteInput(props: CommonProps) {
     <Command
       shouldFilter={false}
       onKeyDown={handleKeyDown}
-      className="relative z-30 overflow-visible pb-8 pt-2"
+      className="relative z-30 overflow-visible"
     >
-      <Label htmlFor="address1" className="pb-4">
-        Adresse
+      <Label htmlFor="address1" className="pb-2">
+        Adresse de retrait *
       </Label>
       <div className="body flex w-full items-center justify-between rounded-lg">
         <CommandPrimitive.Input
@@ -192,12 +213,12 @@ function AddressAutoCompleteInput(props: CommonProps) {
           onBlur={close}
           onFocus={open}
           placeholder={placeholder ?? 'Ajouter une adresse'}
-          className="body file:body flex h-10 w-full rounded-xs border border-input bg-background px-3 py-2 ring-offset-background file:border-0 file:bg-transparent file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+          className="body file:body flex h-10 w-full rounded-xs border border-input bg-background px-3 py-2 ring-offset-background file:border-0 file:bg-transparent file:font-medium placeholder:text-primary-900/[0.4] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
         />
       </div>
       {searchInput !== '' && !isOpen && !selectedPlaceId && showInlineError && (
         <FormMessages
-          className="pt-4"
+          className="pt-2"
           type="error"
           messages={['Sélectionnez une adresse valide dans la liste']}
         />
@@ -224,7 +245,7 @@ function AddressAutoCompleteInput(props: CommonProps) {
                       }) => (
                         <CommandPrimitive.Item
                           value={prediction.placePrediction.text.text}
-                          onSelect={() => {
+                          onSelect={async () => {
                             setSearchInput('');
                             setSelectedPlaceId(prediction.placePrediction.place);
                             setIsOpenDialog(true);
