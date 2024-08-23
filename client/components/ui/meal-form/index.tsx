@@ -2,67 +2,65 @@
 
 import {
   ComingFromLeftVariantWithFadeExit,
-  ComingFromRightVariantWithFadeExit
+  ComingFromRightVariantWithFadeExit,
+  FadeInVariant
 } from '@/components/framer/div-variants';
 import DivWrapper from '@/components/framer/div-wrapper';
-import { cn } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useMutation } from '@tanstack/react-query';
 import { AnimatePresence } from 'framer-motion';
 import moment from 'moment';
 import { useCallback, useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import { Button } from '../button';
 import { mealSchema, type MealSchema } from './meal-schema';
+import NextPrev from './next-prev';
 import StepsIndicator from './steps-indicator';
 import WizardFinalStep from './wizard-final-step';
 import WizardStepOne from './wizard-step-one';
 import WizardStepThree from './wizard-step-three';
 import WizardStepTwo from './wizard-step-two';
 
-function NextPrev({
-  setActiveStep,
-  onNext,
-  setIsBackward,
-  activeStep
-}: {
-  setActiveStep: (num: number) => void;
-  onNext: () => void;
-  setIsBackward: (isBackward: boolean) => void;
-  activeStep: number;
-}) {
-  return (
-    <div className="flex w-full gap-xs">
-      <Button
-        onClick={() => {
-          setIsBackward(true);
-          setActiveStep(activeStep - 1);
-        }}
-        className={cn(
-          `flex w-1/2 rounded-r-none`,
-          activeStep === 1 && 'pointer-events-none bg-opacity-50'
-        )}
-        variant={'secondary'}
-        type="button"
-      >
-        Précédent
-      </Button>
-
-      {activeStep === 4 ? (
-        <Button onClick={onNext} className="flex w-1/2 rounded-l-none" type="submit">
-          Ajouter le repas
-        </Button>
-      ) : (
-        <Button onClick={onNext} className="flex w-1/2 rounded-l-none" type="button">
-          Suivant
-        </Button>
-      )}
-    </div>
-  );
-}
+const createMealMutation = async (data: MealSchema) => {
+  const response = await fetch('http://localhost:3000/api/protected/meals', {
+    method: 'POST',
+    body: JSON.stringify({
+      name: data.stepOne.name,
+      cooking_date: data.stepOne.cookingDate,
+      expiration_date: data.stepOne.expirationDate,
+      photo_key: data.stepOne.image.name,
+      weight: data.stepTwo.weight,
+      diet: data.stepTwo.diet,
+      ingredients: data.stepTwo.ingredients,
+      additional_information: data.stepTwo.additionalInformation,
+      address: {
+        ...data.stepThree.address,
+        formatted_address: data.stepThree.address.formattedAddress,
+        postal_code: data.stepThree.address.postalCode
+      },
+      payment_method: data.stepThree.paymentMethod
+    }),
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  });
+  console.log(response.json());
+  return response.json();
+};
 
 export default function MealForm() {
   const [activeStep, setActiveStep] = useState<number>(1);
   const [addressMessage, setAddressMessage] = useState<string>('');
+
+  const { isPending, error, mutateAsync } = useMutation({
+    mutationFn: createMealMutation,
+    onSuccess: (data: unknown) => {
+      console.log('Meal created successfully:', data);
+    },
+    onError: (error: unknown) => {
+      console.error('Error creating meal:', error);
+    }
+  });
+
   const methods = useForm<MealSchema>({
     shouldUnregister: false,
     mode: 'onChange',
@@ -97,7 +95,7 @@ export default function MealForm() {
           lat: 0,
           lng: 0
         },
-        paymentMethod: 'online'
+        paymentMethod: 'ONLINE'
       }
     }
   });
@@ -125,8 +123,9 @@ export default function MealForm() {
     [methods]
   );
 
-  const onSubmit = (data: MealSchema) => {
-    console.log(data);
+  const onSubmit = async (data: MealSchema) => {
+    const res = await mutateAsync(data);
+    console.log(res, 'lol');
   };
 
   const onNext = useCallback(() => {
@@ -174,7 +173,9 @@ export default function MealForm() {
         className="section-px container mx-auto flex flex-col gap-xl laptop:max-w-[800px]"
         onSubmit={handleSubmit(onSubmit)}
       >
-        <StepsIndicator setSteps={setActiveStep} steps={activeStep} />
+        <DivWrapper variant={FadeInVariant}>
+          <StepsIndicator setSteps={setActiveStep} steps={activeStep} />
+        </DivWrapper>
 
         <AnimatePresence mode="wait">
           <DivWrapper

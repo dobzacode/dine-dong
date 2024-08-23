@@ -1,13 +1,24 @@
 from pydantic import BaseModel
 
+from .base import Address, Ingredient, Meal, UnitEnum
+
 
 class BaseRequest(BaseModel):
     pass
 
 
-class CreateMealRequest(BaseRequest):
-    name: str
-    ingredients: list[str] | None = None
+class IngredientRequest(Ingredient):
+    quantity: int | None = None
+    unit: UnitEnum | None = None
+
+
+class AddressRequest(Address):
+    pass
+
+
+class CreateMealRequest(Meal):
+    ingredients: list[IngredientRequest]
+    address: AddressRequest
 
 
 class CreateIngredientRequest(BaseRequest):

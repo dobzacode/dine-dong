@@ -11,29 +11,7 @@ import { Input } from '../input';
 import { Popover, PopoverTrigger } from '../popover';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../select';
 import { Textarea } from '../textarea';
-import { unitOptions, type MealSchema } from './meal-schema';
-
-export const dietFields: {
-  id: 'vegetarian' | 'vegan' | 'glutenFree' | 'lactoseFree';
-  label: string;
-}[] = [
-  {
-    id: 'vegetarian',
-    label: 'Végétarien'
-  },
-  {
-    id: 'vegan',
-    label: 'Vegan'
-  },
-  {
-    id: 'glutenFree',
-    label: 'Sans gluten'
-  },
-  {
-    id: 'lactoseFree',
-    label: 'Sans lactose'
-  }
-];
+import { dietEnum, unitEnum, type MealSchema } from './meal-schema';
 
 export default function WizardStepTwo() {
   const form = useFormContext<MealSchema>();
@@ -75,37 +53,43 @@ export default function WizardStepTwo() {
               <FormItem className="flex w-1/2 flex-col">
                 <FormLabel className="body">Régime alimentaire (optionnel)</FormLabel>
                 <div className="grid grid-cols-2 gap-sm">
-                  {dietFields.map((item) => (
+                  {dietEnum.map((item) => (
                     <FormField
-                      key={item.id}
+                      key={item.value}
                       control={form.control}
                       name="stepTwo.diet"
                       render={({ field }) => {
                         return (
                           <FormItem
-                            key={item.id}
+                            key={item.value}
                             className="flex flex-row items-center gap-sm space-y-0"
                           >
                             <FormControl>
                               <Checkbox
-                                checked={field.value?.includes(item.id)}
+                                checked={field.value?.includes(item.value)}
                                 onCheckedChange={(checked) => {
-                                  if (item.id === 'vegetarian' && field.value?.includes('vegan')) {
+                                  if (
+                                    item.value === 'VEGETARIAN' &&
+                                    field.value?.includes('VEGAN')
+                                  ) {
                                     return field.onChange([
-                                      ...field.value.filter((value) => value !== 'vegan'),
-                                      'vegetarian'
+                                      ...field.value.filter((value) => value !== 'VEGAN'),
+                                      'VEGETARIAN'
                                     ]);
                                   }
-                                  if (item.id === 'vegan' && field.value?.includes('vegetarian')) {
+                                  if (
+                                    item.value === 'VEGAN' &&
+                                    field.value?.includes('VEGETARIAN')
+                                  ) {
                                     return field.onChange([
-                                      ...field.value.filter((value) => value !== 'vegetarian'),
-                                      'vegan'
+                                      ...field.value.filter((value) => value !== 'VEGETARIAN'),
+                                      'VEGAN'
                                     ]);
                                   }
                                   checked
-                                    ? field.onChange([...field.value, item.id])
+                                    ? field.onChange([...field.value, item.value])
                                     : field.onChange(
-                                        field.value?.filter((value) => value !== item.id)
+                                        field.value?.filter((value) => value !== item.value)
                                       );
                                   console.log(field.value);
                                 }}
@@ -183,6 +167,12 @@ export default function WizardStepTwo() {
                           max={100}
                           placeholder="0"
                           {...field}
+                          onChange={(e) => {
+                            if (e.target.value === '') {
+                              return field.onChange(undefined);
+                            }
+                            field.onChange(e.target.value);
+                          }}
                           value={field.value ?? ''}
                         />
                       </FormControl>
@@ -206,9 +196,9 @@ export default function WizardStepTwo() {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          {unitOptions.map((option) => (
-                            <SelectItem key={option} value={option}>
-                              {option}
+                          {unitEnum.map((option) => (
+                            <SelectItem key={option.value} value={option.value}>
+                              {option.label}
                             </SelectItem>
                           ))}
                         </SelectContent>

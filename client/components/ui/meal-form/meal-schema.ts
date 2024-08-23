@@ -3,16 +3,16 @@ import { z } from 'zod';
 export const MAX_FILE_SIZE = 5000000;
 export const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
 
-export const unitOptions: readonly [string, ...string[]] = [
-  'milligramme',
-  'gramme',
-  'kilogramme',
-  'millilitre',
-  'centilitre',
-  'litre',
-  'cuillière à café',
-  'cuillière à soupe',
-  'unité'
+export const unitEnum: readonly { value: string; label: string }[] = [
+  { value: 'MILLIGRAMME', label: 'milligramme' },
+  { value: 'GRAMME', label: 'gramme' },
+  { value: 'KILOGRAMME', label: 'kilogramme' },
+  { value: 'MILLILITRE', label: 'millilitre' },
+  { value: 'CENTILITRE', label: 'centilitre' },
+  { value: 'LITRE', label: 'litre' },
+  { value: 'CUILLIERE_CAFE', label: 'cuillière à café' },
+  { value: 'CUILLIERE_SOUPE', label: 'cuillière à soupe' },
+  { value: 'UNITE', label: 'unité' }
 ];
 
 const firstStepSchema = z.object({
@@ -36,6 +36,16 @@ const firstStepSchema = z.object({
     )
 });
 
+export const dietEnum: readonly {
+  value: 'VEGETARIAN' | 'VEGAN' | 'GLUTENFREE' | 'LACTOSEFREE';
+  label: string;
+}[] = [
+  { value: 'VEGETARIAN', label: 'Végétarien' },
+  { value: 'VEGAN', label: 'Vegan' },
+  { value: 'GLUTENFREE', label: 'Sans gluten' },
+  { value: 'LACTOSEFREE', label: 'Sans lactose' }
+];
+
 const secondStepSchema = z.object({
   weight: z.coerce
     .number({
@@ -43,7 +53,7 @@ const secondStepSchema = z.object({
     })
     .min(100, 'Le poids doit être supérieur à 100g')
     .max(1000, 'Le poids ne doit pas dépasser 1kg'),
-  diet: z.array(z.enum(['vegetarian', 'vegan', 'glutenFree', 'lactoseFree'])).max(3),
+  diet: z.array(z.enum(['VEGETARIAN', 'VEGAN', 'GLUTENFREE', 'LACTOSEFREE'])).max(3),
   additionalInformation: z
     .string()
     .max(500, 'Les informations additionnelles ne doivent pas dépasser 500 caractères')
@@ -58,14 +68,31 @@ const secondStepSchema = z.object({
         quantity: z.coerce
           .number()
           .min(1, 'La quantité doit être supérieure à 0')
-          .max(100, 'La quantité ne doit pas dépasser 100')
+          .max(1000, 'La quantité ne doit pas dépasser 1000')
           .optional(),
-        unit: z.enum(unitOptions).optional()
+        unit: z
+          .enum([
+            'MILLIGRAMME',
+            'GRAMME',
+            'KILOGRAMME',
+            'MILLILITRE',
+            'CENTILITRE',
+            'LITRE',
+            'CUILLIERE_CAFE',
+            'CUILLIERE_SOUPE',
+            'UNITE'
+          ])
+          .optional()
       })
     )
     .min(1, 'Vous devez ajouter au moins un ingrédient')
     .max(30, 'Vous ne pouvez pas ajouter plus de 30 ingrédients')
 });
+
+export const paymentMethodEnum: { value: string; label: string }[] = [
+  { value: 'ONLINE', label: 'Paiement en ligne' },
+  { value: 'IN_PERSON', label: 'Paiement en personne' }
+];
 
 export const addressSchema = z.object({
   address1: z
@@ -87,7 +114,7 @@ export const addressSchema = z.object({
 
 export const thirdStepSchema = z.object({
   address: addressSchema,
-  paymentMethod: z.enum(['online', 'inPerson'])
+  paymentMethod: z.enum(['ONLINE', 'IN_PERSON'])
 });
 
 export const mealSchema = z.object({

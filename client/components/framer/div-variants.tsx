@@ -97,7 +97,7 @@ export const ComingFromRightVariantWithFadeExit: Variants = {
   },
   exit: {
     opacity: 0,
-    
+
     transition: {
       duration: 0.3
     }
@@ -176,5 +176,20 @@ export const FromTopStaggerVariant: Variants = {
   exit: {
     opacity: 0,
     y: -100
+  }
+};
+
+export const FadeInVariant: Variants = {
+  hidden: {
+    opacity: 0,
+    y: 0
+  },
+  enter: () => ({
+    opacity: 1,
+    y: 0
+  }),
+  exit: {
+    opacity: 0,
+    y: 0
   }
 };

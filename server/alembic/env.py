@@ -1,11 +1,14 @@
 import asyncio
 from logging.config import fileConfig
 
+import alembic_postgresql_enum  # type: ignore
 from sqlalchemy import Connection, engine_from_config, pool
 from sqlalchemy.ext.asyncio import AsyncEngine
 
 from alembic import context
 from app.core.config import get_settings
+
+__all__ = ["alembic_postgresql_enum"]
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

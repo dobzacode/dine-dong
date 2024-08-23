@@ -2,9 +2,7 @@
 
 import Image from 'next/image';
 import { useFormContext } from 'react-hook-form';
-import { type MealSchema } from './meal-schema';
-import { paymentMethods } from './wizard-step-three';
-import { dietFields } from './wizard-step-two';
+import { dietEnum, paymentMethodEnum, type MealSchema } from './meal-schema';
 
 export default function WizardFinalStep() {
   const { getValues } = useFormContext<MealSchema>();
@@ -67,7 +65,7 @@ export default function WizardFinalStep() {
               <p className="flex gap-md">
                 {getValues('stepTwo.diet').map((diet) => (
                   <span key={diet} className="body-sm">
-                    {dietFields.find((item) => item.id === diet)?.label}
+                    {dietEnum.find((item) => item.value === diet)?.label}
                   </span>
                 ))}
               </p>
@@ -109,8 +107,9 @@ export default function WizardFinalStep() {
             <p className="body-sm font-medium text-primary-900/70">Mode de paiement</p>
             <p className="body-sm">
               {
-                paymentMethods.find((item) => item.value === getValues('stepThree.paymentMethod'))
-                  ?.label
+                paymentMethodEnum.find(
+                  (item) => item.value === getValues('stepThree.paymentMethod')
+                )?.label
               }
             </p>
           </div>

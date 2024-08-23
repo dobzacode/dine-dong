@@ -16,6 +16,7 @@ pydantic-settings = "^2.4.0"
 pyjwt = {extras = ["crypto"], version = "^2.9.0"}
 python-multipart = "^0.0.9"
 sqlalchemy = "^2.0.31"
+alembic-postgresql-enum = "^1.3.0"
 
 [tool.poetry.group.dev.dependencies]
 coverage = "^7.5.4"
@@ -53,6 +54,9 @@ strict = true
 
 [tool.ruff]
 target-version = "py312"
+
+[lint]
+unfixable = ["F401"]
 
 [tool.ruff.lint]
 # pycodestyle, pyflakes, isort, pylint, pyupgrade

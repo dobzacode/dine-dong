@@ -18,7 +18,7 @@ from functools import lru_cache
 from pathlib import Path
 
 from pydantic import AnyHttpUrl, BaseModel, SecretStr, computed_field
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic_settings import BaseSettings, SettingsConfigDict  # type: ignore
 from sqlalchemy.engine.url import URL
 
 PROJECT_DIR = Path(__file__).parent.parent.parent

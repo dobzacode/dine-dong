@@ -1,7 +1,9 @@
 import { AccessTokenError, getAccessToken, withApiAuthRequired } from '@auth0/nextjs-auth0';
 import { NextResponse, type NextRequest } from 'next/server';
 
-const withApiProxy = withApiAuthRequired(async (request) => await apiProxy(request, '/api'));
+const withApiProxy = withApiAuthRequired(
+  async (request) => await apiProxy(request, '/api/protected')
+);
 export const GET = withApiProxy;
 export const PUT = withApiProxy;
 export const POST = withApiProxy;

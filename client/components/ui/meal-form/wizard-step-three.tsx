@@ -7,18 +7,7 @@ import { FormMessages } from '../address-autocomplete/form-messages';
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '../form';
 import { RadioGroup, RadioGroupItem } from '../radio-group';
 import LocationMap from './location-map';
-import type { MealSchema } from './meal-schema';
-
-export const paymentMethods = [
-  {
-    value: 'online',
-    label: 'Paiement en ligne'
-  },
-  {
-    value: 'inPerson',
-    label: 'Paiement en personne'
-  }
-];
+import { paymentMethodEnum, type MealSchema } from './meal-schema';
 
 export default function WizardStepThree({
   addressMessage,
@@ -75,7 +64,7 @@ export default function WizardStepThree({
                   defaultValue={field.value}
                   className="flex gap-lg"
                 >
-                  {paymentMethods.map((option) => (
+                  {paymentMethodEnum.map((option) => (
                     <FormItem
                       className="flex items-center gap-sm space-x-0 space-y-0"
                       key={option.value}
