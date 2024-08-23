@@ -7,7 +7,7 @@ interface User extends BaseModel {
   userId: string;
   openId: string;
   meals: Meal[];
-  address: Address | null; // Add address property
+  address: Address | null;
 }
 
 interface Address {

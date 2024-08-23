@@ -2,6 +2,7 @@ import asyncio
 from logging.config import fileConfig
 
 import alembic_postgresql_enum  # type: ignore
+from geoalchemy2 import alembic_helpers  # type: ignore
 from sqlalchemy import Connection, engine_from_config, pool
 from sqlalchemy.ext.asyncio import AsyncEngine
 
@@ -55,6 +56,9 @@ def run_migrations_offline() -> None:
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},
         compare_type=True,
+        process_revision_directives=alembic_helpers.writer,
+        include_object=alembic_helpers.include_object,
+        render_item=alembic_helpers.render_item,
         compare_server_default=True,
     )
 

@@ -54,7 +54,7 @@ class Meal(BaseModel):
     expiration_date: datetime
     photo_key: str
     weight: int
-    diet: list[DietsEnum] = []
+    diet: list[DietsEnum] | None = []
     additional_information: str | None = None
     payment_method: PaymentMethodsEnum
 

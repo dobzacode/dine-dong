@@ -1,19 +1,77 @@
+from collections.abc import Sequence
+
 from fastapi import APIRouter, Depends, HTTPException, Path, Query, Security
+from geoalchemy2.functions import (  # type: ignore
+    ST_DWithin,
+    ST_GeogFromText,
+    ST_GeogFromWKB,
+)
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api import deps
 from app.core.security.authenticate import VerifyToken
-from app.models import Address, Ingredient, Meal, User, ingredient_meal
+from app.models import Address, DietsEnum, Ingredient, Meal, User, ingredient_meal
 from app.schemas.requests import CreateMealRequest
 from app.schemas.responses import (
     IngredientMealResponse,
     MealResponse,
+    MealWithAddressResponse,
     MealWithIngredientsAndAddressResponse,
 )
 
 router = APIRouter()
 auth = VerifyToken()
+
+
+@router.get(
+    "", response_model=list[MealWithAddressResponse], description="Get all meals"
+)
+async def get_meals(
+    session: AsyncSession = Depends(deps.get_session),
+    limit: int = Query(10, description="Number of meals to return"),
+    offset: int = Query(0, description="Number of meals to skip"),
+    lat: float = Query(45.767572, description="Latitude of the user"),
+    lng: float = Query(4.833102, description="Longitude of the user"),
+    radius: int = Query(6200, description="Radius of the search"),
+    diet: list[DietsEnum] = Query(None, description="Diet of the meals"),
+    name: str = Query("", description="Name of the meals"),
+    weight_max: int = Query(
+        1000, ge=0, lt=1000, description="Maximum weight of the meals"
+    ),
+    weight_min: int = Query(
+        0, ge=0, lt=1000, description="Minimum weight of the meals"
+    ),
+):  # pylint: disable=R0913
+    meals: Sequence[Meal] = []
+    user_location = ST_GeogFromText(f"POINT({lat} {lng})", srid=4326)
+
+    try:
+        query = (
+            select(Meal)
+            .join(Address)
+            .where(
+                ST_DWithin(
+                    user_location,
+                    ST_GeogFromWKB(Address.geo_location, srid=4326),
+                    radius * 1000,
+                )
+            )
+            .where(diet is None or Meal.diet.contains(diet))
+            .where(Meal.name.like(f"%{name}%"))
+            .where((Meal.weight <= weight_max) & (Meal.weight >= weight_min))
+            .limit(limit)
+            .offset(offset)
+        )
+        result = await session.execute(query)
+        meals = result.scalars().all()
+    except Exception as e:
+        print(e)
+        raise HTTPException(status_code=500, detail="Une erreur est survenue")
+    if not meals:
+        raise HTTPException(status_code=404, detail="Aucun repas trouvé")
+    print(meals)
+    return meals
 
 
 @router.get(
@@ -40,16 +98,19 @@ async def get_ingredient_meal_by_id(
 )
 async def get_meal_by_id(
     meal_id: str = Path(description="ID of the meal to retrieve"),
-    snippet: bool = Query(False, description="Return a concise snippet of the meal"),
     session: AsyncSession = Depends(deps.get_session),
 ):
-    query = select(Meal).filter(Meal.meal_id == meal_id)
-    meal = await session.scalar(query)
+    try:
+        query = select(Meal).filter(Meal.meal_id == meal_id)
+        meal = await session.scalar(query)
 
-    if not meal:
-        raise HTTPException(status_code=404, detail="Meal not found")
+        if not meal:
+            raise HTTPException(status_code=404, detail="Meal not found")
 
-    return meal
+        return meal
+    except Exception as e:
+        print(e)
+        raise HTTPException(status_code=500, detail="Une erreur est survenue")
 
 
 @router.get(

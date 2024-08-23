@@ -21,6 +21,11 @@ class MealResponse(BaseResponse, Meal):
     pass
 
 
+class MealWithAddressResponse(BaseResponse, Meal):
+    address: Address
+    pass
+
+
 class IngredientResponse(BaseResponse, Ingredient):
     ingredient_id: str
     pass
