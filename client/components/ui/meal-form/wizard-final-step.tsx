@@ -1,14 +1,15 @@
 'use client';
 
+import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import { useFormContext } from 'react-hook-form';
 import { dietEnum, paymentMethodEnum, type MealSchema } from './meal-schema';
 
-export default function WizardFinalStep() {
+export default function WizardFinalStep({ className }: { className?: string }) {
   const { getValues } = useFormContext<MealSchema>();
 
   return (
-    <div className="flex flex-col gap-lg">
+    <div className={cn('flex flex-col gap-lg', className)}>
       <section className="flex w-full gap-lg">
         <div className="flex h-fit w-fit shrink-0 grow flex-col gap-md rounded-xs border bg-background p-md text-primary-container-fg">
           <h3 className="heading-h3 font-semibold text-primary-container-fg">
@@ -76,7 +77,7 @@ export default function WizardFinalStep() {
             {getValues('stepTwo.ingredients').map((ingredient) => (
               <div className="flex gap-xs" key={ingredient.name}>
                 {ingredient?.quantity && <p className="body-sm">{ingredient.quantity}</p>}
-                {ingredient?.unit !== 'unité' && ingredient?.unit ? (
+                {ingredient?.unit !== 'UNITE' && ingredient?.unit ? (
                   <p className="body-sm">{ingredient.unit}</p>
                 ) : null}
                 <p className="body-sm font-medium text-primary-900/70">{ingredient.name}</p>

@@ -78,7 +78,6 @@ class Address(Base):
 class UnitEnum(str, Enum):
     MILLIGRAMME = "MILLIGRAMME"
     GRAMME = "GRAMME"
-    KILOGRAMME = "KILOGRAMME"
     MILLILITRE = "MILLILITRE"
     CENTILITRE = "CENTILITRE"
     LITRE = "LITRE"

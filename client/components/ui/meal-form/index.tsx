@@ -2,16 +2,18 @@
 
 import {
   ComingFromLeftVariantWithFadeExit,
-  ComingFromRightVariantWithFadeExit,
-  FadeInVariant
+  ComingFromRightVariantWithFadeExit
 } from '@/components/framer/div-variants';
 import DivWrapper from '@/components/framer/div-wrapper';
+import { cn } from '@/lib/utils';
+import type { MealResponse } from '@/types/query';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { AnimatePresence } from 'framer-motion';
 import moment from 'moment';
 import { useCallback, useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
+import { useToast } from '../use-toast';
 import { mealSchema, type MealSchema } from './meal-schema';
 import NextPrev from './next-prev';
 import StepsIndicator from './steps-indicator';
@@ -43,21 +45,33 @@ const createMealMutation = async (data: MealSchema) => {
       'Content-Type': 'application/json'
     }
   });
-  console.log(response.json());
-  return response.json();
+  const dataResponse = (await response.json()) as MealResponse;
+  return dataResponse;
 };
 
 export default function MealForm() {
   const [activeStep, setActiveStep] = useState<number>(1);
   const [addressMessage, setAddressMessage] = useState<string>('');
-
+  const { toast } = useToast();
   const { isPending, error, mutateAsync } = useMutation({
     mutationFn: createMealMutation,
-    onSuccess: (data: unknown) => {
+    onSuccess: (data: MealResponse) => {
       console.log('Meal created successfully:', data);
+      toast({
+        title: `Votre nouveau repas ${data.name} a bien été créé`,
+        description: 'Vous pouvez le consulter dans votre tableau de bord',
+        className: ' bottom-0 right-0 w-fit ml-auto',
+        duration: 5000
+      });
     },
     onError: (error: unknown) => {
       console.error('Error creating meal:', error);
+      toast({
+        title: 'Une erreur est survenue lors de la création du repas',
+        description: 'Veuillez réessayer ultérieurement',
+
+        duration: 5000
+      });
     }
   });
 
@@ -124,8 +138,7 @@ export default function MealForm() {
   );
 
   const onSubmit = async (data: MealSchema) => {
-    const res = await mutateAsync(data);
-    console.log(res, 'lol');
+    await mutateAsync(data);
   };
 
   const onNext = useCallback(() => {
@@ -170,10 +183,13 @@ export default function MealForm() {
   return (
     <FormProvider {...methods}>
       <form
-        className="section-px container mx-auto flex flex-col gap-xl laptop:max-w-[800px]"
+        className={cn(
+          'section-px container mx-auto flex flex-col gap-xl laptop:max-w-[800px]',
+          isPending && 'pointer-events-none'
+        )}
         onSubmit={handleSubmit(onSubmit)}
       >
-        <DivWrapper variant={FadeInVariant}>
+        <DivWrapper variant={ComingFromLeftVariantWithFadeExit}>
           <StepsIndicator setSteps={setActiveStep} steps={activeStep} />
         </DivWrapper>
 
@@ -198,8 +214,9 @@ export default function MealForm() {
               inverseOnExit
               key={`step-one-${activeStep}`}
             >
-              <WizardStepOne />
+              <WizardStepOne className={isPending ? 'animate-pulse' : ''} />
               <NextPrev
+                isPending={isPending}
                 activeStep={activeStep}
                 setActiveStep={setActiveStep}
                 onNext={onNext}
@@ -216,8 +233,9 @@ export default function MealForm() {
               }
               key={`step-two-${activeStep}`}
             >
-              <WizardStepTwo />
+              <WizardStepTwo className={isPending ? 'animate-pulse' : ''} />
               <NextPrev
+                isPending={isPending}
                 activeStep={activeStep}
                 setActiveStep={setActiveStep}
                 onNext={onNext}
@@ -235,10 +253,12 @@ export default function MealForm() {
               key={`step-three-${activeStep}`}
             >
               <WizardStepThree
+                className={isPending ? 'animate-pulse' : ''}
                 addressMessage={addressMessage}
                 setAddressMessage={setAddressMessage}
               />
               <NextPrev
+                isPending={isPending}
                 activeStep={activeStep}
                 setActiveStep={setActiveStep}
                 onNext={onNext}
@@ -255,8 +275,9 @@ export default function MealForm() {
               }
               key={`step-four-${activeStep}`}
             >
-              <WizardFinalStep />
+              <WizardFinalStep className={isPending ? 'animate-pulse' : ''} />
               <NextPrev
+                isPending={isPending}
                 activeStep={activeStep}
                 setActiveStep={setActiveStep}
                 onNext={onNext}

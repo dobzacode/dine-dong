@@ -1,3 +1,4 @@
+import { DietsEnum, PaymentMethodsEnum, UnitEnum } from '@/types/schema';
 import { z } from 'zod';
 
 export const MAX_FILE_SIZE = 5000000;
@@ -6,7 +7,6 @@ export const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'im
 export const unitEnum: readonly { value: string; label: string }[] = [
   { value: 'MILLIGRAMME', label: 'milligramme' },
   { value: 'GRAMME', label: 'gramme' },
-  { value: 'KILOGRAMME', label: 'kilogramme' },
   { value: 'MILLILITRE', label: 'millilitre' },
   { value: 'CENTILITRE', label: 'centilitre' },
   { value: 'LITRE', label: 'litre' },
@@ -53,7 +53,7 @@ const secondStepSchema = z.object({
     })
     .min(100, 'Le poids doit être supérieur à 100g')
     .max(1000, 'Le poids ne doit pas dépasser 1kg'),
-  diet: z.array(z.enum(['VEGETARIAN', 'VEGAN', 'GLUTENFREE', 'LACTOSEFREE'])).max(3),
+  diet: z.array(z.enum(Object.values(DietsEnum) as [string, ...string[]])).max(3),
   additionalInformation: z
     .string()
     .max(500, 'Les informations additionnelles ne doivent pas dépasser 500 caractères')
@@ -70,19 +70,7 @@ const secondStepSchema = z.object({
           .min(1, 'La quantité doit être supérieure à 0')
           .max(1000, 'La quantité ne doit pas dépasser 1000')
           .optional(),
-        unit: z
-          .enum([
-            'MILLIGRAMME',
-            'GRAMME',
-            'KILOGRAMME',
-            'MILLILITRE',
-            'CENTILITRE',
-            'LITRE',
-            'CUILLIERE_CAFE',
-            'CUILLIERE_SOUPE',
-            'UNITE'
-          ])
-          .optional()
+        unit: z.enum(Object.values(UnitEnum) as [string, ...string[]]).optional()
       })
     )
     .min(1, 'Vous devez ajouter au moins un ingrédient')
@@ -114,7 +102,7 @@ export const addressSchema = z.object({
 
 export const thirdStepSchema = z.object({
   address: addressSchema,
-  paymentMethod: z.enum(['ONLINE', 'IN_PERSON'])
+  paymentMethod: z.enum(Object.values(PaymentMethodsEnum) as [string, ...string[]])
 });
 
 export const mealSchema = z.object({

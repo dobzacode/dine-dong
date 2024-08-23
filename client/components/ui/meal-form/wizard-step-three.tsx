@@ -1,5 +1,6 @@
 'use client';
 
+import { cn } from '@/lib/utils';
 import { useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import AddressAutoComplete from '../address-autocomplete';
@@ -11,10 +12,12 @@ import { paymentMethodEnum, type MealSchema } from './meal-schema';
 
 export default function WizardStepThree({
   addressMessage,
-  setAddressMessage
+  setAddressMessage,
+  className
 }: {
   addressMessage: string;
   setAddressMessage: (addressMessage: string) => void;
+  className: string;
 }) {
   const form = useFormContext<MealSchema>();
   const [searchInput, setSearchInput] = useState('');
@@ -33,7 +36,7 @@ export default function WizardStepThree({
 
   return (
     <>
-      <fieldset className="flex flex-col gap-md text-primary-container-fg">
+      <fieldset className={cn('flex flex-col gap-md text-primary-container-fg', className)}>
         <FormField
           control={form.control}
           name="stepThree.address"

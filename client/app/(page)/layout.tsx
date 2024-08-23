@@ -1,4 +1,5 @@
 import Header from '@/components/ui/header/header';
+import { Toaster } from '@/components/ui/toaster';
 
 export default async function RootLayout({
   children
@@ -12,6 +13,7 @@ export default async function RootLayout({
       <main className="background flex min-h-screen items-start justify-center gap-xl py-lg pt-3xl">
         {children}
       </main>
+      <Toaster />
       {/* </FramerMotionWrapper> */}
     </>
   );

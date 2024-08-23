@@ -13,7 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Textarea } from '../textarea';
 import { dietEnum, unitEnum, type MealSchema } from './meal-schema';
 
-export default function WizardStepTwo() {
+export default function WizardStepTwo({ className }: { className?: string }) {
   const form = useFormContext<MealSchema>();
 
   const { fields, append, remove } = useFieldArray({
@@ -23,7 +23,7 @@ export default function WizardStepTwo() {
 
   return (
     <>
-      <fieldset className="flex w-full flex-col gap-md">
+      <fieldset className={cn('flex flex-col gap-md text-primary-container-fg', className)}>
         <div className="flex w-full gap-md text-primary-container-fg">
           <FormField
             control={form.control}
@@ -36,7 +36,7 @@ export default function WizardStepTwo() {
                     required
                     type="number"
                     min={1}
-                    max={10000}
+                    max={1000}
                     placeholder="300"
                     {...field}
                     value={field.value || ''}
@@ -177,7 +177,7 @@ export default function WizardStepTwo() {
                         />
                       </FormControl>
                       {form.formState.errors.stepTwo?.ingredients?.[index]?.quantity && (
-                        <FormMessage>
+                        <FormMessage className="whitespace-nowrap">
                           {form.formState.errors.stepTwo?.ingredients?.[index]?.quantity?.message}
                         </FormMessage>
                       )}

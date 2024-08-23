@@ -14,7 +14,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '../popover';
 import ImageUploader from './image-uploader';
 import type { MealSchema } from './meal-schema';
 
-export default function WizardStepOne() {
+export default function WizardStepOne({className}: {className?: string}) {
   const form = useFormContext<MealSchema>();
 
   const [isCookingCalendarOpen, setIsCookingCalendarOpen] = useState<boolean>(false);
@@ -22,7 +22,7 @@ export default function WizardStepOne() {
 
   return (
     <>
-      <fieldset className="flex flex-col gap-md text-primary-container-fg">
+      <fieldset className={cn("flex flex-col gap-md text-primary-container-fg", className)}>
         <FormField
           control={form.control}
           name="stepOne.name"

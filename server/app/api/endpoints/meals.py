@@ -81,62 +81,71 @@ async def get_meal_details_by_id(
     return meal
 
 
-@router.post("", description="Create a new meal", response_model=MealResponse)
+@router.post(
+    "", description="Create a new meal", response_model=MealResponse, status_code=201
+)
 async def create_meal(
     meal_data: CreateMealRequest,
     current_user: User = Depends(deps.get_current_user),
     session: AsyncSession = Depends(deps.get_session),
     user: dict = Security(auth.verify),
 ):
-    new_address = Address(
-        user=current_user,
-        address1=meal_data.address.address1,
-        address2=meal_data.address.address2,
-        formatted_address=meal_data.address.formatted_address,
-        city=meal_data.address.city,
-        department=meal_data.address.department,
-        postal_code=meal_data.address.postal_code,
-        country=meal_data.address.country,
-        lat=meal_data.address.lat,
-        lng=meal_data.address.lng,
-    )
+    try:
+        new_address = Address(
+            user=current_user,
+            address1=meal_data.address.address1,
+            address2=meal_data.address.address2,
+            formatted_address=meal_data.address.formatted_address,
+            city=meal_data.address.city,
+            department=meal_data.address.department,
+            postal_code=meal_data.address.postal_code,
+            country=meal_data.address.country,
+            lat=meal_data.address.lat,
+            lng=meal_data.address.lng,
+        )
 
-    new_meal = Meal(
-        name=meal_data.name,
-        cooking_date=meal_data.cooking_date,
-        expiration_date=meal_data.expiration_date,
-        photo_key=meal_data.photo_key,
-        weight=meal_data.weight,
-        additional_information=meal_data.additional_information,
-        diet=meal_data.diet,
-        payment_method=meal_data.payment_method,
-        user=current_user,
-        address=new_address,
-    )
-    session.add(new_meal)
-    for ingredient in meal_data.ingredients:
-        query = select(Ingredient).filter(Ingredient.name == ingredient.name)
-        existing_ingredient = await session.scalar(query)
-        if existing_ingredient:
-            ingredient_meal_data = ingredient_meal.insert().values(
-                meal_id=new_meal.meal_id,
-                ingredient_id=existing_ingredient.ingredient_id,
-                quantity=ingredient.quantity or None,
-                unit=ingredient.unit.name if ingredient.unit else None,
-            )
-        else:
-            new_ingredient = Ingredient(name=ingredient.name)
-            session.add(new_ingredient)
-            await session.flush()
-            await session.refresh(new_ingredient)
-            ingredient_meal_data = ingredient_meal.insert().values(
-                meal_id=new_meal.meal_id,
-                ingredient_id=new_ingredient.ingredient_id,
-                quantity=ingredient.quantity or None,
-                unit=ingredient.unit.name if ingredient.unit else None,
-            )
-        await session.execute(ingredient_meal_data)
-    await session.commit()
-    await session.refresh(new_meal)
+        new_meal = Meal(
+            name=meal_data.name,
+            cooking_date=meal_data.cooking_date,
+            expiration_date=meal_data.expiration_date,
+            photo_key=meal_data.photo_key,
+            weight=meal_data.weight,
+            additional_information=meal_data.additional_information,
+            diet=meal_data.diet,
+            payment_method=meal_data.payment_method,
+            user=current_user,
+            address=new_address,
+        )
+        session.add(new_meal)
+        for ingredient in meal_data.ingredients:
+            query = select(Ingredient).filter(Ingredient.name == ingredient.name)
+            existing_ingredient = await session.scalar(query)
+            if existing_ingredient:
+                ingredient_meal_data = ingredient_meal.insert().values(
+                    meal_id=new_meal.meal_id,
+                    ingredient_id=existing_ingredient.ingredient_id,
+                    quantity=ingredient.quantity or None,
+                    unit=ingredient.unit.name if ingredient.unit else None,
+                )
+            else:
+                new_ingredient = Ingredient(name=ingredient.name)
+                session.add(new_ingredient)
+                await session.flush()
+                await session.refresh(new_ingredient)
+                ingredient_meal_data = ingredient_meal.insert().values(
+                    meal_id=new_meal.meal_id,
+                    ingredient_id=new_ingredient.ingredient_id,
+                    quantity=ingredient.quantity or None,
+                    unit=ingredient.unit.name if ingredient.unit else None,
+                )
+            await session.execute(ingredient_meal_data)
+        await session.commit()
+        await session.refresh(new_meal)
 
-    return new_meal
+        return new_meal
+    except Exception as e:
+        print(e)
+        raise HTTPException(
+            status_code=500,
+            detail="Une erreur est survenue lors de la création du repas",
+        )
