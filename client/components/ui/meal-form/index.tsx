@@ -5,12 +5,14 @@ import {
   ComingFromRightVariantWithFadeExit
 } from '@/components/framer/div-variants';
 import DivWrapper from '@/components/framer/div-wrapper';
+import { customRevalidateTag } from '@/lib/actions';
 import { cn } from '@/lib/utils';
 import type { MealResponse } from '@/types/query';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { AnimatePresence } from 'framer-motion';
 import moment from 'moment';
+import { useS3Upload } from 'next-s3-upload';
 import { useCallback, useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useToast } from '../use-toast';
@@ -22,14 +24,34 @@ import WizardStepOne from './wizard-step-one';
 import WizardStepThree from './wizard-step-three';
 import WizardStepTwo from './wizard-step-two';
 
-const createMealMutation = async (data: MealSchema) => {
+const createMealMutation = async ({
+  data,
+  uploadToS3
+}: {
+  data: MealSchema;
+  uploadToS3: (
+    file: File,
+    options: { endpoint: { request: { url: string } } }
+  ) => Promise<{
+    url: string;
+    key: string;
+  }>;
+}) => {
+  const { key } = await uploadToS3(data.stepOne.image, {
+    endpoint: {
+      request: {
+        url: 'http://localhost:3000/api/s3-upload/?folder=meal'
+      }
+    }
+  });
+
   const response = await fetch('http://localhost:3000/api/protected/meals', {
     method: 'POST',
     body: JSON.stringify({
       name: data.stepOne.name,
       cooking_date: data.stepOne.cookingDate,
       expiration_date: data.stepOne.expirationDate,
-      photo_key: data.stepOne.image.name,
+      picture_url: `${process.env.NEXT_PUBLIC_CLOUDFRONT_BUCKET_URL}/${key}`,
       weight: data.stepTwo.weight,
       diet: data.stepTwo.diet,
       ingredients: data.stepTwo.ingredients,
@@ -45,7 +67,11 @@ const createMealMutation = async (data: MealSchema) => {
       'Content-Type': 'application/json'
     }
   });
+  if (!response.ok) {
+    throw new Error();
+  }
   const dataResponse = (await response.json()) as MealResponse;
+  customRevalidateTag('near-me-meals');
   return dataResponse;
 };
 
@@ -53,6 +79,7 @@ export default function MealForm() {
   const [activeStep, setActiveStep] = useState<number>(1);
   const [addressMessage, setAddressMessage] = useState<string>('');
   const { toast } = useToast();
+  const { uploadToS3, files } = useS3Upload();
   const { isPending, error, mutateAsync } = useMutation({
     mutationFn: createMealMutation,
     onSuccess: (data: MealResponse) => {
@@ -138,7 +165,7 @@ export default function MealForm() {
   );
 
   const onSubmit = async (data: MealSchema) => {
-    await mutateAsync(data);
+    await mutateAsync({ data, uploadToS3 });
   };
 
   const onNext = useCallback(() => {

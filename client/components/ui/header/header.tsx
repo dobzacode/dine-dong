@@ -1,6 +1,7 @@
 'use client';
 
 import { useUser } from '@auth0/nextjs-auth0/client';
+import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Button } from '../button';
 import { Skeleton } from '../skeleton';
@@ -14,7 +15,9 @@ export default function Header() {
   return (
     <header>
       <section className="relative z-50 flex items-center justify-between bg-transparent px-2xl py-xl">
-        <p className="heading-h1 font-bold">Dine Dong</p>
+        <Link href="/">
+          <p className="heading-h1 font-bold">Dine Dong</p>
+        </Link>
         <nav>
           {!isLoading ? (
             <Button variant={user && 'ghost'} asChild>

@@ -4,7 +4,7 @@ import { z } from 'zod';
 export const MAX_FILE_SIZE = 5000000;
 export const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
 
-export const unitEnum: readonly { value: string; label: string }[] = [
+export const unitEnum: readonly { value: keyof typeof UnitEnum; label: string }[] = [
   { value: 'MILLIGRAMME', label: 'milligramme' },
   { value: 'GRAMME', label: 'gramme' },
   { value: 'MILLILITRE', label: 'millilitre' },
@@ -37,7 +37,7 @@ const firstStepSchema = z.object({
 });
 
 export const dietEnum: readonly {
-  value: 'VEGETARIAN' | 'VEGAN' | 'GLUTENFREE' | 'LACTOSEFREE';
+  value: keyof typeof DietsEnum;
   label: string;
 }[] = [
   { value: 'VEGETARIAN', label: 'Végétarien' },
@@ -77,7 +77,7 @@ const secondStepSchema = z.object({
     .max(30, 'Vous ne pouvez pas ajouter plus de 30 ingrédients')
 });
 
-export const paymentMethodEnum: { value: string; label: string }[] = [
+export const paymentMethodEnum: { value: keyof typeof PaymentMethodsEnum; label: string }[] = [
   { value: 'ONLINE', label: 'Paiement en ligne' },
   { value: 'IN_PERSON', label: 'Paiement en personne' }
 ];

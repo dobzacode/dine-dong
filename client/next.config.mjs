@@ -3,6 +3,10 @@
  */
 
 const nextConfig = {
+  images: {
+    domains: ['d3kbjm1qjacb3b.cloudfront.net']
+  },
+
   logging: {
     fetches: {
       fullUrl: true

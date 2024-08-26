@@ -52,7 +52,7 @@ class Meal(BaseModel):
     name: str
     cooking_date: datetime
     expiration_date: datetime
-    photo_key: str
+    picture_url: str
     weight: int
     diet: list[DietsEnum] | None = []
     additional_information: str | None = None

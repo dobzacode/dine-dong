@@ -1,8 +1,9 @@
+import NearMeSection from '@/components/home/near-me-section';
 
 export default async function Home() {
   return (
-    <section className="container mx-auto flex max-w-[1200px] justify-center">
-      
+    <section className="w-full px-2xl">
+      <NearMeSection />
     </section>
   );
 }

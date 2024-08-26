@@ -42,7 +42,7 @@ async def get_meals(
     weight_min: int = Query(
         0, ge=0, lt=1000, description="Minimum weight of the meals"
     ),
-):  # pylint: disable=R0913
+):
     meals: Sequence[Meal] = []
     user_location = ST_GeogFromText(f"POINT({lat} {lng})", srid=4326)
 
@@ -169,7 +169,7 @@ async def create_meal(
             name=meal_data.name,
             cooking_date=meal_data.cooking_date,
             expiration_date=meal_data.expiration_date,
-            photo_key=meal_data.photo_key,
+            picture_url=meal_data.picture_url,
             weight=meal_data.weight,
             additional_information=meal_data.additional_information,
             diet=meal_data.diet,

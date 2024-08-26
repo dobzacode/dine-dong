@@ -152,7 +152,7 @@ class Meal(Base):
         DateTime(timezone=True), nullable=False
     )
 
-    photo_key: Mapped[str] = mapped_column(String(256), nullable=False)
+    picture_url: Mapped[str] = mapped_column(String(256), nullable=False)
 
     weight: Mapped[int] = mapped_column(nullable=False)
 

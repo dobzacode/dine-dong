@@ -1,46 +1,21 @@
 interface BaseModel {
-  createTime: Date;
-  updateTime: Date;
+  create_time: Date;
+  update_time: Date;
+}
+export interface User extends BaseModel {
+  open_id: string;
 }
 
-interface User extends BaseModel {
-  userId: string;
-  openId: string;
-  meals: Meal[];
-  address: Address | null;
-}
-
-interface Address {
+export interface Address extends BaseModel {
   address1: string;
   address2: string | null;
   formatted_address: string;
   city: string;
   department: string | null;
-  postalCode: string;
+  postal_code: string;
   country: string;
   lat: number;
   lng: number;
-}
-
-interface Ingredient extends BaseModel {
-  ingredientId: string;
-  name: string;
-  meals: Meal[];
-}
-
-interface Meal extends BaseModel {
-  mealId: string;
-  name: string;
-  ingredients: Ingredient[];
-  pictureKey?: string;
-  user: User;
-  userId: string;
-  cookingDate: Date;
-  expirationDate: Date;
-  weight: number;
-  diet: DietsEnum[];
-  additionalInformation: string | null;
-  paymentMethod: PaymentMethodsEnum;
 }
 
 export enum DietsEnum {
@@ -64,4 +39,24 @@ export enum UnitEnum {
   CUILLIERE_CAFE = 'CUILLIERE_CAFE',
   CUILLIERE_SOUPE = 'CUILLIERE_SOUPE',
   UNITE = 'UNITE'
+}
+
+export interface IngredientMeal extends BaseModel {
+  quantity: number | null;
+  unit: UnitEnum | null;
+}
+
+export interface Meal extends BaseModel {
+  name: string;
+  cooking_date: Date;
+  expiration_date: Date;
+  picture_url: string;
+  weight: number;
+  diet: DietsEnum[];
+  additional_information: string | null;
+  payment_method: PaymentMethodsEnum;
+}
+
+export interface Ingredient {
+  name: string;
 }
