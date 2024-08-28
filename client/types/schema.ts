@@ -16,6 +16,7 @@ export interface Address extends BaseModel {
   country: string;
   lat: number;
   lng: number;
+  distance?: number;
 }
 
 export enum DietsEnum {
@@ -49,6 +50,7 @@ export interface IngredientMeal extends BaseModel {
 export interface Meal extends BaseModel {
   name: string;
   cooking_date: Date;
+  price: number;
   expiration_date: Date;
   picture_url: string;
   weight: number;

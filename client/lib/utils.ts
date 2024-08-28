@@ -21,7 +21,10 @@ interface getMealsParams {
   weight_min?: number;
 }
 
-export async function getMeals(params: getMealsParams, nextParams: NextFetchRequestConfig) {
+export async function getMeals(
+  params: getMealsParams,
+  nextParams: NextFetchRequestConfig
+): Promise<MealWithAddressResponse[] | 404 | 500> {
   const url = new URL('http://localhost:8080/api/meals');
   for (const [key, value] of Object.entries(params)) {
     if (key === 'diet' && Array.isArray(value)) {
@@ -48,4 +51,8 @@ export async function getMeals(params: getMealsParams, nextParams: NextFetchRequ
     default:
       return 500;
   }
+}
+
+export function capitalizeFirstLetter(string: string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
 }

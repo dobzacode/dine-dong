@@ -89,12 +89,23 @@ class Address(Base):
         back_populates="address", lazy="selectin"
     )
 
+    @property
+    def distance(self):
+        return self._distance if hasattr(self, "_distance") else None
+
+    @distance.setter
+    def distance(self, value):
+        self._distance = value
+
+    def distance_to(self, other_point):
+        return func.ST_Distance(func.ST_GeogFromWKB(self.geo_location), other_point)
+
     @classmethod
     def __declare_last__(cls):
         @event.listens_for(cls, "before_insert")
         def set_geo_location(mapper, connection, target):
             target.geo_location = func.ST_GeomFromText(
-                f"POINT({target.lng} {target.lat})", 4326
+                f"POINT({target.lng} {target.lat})"
             )
 
 
@@ -144,6 +155,7 @@ class Meal(Base):
         Uuid(as_uuid=False), primary_key=True, default=lambda _: str(uuid.uuid4())
     )
 
+    price: Mapped[int] = mapped_column(nullable=False)
     name: Mapped[str] = mapped_column(String(60), nullable=False)
     cooking_date: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=False

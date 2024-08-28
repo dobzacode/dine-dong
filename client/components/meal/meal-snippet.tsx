@@ -1,25 +1,31 @@
-import { MealWithAddressResponse } from '@/types/query';
-import Image from 'next/image';
+import { capitalizeFirstLetter, getMeals } from '@/lib/utils';
+import ImagePulsing from '../ui/image-pulsing';
 import Dietlabel from './diet-label';
 
-export default function MealSnippet({
-  address: { formatted_address },
-  diet,
-  name,
-  picture_url,
-  weight,
-  cooking_date,
-  expiration_date
-}: MealWithAddressResponse) {
-  console.log(typeof expiration_date);
+export default async function MealSnippet({ fetchOpt }: { fetchOpt: Parameters<typeof getMeals> }) {
+  const data = await getMeals(fetchOpt[0], fetchOpt[1]);
+
+  if (data === 500 || data === 404 || !data[0]) {
+    return null;
+  }
+
+  const { diet, name, picture_url, cooking_date, price, weight, address } = data[0];
+
   return (
-    <div className="flex w-full flex-col gap-md">
-      <div className="relative h-8xl w-full overflow-hidden rounded-xs">
-        <Image
+    <div className="flex w-full flex-col gap-sm">
+      <div
+        key={`${picture_url}-${name}-parent`}
+        data-loaded="false"
+        className="relative aspect-square overflow-hidden rounded-xs"
+      >
+        <ImagePulsing
+          skeletoncss={'h-full w-full object-cover absolute'}
+          key={`${picture_url}-${name}`}
+          priority
           fill
           src={picture_url}
           alt={name}
-          sizes={'(max-width: 768px) 100vw, 400px'}
+          sizes={'(max-width: 768px) 100vw, 200px'}
           className="object-cover"
         />
         <div className="absolute right-0 top-0 flex flex-col gap-xs p-sm">
@@ -28,31 +34,23 @@ export default function MealSnippet({
           ))}
         </div>
       </div>
-      <div className="flex flex-wrap justify-between gap-sm">
-        <div>
-          <p className="body-sm font-medium text-primary-900/70">Nom du repas</p>
-          <p className="body-sm">{name}</p>
-        </div>
-        <div>
-          <p className="body-sm font-medium text-primary-900/70">Date de préparation</p>
-          <p className="body-sm">
-            {new Date(cooking_date).toLocaleDateString('fr-FR', {
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric'
-            })}
+      <div className="grid">
+        {address?.distance && (
+          <p>
+            A environ{' '}
+            {address.distance
+              .toLocaleString('fr-FR', {
+                minimumFractionDigits: 1,
+                maximumFractionDigits: 1
+              })
+              .replace(',0', '')}{' '}
+            km
           </p>
-        </div>
-        <div>
-          <p className="body-sm font-medium text-primary-900/70">Date de péremption</p>
-          <p className="body-sm">
-            {new Date(expiration_date).toLocaleDateString('fr-FR', {
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric'
-            })}
-          </p>
-        </div>
+        )}
+        <p className="body font-medium">{capitalizeFirstLetter(name)}</p>
+        <p className="body-sm">
+          <span className="font-medium">{price} € </span> le plat de {weight} grammes
+        </p>
       </div>
     </div>
   );

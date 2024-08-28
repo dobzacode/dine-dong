@@ -11,6 +11,10 @@ class AddressResponse(BaseResponse, Address):
     pass
 
 
+class AddressWithDistanceResponse(BaseResponse, Address):
+    distance: float
+
+
 class UserResponse(BaseResponse, User):
     pass
 
@@ -23,7 +27,7 @@ class MealResponse(BaseResponse, Meal):
 
 class MealWithAddressResponse(BaseResponse, Meal):
     meal_id: str
-    address: Address
+    address: AddressWithDistanceResponse
     pass
 
 

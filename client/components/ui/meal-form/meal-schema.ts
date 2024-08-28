@@ -20,6 +20,12 @@ const firstStepSchema = z.object({
     .string()
     .min(1, 'Le nom du plat est requis')
     .max(60, 'Le nom ne doit pas dépasser 60 caractères'),
+  price: z.coerce
+    .number({
+      message: 'Le prix est requis'
+    })
+    .min(1, 'Le prix doit être supérieur à 1 euro')
+    .max(100, 'Le prix ne doit pas dépasser 100 euros'),
   cookingDate: z.date(),
   expirationDate: z.date(),
   image: z

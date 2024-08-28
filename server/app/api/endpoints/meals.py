@@ -1,7 +1,6 @@
-from collections.abc import Sequence
-
 from fastapi import APIRouter, Depends, HTTPException, Path, Query, Security
 from geoalchemy2.functions import (  # type: ignore
+    ST_Distance,
     ST_DWithin,
     ST_GeogFromText,
     ST_GeogFromWKB,
@@ -43,17 +42,17 @@ async def get_meals(
         0, ge=0, lt=1000, description="Minimum weight of the meals"
     ),
 ):
-    meals: Sequence[Meal] = []
-    user_location = ST_GeogFromText(f"POINT({lat} {lng})", srid=4326)
+    user_location = ST_GeogFromText(f"POINT({lng} {lat})")
 
     try:
+        # Step 1: Filter results using ST_DWithin
         query = (
-            select(Meal)
+            select(Meal, Address)
             .join(Address)
             .where(
                 ST_DWithin(
                     user_location,
-                    ST_GeogFromWKB(Address.geo_location, srid=4326),
+                    ST_GeogFromWKB(Address.geo_location),
                     radius * 1000,
                 )
             )
@@ -62,15 +61,28 @@ async def get_meals(
             .where((Meal.weight <= weight_max) & (Meal.weight >= weight_min))
             .limit(limit)
             .offset(offset)
+            .add_columns(
+                ST_Distance(user_location, Address.geo_location).label("distance")
+            )
+            .order_by("distance")
         )
+
         result = await session.execute(query)
-        meals = result.scalars().all()
+        meal_address_distance = result.all()
+
+        meals = []
+        for meal, address, distance in meal_address_distance:
+            address.distance = distance / 1000
+            meal.address = address
+            meals.append(meal)
+
     except Exception as e:
-        print(e)
+        print(e, "Error")
         raise HTTPException(status_code=500, detail="Une erreur est survenue")
+
     if not meals:
         raise HTTPException(status_code=404, detail="Aucun repas trouvé")
-    print(meals)
+
     return meals
 
 
@@ -166,6 +178,7 @@ async def create_meal(
         )
 
         new_meal = Meal(
+            price=meal_data.price,
             name=meal_data.name,
             cooking_date=meal_data.cooking_date,
             expiration_date=meal_data.expiration_date,

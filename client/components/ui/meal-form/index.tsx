@@ -40,7 +40,7 @@ const createMealMutation = async ({
   const { key } = await uploadToS3(data.stepOne.image, {
     endpoint: {
       request: {
-        url: 'http://localhost:3000/api/s3-upload/?folder=meal'
+        url: 'http://localhost:3000/api/s3-upload/?folder=meal/original_images'
       }
     }
   });
@@ -49,6 +49,7 @@ const createMealMutation = async ({
     method: 'POST',
     body: JSON.stringify({
       name: data.stepOne.name,
+      price: data.stepOne.price,
       cooking_date: data.stepOne.cookingDate,
       expiration_date: data.stepOne.expirationDate,
       picture_url: `${process.env.NEXT_PUBLIC_CLOUDFRONT_BUCKET_URL}/${key}`,

@@ -14,7 +14,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '../popover';
 import ImageUploader from './image-uploader';
 import type { MealSchema } from './meal-schema';
 
-export default function WizardStepOne({className}: {className?: string}) {
+export default function WizardStepOne({ className }: { className?: string }) {
   const form = useFormContext<MealSchema>();
 
   const [isCookingCalendarOpen, setIsCookingCalendarOpen] = useState<boolean>(false);
@@ -22,20 +22,43 @@ export default function WizardStepOne({className}: {className?: string}) {
 
   return (
     <>
-      <fieldset className={cn("flex flex-col gap-md text-primary-container-fg", className)}>
-        <FormField
-          control={form.control}
-          name="stepOne.name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Nom du repas</FormLabel>
-              <FormControl>
-                <Input required placeholder="Chili con carne" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+      <fieldset className={cn('flex flex-col gap-md text-primary-container-fg', className)}>
+        <fieldset className="flex w-full gap-md">
+          <FormField
+            control={form.control}
+            name="stepOne.name"
+            render={({ field }) => (
+              <FormItem className="flex w-1/2 flex-col">
+                <FormLabel>Nom du repas</FormLabel>
+                <FormControl>
+                  <Input required placeholder="Chili con carne" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="stepOne.price"
+            render={({ field }) => (
+              <FormItem className="flex w-1/2 flex-col">
+                <FormLabel>Prix du repas (en euros)</FormLabel>
+                <FormControl>
+                  <Input
+                    required
+                    type="number"
+                    min={1}
+                    max={100}
+                    placeholder="10"
+                    {...field}
+                    value={field.value || ''}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </fieldset>
         <fieldset className="flex w-full justify-between gap-md">
           <FormField
             control={form.control}
