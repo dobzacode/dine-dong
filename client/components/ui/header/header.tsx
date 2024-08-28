@@ -1,5 +1,6 @@
 'use client';
 
+import SearchBar from '@/components/home/search-bar';
 import { useUser } from '@auth0/nextjs-auth0/client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -18,6 +19,7 @@ export default function Header() {
         <Link href="/">
           <p className="heading-h1 font-bold">Dine Dong</p>
         </Link>
+        <SearchBar />
         <nav>
           {!isLoading ? (
             <Button variant={user && 'ghost'} asChild>

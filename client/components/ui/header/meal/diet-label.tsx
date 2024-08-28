@@ -1,6 +1,6 @@
 import { DietsEnum } from '@/types/schema';
 import { Tag } from 'lucide-react';
-import { dietEnum } from '../ui/meal-form/meal-schema';
+import { dietEnum } from '../../meal-form/meal-schema';
 
 export default function Dietlabel({ diet }: { diet: keyof typeof DietsEnum }) {
   return (

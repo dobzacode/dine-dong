@@ -5,7 +5,7 @@ from geoalchemy2.functions import (  # type: ignore
     ST_GeogFromText,
     ST_GeogFromWKB,
 )
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api import deps
@@ -35,11 +35,14 @@ async def get_meals(
     radius: int = Query(6200, description="Radius of the search"),
     diet: list[DietsEnum] = Query(None, description="Diet of the meals"),
     name: str = Query("", description="Name of the meals"),
+    price_max: int = Query(
+        100, ge=0, le=1000, description="Maximum price of the meals"
+    ),
     weight_max: int = Query(
-        1000, ge=0, lt=1000, description="Maximum weight of the meals"
+        1000, ge=0, le=1000, description="Maximum weight of the meals"
     ),
     weight_min: int = Query(
-        0, ge=0, lt=1000, description="Minimum weight of the meals"
+        0, ge=0, le=1000, description="Minimum weight of the meals"
     ),
 ):
     user_location = ST_GeogFromText(f"POINT({lng} {lat})")
@@ -57,8 +60,9 @@ async def get_meals(
                 )
             )
             .where(diet is None or Meal.diet.contains(diet))
-            .where(Meal.name.like(f"%{name}%"))
+            .where(func.lower(Meal.name).like(f"%{name.lower()}%"))
             .where((Meal.weight <= weight_max) & (Meal.weight >= weight_min))
+            .where(Meal.price <= price_max)
             .limit(limit)
             .offset(offset)
             .add_columns(
