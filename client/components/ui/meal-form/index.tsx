@@ -155,6 +155,7 @@ export default function MealForm() {
           break;
         case 2:
           isValid = await methods.trigger('stepTwo');
+
           break;
         case 3:
           isValid = await methods.trigger('stepThree');

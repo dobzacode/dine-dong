@@ -21,6 +21,8 @@ export default function WizardStepTwo({ className }: { className?: string }) {
     name: 'stepTwo.ingredients'
   });
 
+  console.log(form.formState.errors.stepTwo?.ingredients?.message);
+
   return (
     <>
       <fieldset className={cn('flex flex-col gap-md text-primary-container-fg', className)}>
@@ -112,7 +114,10 @@ export default function WizardStepTwo({ className }: { className?: string }) {
         <span
           className={cn(
             'flex w-full items-center gap-sm',
-            form.formState.errors.stepTwo?.ingredients?.some?.((error) => !!error)
+            (form.formState.errors.stepTwo?.ingredients?.some?.((error) => !!error) ??
+              form.formState.errors.stepTwo?.ingredients?.message?.includes(
+                'Les ingrédients suivants ont le'
+              ))
               ? '[&>*]:text-error'
               : ''
           )}
@@ -133,7 +138,7 @@ export default function WizardStepTwo({ className }: { className?: string }) {
         <div className="flex w-full flex-col gap-sm">
           <ul className="flex w-full grow flex-col gap-xs">
             {fields.map((field, index) => (
-              <li className="flex w-full gap-xs" key={field.id}>
+              <li className={cn('flex w-full gap-xs')} key={field.id}>
                 <FormField
                   control={form.control}
                   name={`stepTwo.ingredients.${index}.name`}

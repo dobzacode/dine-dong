@@ -79,8 +79,31 @@ const secondStepSchema = z.object({
         unit: z.enum(Object.values(UnitEnum) as [string, ...string[]]).optional()
       })
     )
+
     .min(1, 'Vous devez ajouter au moins un ingrédient')
     .max(30, 'Vous ne pouvez pas ajouter plus de 30 ingrédients')
+    .superRefine((items, ctx) => {
+      const uniqueNames = new Set<string>();
+      const duplicateNames: string[] = [];
+
+      items.forEach((item) => {
+        if (item.name.trim() !== '') {
+          if (uniqueNames.has(item.name)) {
+            duplicateNames.push(item.name);
+          } else {
+            uniqueNames.add(item.name);
+          }
+        }
+      });
+
+      if (duplicateNames.length > 0) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: `Les ingrédients suivants ont le même nom : ${duplicateNames.join(', ')}`,
+          path: ['']
+        });
+      }
+    })
 });
 
 export const paymentMethodEnum: { value: keyof typeof PaymentMethodsEnum; label: string }[] = [
