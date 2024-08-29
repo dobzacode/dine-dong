@@ -9,7 +9,6 @@ export default function Reset() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  console.log(searchParams.size);
 
   return (
     <button

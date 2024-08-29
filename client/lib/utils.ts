@@ -50,13 +50,13 @@ export async function getMeals(
     case 200:
       return (await response.json()) as GetMealsResponse;
     case 404:
-      throw new Error('Not found');
+      throw new Error('404 Aucun repas trouvé');
     case 422:
-      throw new Error('Unprocessable Entity');
+      throw new Error('422 Une erreur est survenue');
     case 500:
-      throw new Error('Internal Server Error');
+      throw new Error('500 Erreur serveur');
     default:
-      throw new Error('Unknown error');
+      throw new Error('Erreur inconnue');
   }
 }
 

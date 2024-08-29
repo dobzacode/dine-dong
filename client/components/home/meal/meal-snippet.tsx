@@ -27,8 +27,6 @@ export function MealSnippetSkeleton() {
 export default function MealSnippet(props: MealSnippetProps) {
   const { diet, name, picture_url, price, weight, address, meal_id } = props;
 
-  console.log(props);
-
   return (
     <Link href={`/repas/${meal_id}`} className="flex w-full flex-col gap-sm">
       <div

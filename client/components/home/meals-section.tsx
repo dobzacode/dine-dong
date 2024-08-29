@@ -17,7 +17,7 @@ const delayFadeInVariant: Variants = {
   hidden: { opacity: 0 },
   enter: (custom) => ({
     opacity: 1,
-    transition: { duration: 0.4, delay: 0.1 * custom }
+    transition: { duration: 0.4, delay: 0.05 * custom }
   }),
   exit: { opacity: 0, transition: { duration: 0.5 } }
 };
@@ -77,7 +77,7 @@ const MealsSection = () => {
   }, [fetchNextPage, isFetchingNextPage]);
 
   if (isError) {
-    console.error(error instanceof Error ? error.message : 'Unknown error');
+    console.log(error instanceof Error ? error : 'Unknown error');
     return <div>Une erreur est survenue lors de la récupération des repas.</div>;
   }
 

@@ -57,7 +57,7 @@ async def get_meals(
                 )
             )
             .where(diet is None or Meal.diet.contains(diet))
-            .where(func.lower(Meal.name).like(f"%{name.lower()}%"))
+            .where(func.lower(Meal.name).startswith(f"{name.lower()}"))
             .where((Meal.weight <= weight_max) & (Meal.weight >= weight_min))
             .where(Meal.price <= max_price)
             .limit(limit)
