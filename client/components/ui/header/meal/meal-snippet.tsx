@@ -31,9 +31,8 @@ export function MealSnippetSkeleton() {
 }
 
 export default function MealSnippet({ params, index }: { params: getMealsParams; index: number }) {
-  console.log(params);
   const { data, isLoading, isError } = useQuery({
-    queryKey: ['near-me-meals', params],
+    queryKey: ['search-meals', params],
     queryFn: async () => {
       const data = await getMeals(params);
       return data;
@@ -44,7 +43,7 @@ export default function MealSnippet({ params, index }: { params: getMealsParams;
 
   if (isLoading) {
     return (
-      <DivWrapper key={`near-me-meals-skeleton-${index}`} variant={variant} custom={index}>
+      <DivWrapper key={`search-meals-skeleton-${index}`} variant={variant} custom={index}>
         <MealSnippetSkeleton />
       </DivWrapper>
     );

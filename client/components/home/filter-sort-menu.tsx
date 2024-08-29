@@ -11,6 +11,7 @@ export default function FilterSortMenu() {
           type="radius"
           min={1}
           max={10}
+          aboveValue={1000}
           step={1}
           defaultValue={1}
           triggerLabel="Distance"
@@ -21,6 +22,7 @@ export default function FilterSortMenu() {
           type="max_price"
           min={2}
           max={100}
+          aboveValue={1000}
           step={1}
           defaultValue={2}
           triggerLabel="Prix"

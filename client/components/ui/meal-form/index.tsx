@@ -72,7 +72,7 @@ const createMealMutation = async ({
     throw new Error();
   }
   const dataResponse = (await response.json()) as MealResponse;
-  customRevalidateTag('near-me-meals');
+  customRevalidateTag('search-meals');
   return dataResponse;
 };
 

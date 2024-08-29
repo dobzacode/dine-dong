@@ -3,12 +3,12 @@
 import type { DietsEnum } from '@/types/schema';
 import { useMemo } from 'react';
 
-import { getMealsParams } from '@/lib/utils';
+import { type getMealsParams } from '@/lib/utils';
 import { AnimatePresence } from 'framer-motion';
 import { useSearchParams } from 'next/navigation';
 import MealSnippet from '../ui/header/meal/meal-snippet';
 
-const NearMeSection = () => {
+const MealsSection = () => {
   const searchParams = useSearchParams();
   const fetchOptions: getMealsParams[] = useMemo(() => {
     const diet = (searchParams.getAll('diet') as (keyof typeof DietsEnum)[]) || [];
@@ -30,13 +30,13 @@ const NearMeSection = () => {
     <section className="grid w-full grid-cols-5 gap-x-md gap-y-2xl">
       <AnimatePresence mode="wait">
         {fetchOptions.map((fetchOpt, i) => (
-          <MealSnippet key={`near-me-meal-${i}`} params={fetchOpt} index={i} />
+          <MealSnippet key={`search-meal-${i}`} params={fetchOpt} index={i} />
         ))}
       </AnimatePresence>
     </section>
   );
 };
 
-NearMeSection.displayName = 'NearMeSection';
+MealsSection.displayName = 'MealsSection';
 
-export default NearMeSection;
+export default MealsSection;

@@ -23,6 +23,7 @@ interface FilterProps {
   label: string;
   unit: string;
   triggerLabel: string;
+  aboveValue: number;
 }
 
 const SliderFilter = ({
@@ -33,7 +34,8 @@ const SliderFilter = ({
   defaultValue,
   label,
   unit,
-  triggerLabel
+  triggerLabel,
+  aboveValue
 }: FilterProps) => {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -44,6 +46,9 @@ const SliderFilter = ({
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const handleValueChange = (newValue: number[]) => {
+    if (newValue[0] === max) {
+      return setSliderValue(aboveValue);
+    }
     const updatedValue = newValue[0] ?? min;
     setSliderValue(updatedValue);
   };
@@ -96,8 +101,15 @@ const SliderFilter = ({
 
         <section className={'flex flex-col justify-center gap-smd p-md'}>
           <p className="body-sm flex justify-center gap-xs">
-            {type === 'radius' ? `Dans un rayon de` : `Au maximum`}{' '}
-            <span className="font-bold">{sliderValue}</span> {unit}
+            {type === 'radius'
+              ? sliderValue === aboveValue
+                ? `Dans un rayon de plus de`
+                : `Dans un rayon de`
+              : sliderValue === aboveValue
+                ? `Au delà de`
+                : `Au maximum`}{' '}
+            <span className="font-bold">{sliderValue === aboveValue ? max : sliderValue}</span>{' '}
+            {unit}
           </p>
           <Slider
             defaultValue={[defaultValue]}

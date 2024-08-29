@@ -28,7 +28,7 @@ export async function getMeals(
   nextParams?: NextFetchRequestConfig
 ): Promise<MealWithAddressResponse[] | Error> {
   console.log(params);
-  const url = new URL('http://localhost:8080/api/meals');
+  const url = new URL('http://localhost:3000/api/meals');
 
   for (const [key, value] of Object.entries(params)) {
     if (key === 'diet' && Array.isArray(value)) {
