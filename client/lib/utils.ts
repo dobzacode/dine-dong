@@ -1,4 +1,4 @@
-import { MealWithAddressResponse } from '@/types/query';
+import { GetMealsResponse } from '@/types/query';
 import { DietsEnum } from '@/types/schema';
 import { clsx, type ClassValue } from 'clsx';
 import { Children, isValidElement } from 'react';
@@ -12,7 +12,7 @@ export const fetcher = (url: string) => fetch(url).then((r) => r.json());
 
 export interface getMealsParams {
   limit?: number;
-  offset?: number;
+  offset?: unknown;
   lat?: number;
   lng?: number;
   radius?: number;
@@ -21,14 +21,13 @@ export interface getMealsParams {
   price_max?: number;
   weight_max?: number;
   weight_min?: number;
-  sort?: "distance" | "price";
+  sort?: 'distance' | 'price';
 }
 
 export async function getMeals(
   params: getMealsParams,
   nextParams?: NextFetchRequestConfig
-): Promise<MealWithAddressResponse[] | Error> {
-  console.log(params);
+): Promise<GetMealsResponse | Error> {
   const url = new URL('http://localhost:3000/api/meals');
 
   for (const [key, value] of Object.entries(params)) {
@@ -49,7 +48,7 @@ export async function getMeals(
 
   switch (response.status) {
     case 200:
-      return (await response.json()) as MealWithAddressResponse[];
+      return (await response.json()) as GetMealsResponse;
     case 404:
       throw new Error('Not found');
     case 422:

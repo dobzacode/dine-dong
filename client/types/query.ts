@@ -20,6 +20,12 @@ export interface MealWithAddressResponse
   address: Address;
 }
 
+export interface GetMealsResponse extends BaseResponse {
+  meals: MealWithAddressResponse[];
+  total: number;
+  hasMore: boolean;
+}
+
 export interface IngredientResponse extends BaseResponse, Ingredient {
   ingredient_id: string;
 }

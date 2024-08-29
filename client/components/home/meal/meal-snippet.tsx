@@ -1,19 +1,13 @@
 'use client';
 
-import DivWrapper from '@/components/framer/div-wrapper';
-import { capitalizeFirstLetter, getMeals, getMealsParams } from '@/lib/utils';
-import { useQuery } from '@tanstack/react-query';
-import { Variants } from 'framer-motion';
+import { capitalizeFirstLetter } from '@/lib/utils';
+import { MealWithAddressResponse } from '@/types/query';
 import Link from 'next/link';
-import ImagePulsing from '../../image-pulsing';
-import { Skeleton } from '../../skeleton';
+import ImagePulsing from '../../ui/image-pulsing';
+import { Skeleton } from '../../ui/skeleton';
 import Dietlabel from './diet-label';
 
-const variant: Variants = {
-  hidden: { opacity: 0 },
-  enter: ({ index }) => ({ opacity: 1, transition: { duration: 0.5, delay: 0.1 * index } }),
-  exit: { opacity: 0, transition: { duration: 0.5 } }
-};
+interface MealSnippetProps extends MealWithAddressResponse {}
 
 export function MealSnippetSkeleton() {
   return (
@@ -30,31 +24,8 @@ export function MealSnippetSkeleton() {
   );
 }
 
-export default function MealSnippet({ params, index }: { params: getMealsParams; index: number }) {
-
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ['search-meals', params],
-    queryFn: async () => {
-      const data = await getMeals(params);
-      return data;
-    },
-    retry: false,
-    refetchOnWindowFocus: false
-  });
-
-  if (isLoading) {
-    return (
-      <DivWrapper key={`search-meals-skeleton-${index}`} variant={variant} custom={index}>
-        <MealSnippetSkeleton />
-      </DivWrapper>
-    );
-  }
-
-  if (data instanceof Error || !data?.[0] || isError) {
-    return null;
-  }
-
-  const { diet, name, picture_url, price, weight, address, meal_id } = data[0];
+export default function MealSnippet(props: MealSnippetProps) {
+  const { diet, name, picture_url, price, weight, address, meal_id } = props;
 
   return (
     <Link href={`/repas/${meal_id}`} className="flex w-full flex-col gap-sm">
@@ -73,11 +44,13 @@ export default function MealSnippet({ params, index }: { params: getMealsParams;
           sizes={'(max-width: 768px) 100vw, 200px'}
           className="object-cover"
         />
-        <div className="absolute right-0 top-0 flex flex-col gap-xs p-sm">
-          {diet.map((diet) => (
-            <Dietlabel key={diet} diet={diet} />
-          ))}
-        </div>
+        {diet.length > 0 && (
+          <div className="absolute right-0 top-0 flex flex-col gap-xs p-sm">
+            {diet.map((diet) => (
+              <Dietlabel key={diet} diet={diet} />
+            ))}
+          </div>
+        )}
       </div>
       <div className="grid">
         {address?.distance && (

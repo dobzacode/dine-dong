@@ -3,15 +3,11 @@
 import SearchBar from '@/components/home/search-bar';
 import { useUser } from '@auth0/nextjs-auth0/client';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
 import { Button } from '../button';
 import { Skeleton } from '../skeleton';
 
 export default function Header() {
-  const pathname = usePathname();
-  const { user, isLoading, error } = useUser();
-
-  console.log(user);
+  const { user, isLoading } = useUser();
 
   return (
     <header>

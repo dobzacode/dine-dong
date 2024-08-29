@@ -31,6 +31,12 @@ class MealWithAddressResponse(BaseResponse, Meal):
     pass
 
 
+class GetMealsResponse(BaseResponse):
+    meals: list[MealWithAddressResponse]
+    total: int
+    hasMore: bool
+
+
 class IngredientResponse(BaseResponse, Ingredient):
     ingredient_id: str
     pass

@@ -14,30 +14,24 @@ from app.api import deps
 from app.core.security.authenticate import VerifyToken
 from app.models import Address, DietsEnum, Ingredient, IngredientMeal, Meal, User
 from app.schemas.requests import CreateMealRequest
-from app.schemas.responses import (
-    IngredientMealResponse,
-    MealResponse,
-    MealWithAddressResponse,
-)
+from app.schemas.responses import GetMealsResponse, IngredientMealResponse, MealResponse
 
 router = APIRouter()
 auth = VerifyToken()
 
 
-@router.get(
-    "", response_model=list[MealWithAddressResponse], description="Get all meals"
-)
+@router.get("", response_model=GetMealsResponse, description="Get all meals")
 async def get_meals(
     session: AsyncSession = Depends(deps.get_session),
-    limit: int = Query(10, description="Number of meals to return"),
+    limit: int = Query(20, description="Number of meals to return"),
     offset: int = Query(0, description="Number of meals to skip"),
     lat: float = Query(45.767572, description="Latitude of the user"),
     lng: float = Query(4.833102, description="Longitude of the user"),
-    radius: int = Query(1000, description="Radius of the search"),
+    radius: int = Query(10, description="Radius of the search in km"),
     diet: list[DietsEnum] = Query(None, description="Diet of the meals"),
     name: str = Query("", description="Name of the meals"),
-    price_max: int = Query(
-        100, ge=0, le=1000, description="Maximum price of the meals"
+    max_price: int = Query(
+        1000, ge=0, le=1000, description="Maximum price of the meals"
     ),
     weight_max: int = Query(
         1000, ge=0, le=1000, description="Maximum weight of the meals"
@@ -65,7 +59,7 @@ async def get_meals(
             .where(diet is None or Meal.diet.contains(diet))
             .where(func.lower(Meal.name).like(f"%{name.lower()}%"))
             .where((Meal.weight <= weight_max) & (Meal.weight >= weight_min))
-            .where(Meal.price <= price_max)
+            .where(Meal.price <= max_price)
             .limit(limit)
             .offset(offset)
             .add_columns(
@@ -84,6 +78,28 @@ async def get_meals(
         result = await session.execute(query)
         meal_address_distance = result.all()
 
+        total_query = (
+            select(func.count())
+            .select_from(Meal)
+            .join(Address)
+            .where(
+                ST_DWithin(
+                    user_location,
+                    ST_GeogFromWKB(Address.geo_location),
+                    radius * 1000,
+                )
+            )
+            .where(diet is None or Meal.diet.contains(diet))
+            .where(func.lower(Meal.name).like(f"%{name.lower()}%"))
+            .where((Meal.weight <= weight_max) & (Meal.weight >= weight_min))
+            .where(Meal.price <= max_price)
+        )
+
+        total_result = await session.execute(total_query)
+        total_meals = total_result.scalar()
+        if total_meals is None:
+            total_meals = 0
+
         meals = []
         for meal, address, distance in meal_address_distance:
             address.distance = distance / 1000
@@ -97,7 +113,11 @@ async def get_meals(
     if not meals:
         raise HTTPException(status_code=404, detail="Aucun repas trouvé")
 
-    return meals
+    return {
+        "meals": meals,
+        "total": total_meals,
+        "hasMore": offset + limit < total_meals,
+    }
 
 
 @router.get(
