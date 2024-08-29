@@ -80,6 +80,7 @@ const createMealMutation = async ({
 export default function MealForm() {
   const [activeStep, setActiveStep] = useState<number>(1);
   const [addressMessage, setAddressMessage] = useState<string>('');
+
   const { toast } = useToast();
   const { uploadToS3 } = useS3Upload();
   const { isPending, mutateAsync } = useMutation({

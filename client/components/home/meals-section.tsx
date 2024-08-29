@@ -5,6 +5,7 @@ import { useEffect, useMemo } from 'react';
 
 import { getMeals } from '@/lib/utils';
 
+import { useGeoLocation } from '@/hooks/use-geolocation';
 import { GetMealsResponse, MealWithAddressResponse } from '@/types/query';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { motion, type Variants } from 'framer-motion';
@@ -24,6 +25,7 @@ const delayFadeInVariant: Variants = {
 
 const MealsSection = () => {
   const searchParams = useSearchParams();
+  const location = useGeoLocation();
 
   const fetchOptions = useMemo(() => {
     const diet = (searchParams.getAll('diet') as (keyof typeof DietsEnum)[]) || [];
@@ -31,17 +33,19 @@ const MealsSection = () => {
     const radius = parseInt(searchParams.get('radius') ?? '10', 10);
     const sort = (searchParams.get('sort') as 'distance' | 'price') ?? undefined;
     const max_price = parseInt(searchParams.get('max_price') ?? '0') || undefined;
+    const lat = location?.lat ?? 45.767572;
+    const lng = location?.lng ?? 4.833102;
 
     return {
-      lat: 45.767572,
-      lng: 4.833102,
+      lat,
+      lng,
       radius,
       diet,
       name,
       sort,
       max_price
     };
-  }, [searchParams]);
+  }, [searchParams, location]);
 
   const { data, isFetchingNextPage, fetchNextPage, isError, error } = useInfiniteQuery<
     GetMealsResponse,

@@ -18,6 +18,9 @@ export default function SearchBar({ className }: { className?: string }) {
   };
 
   useEffect(() => {
+    if (debouncedSearchTerm.trim() === '') {
+      return;
+    }
     const newSearchParams = new URLSearchParams(searchParams.toString());
     newSearchParams.set('name', debouncedSearchTerm);
     console.log(searchParams.get('name'), searchTerm, debouncedSearchTerm);
