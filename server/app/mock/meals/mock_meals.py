@@ -14,9 +14,12 @@ from app.models import Address, Ingredient, IngredientMeal, Meal, User
 def generate_combined_diet(fake):
     diets = ["VEGETARIAN", "GLUTENFREE", "VEGAN", "LACTOSEFREE"]
     selected_diets = set(fake.random_elements(elements=diets, unique=True))
-
     if "VEGAN" in selected_diets and "VEGETARIAN" in selected_diets:
         selected_diets.remove("VEGETARIAN")
+
+    # Introduce a probability of returning an empty array
+    if random.random() < len(diets) / 10:  # Adjust the probability as needed
+        selected_diets = set()
 
     return list(selected_diets)
 
