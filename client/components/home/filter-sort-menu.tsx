@@ -1,12 +1,11 @@
 import DietFilter from './diet-filter';
-import Reset from './reset';
 import SliderFilter from './slider-filter';
 import SortSection from './sort-section';
 
 export default function FilterSortMenu() {
   return (
-    <section className="flex w-full justify-between gap-sm">
-      <section className="flex gap-sm">
+    <section className="flex w-full flex-wrap justify-between gap-sm">
+      <section className="flex flex-wrap gap-xs mobile-lg:gap-sm">
         <SliderFilter
           type="radius"
           min={1}
@@ -32,7 +31,6 @@ export default function FilterSortMenu() {
         <DietFilter />
         <SortSection />
       </section>
-      <Reset />
     </section>
   );
 }

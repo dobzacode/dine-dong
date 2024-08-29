@@ -97,6 +97,7 @@ async def get_meals(
 
         total_result = await session.execute(total_query)
         total_meals = total_result.scalar()
+
         if total_meals is None:
             total_meals = 0
 

@@ -5,11 +5,13 @@ import { useEffect, useMemo } from 'react';
 
 import { getMeals } from '@/lib/utils';
 
-import { GetMealsResponse } from '@/types/query';
+import { GetMealsResponse, MealWithAddressResponse } from '@/types/query';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { motion, type Variants } from 'framer-motion';
 import { useSearchParams } from 'next/navigation';
+import { Skeleton } from '../ui/skeleton';
 import MealSnippet, { MealSnippetSkeleton } from './meal/meal-snippet';
+import Reset from './reset';
 
 const delayFadeInVariant: Variants = {
   hidden: { opacity: 0 },
@@ -81,40 +83,52 @@ const MealsSection = () => {
 
   if (!data) {
     return (
-      <section className="grid w-full grid-cols-5 gap-x-md gap-y-2xl">
-        {Array.from({ length: 20 }).map((_, i) => (
-          <motion.div
-            initial="hidden"
-            exit="exit"
-            animate="enter"
-            key={`search-meal-skeleton-${i}`}
-            variants={delayFadeInVariant}
-            custom={i}
-          >
-            <MealSnippetSkeleton />
-          </motion.div>
-        ))}
-      </section>
+      <div className="flex w-full flex-col gap-lg">
+        <div className="flex w-full items-end justify-between gap-xs">
+          <Skeleton className="h-6 w-20" />
+          <Skeleton className="h-9 w-36 rounded-full" />
+        </div>
+        <section className="flex w-full flex-wrap gap-md mobile-lg:grid mobile-lg:grid-cols-2 mobile-lg:gap-y-xl tablet:grid-cols-3 tablet:gap-x-md tablet:gap-y-2xl laptop:grid-cols-5">
+          {Array.from({ length: 20 }).map((_, i) => (
+            <motion.div
+              initial="hidden"
+              className="w-full"
+              exit="exit"
+              animate="enter"
+              key={`search-meal-skeleton-${i}`}
+              variants={delayFadeInVariant}
+              custom={i}
+            >
+              <MealSnippetSkeleton />
+            </motion.div>
+          ))}
+        </section>
+      </div>
     );
   }
 
   //@ts-expect-error - type is valid
   // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-  const allMeals = data.pages.flatMap((page) => page.meals ?? []);
-  //@ts-expect-error - type is valid
-  const isLastPage = !data?.pages?.[data.pages.length - 1]?.hasMore;
+  const allMeals = data.pages.flatMap((page) => page.meals ?? []) as MealWithAddressResponse[];
 
-  console.log(data.pages);
+  //@ts-expect-error - type is valid
+  // eslint-disable-next-line
+  const totalCount = data?.pages?.[0]?.total;
 
   return (
-    <div className="flex w-full flex-col gap-xl">
-      <section className="grid w-full grid-cols-5 gap-x-md gap-y-2xl">
+    <div className="flex w-full flex-col gap-lg">
+      <div className="flex w-full items-end justify-between gap-xs">
+        <p className="body font-medium">{totalCount} repas</p>
+        <Reset />
+      </div>
+      <section className="flex w-full flex-wrap gap-md mobile-lg:grid mobile-lg:grid-cols-2 mobile-lg:gap-y-xl tablet:grid-cols-3 tablet:gap-x-md tablet:gap-y-2xl laptop:grid-cols-5">
         {allMeals.map((meal, i) => (
           <MealSnippet key={`search-meal-${i}`} {...meal} />
         ))}
         {isFetchingNextPage &&
           Array.from({ length: 20 }).map((_, i) => (
             <motion.div
+              className="w-full"
               initial="hidden"
               exit="exit"
               animate="enter"

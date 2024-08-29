@@ -10,24 +10,22 @@ export default function Header() {
   const { user, isLoading } = useUser();
 
   return (
-    <header>
-      <section className="relative z-50 flex items-center justify-between bg-transparent px-2xl py-xl">
-        <Link href="/">
-          <p className="heading-h1 font-bold">Dine Dong</p>
-        </Link>
-        <SearchBar />
-        <nav>
-          {!isLoading ? (
-            <Button variant={user && 'ghost'} asChild>
-              <a href={`/api/auth/${user ? 'logout' : 'login'}`}>
-                {user ? 'Se déconnecter' : 'Se connecter'}
-              </a>
-            </Button>
-          ) : (
-            <Skeleton className="h-[32px] w-[140px] rounded-xs" />
-          )}
-        </nav>
-      </section>
+    <header className="section-px relative z-50 flex w-screen items-center justify-between overflow-hidden bg-transparent py-md laptop:px-2xl">
+      <Link href="/">
+        <p className="heading-h1 font-bold">Dine Dong</p>
+      </Link>
+      <SearchBar className="hidden tablet:block" />
+      <nav>
+        {!isLoading ? (
+          <Button variant={user && 'ghost'} asChild>
+            <a href={`/api/auth/${user ? 'logout' : 'login'}`}>
+              {user ? 'Se déconnecter' : 'Se connecter'}
+            </a>
+          </Button>
+        ) : (
+          <Skeleton className="h-[32px] w-[140px] rounded-xs" />
+        )}
+      </nav>
     </header>
   );
 }

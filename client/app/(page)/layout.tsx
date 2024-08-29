@@ -10,7 +10,7 @@ export default async function RootLayout({
     <>
       {/* <FramerMotionWrapper> */}
       <Header />
-      <main className="background flex min-h-screen items-start justify-center gap-xl py-lg pt-3xl">
+      <main className="background flex min-h-screen flex-col items-center justify-center gap-xl py-md">
         {children}
       </main>
       <Toaster />

@@ -1,7 +1,7 @@
 'use client';
 
 import { capitalizeFirstLetter } from '@/lib/utils';
-import { MealWithAddressResponse } from '@/types/query';
+import { type MealWithAddressResponse } from '@/types/query';
 import Link from 'next/link';
 import ImagePulsing from '../../ui/image-pulsing';
 import { Skeleton } from '../../ui/skeleton';
@@ -12,7 +12,7 @@ interface MealSnippetProps extends MealWithAddressResponse {}
 export function MealSnippetSkeleton() {
   return (
     <div className="flex w-full flex-col gap-sm">
-      <div className="relative aspect-square overflow-hidden rounded-xs">
+      <div className="relative aspect-[5/2] w-full overflow-hidden rounded-xs mobile-lg:aspect-square">
         <Skeleton className="absolute h-full w-full object-cover" />
       </div>
       <div className="grid gap-xs">
@@ -27,22 +27,23 @@ export function MealSnippetSkeleton() {
 export default function MealSnippet(props: MealSnippetProps) {
   const { diet, name, picture_url, price, weight, address, meal_id } = props;
 
+  console.log(props);
+
   return (
     <Link href={`/repas/${meal_id}`} className="flex w-full flex-col gap-sm">
       <div
         key={`${picture_url}-${name}-parent`}
-        data-loaded="false"
-        className="relative aspect-square overflow-hidden rounded-xs"
+        className="relative aspect-[5/2] w-full overflow-hidden rounded-xs mobile-lg:aspect-square"
       >
         <ImagePulsing
-          skeletoncss={'h-full w-full object-cover absolute'}
+          skeletoncss={'h-full w-full object-cover absolute object-center'}
           key={`${picture_url}-${name}`}
           priority
           fill
           src={picture_url}
           alt={name}
           sizes={'(max-width: 768px) 100vw, 200px'}
-          className="object-cover"
+          className="object-cover object-center"
         />
         {diet.length > 0 && (
           <div className="absolute right-0 top-0 flex flex-col gap-xs p-sm">

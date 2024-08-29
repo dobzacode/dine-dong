@@ -112,6 +112,10 @@
   .section-px {
     @apply px-md mobile:px-md mobile-lg:px-lg tablet:px-xl laptop-sm:px-3xl laptop:px-4xl;
   }
+
+  .inner-section-gap {
+    @apply gap-md mobile-lg:gap-lg tablet:gap-xl;
+  }
 }
 
 @tailwind utilities;
