@@ -1,4 +1,5 @@
 import { getGeolocation } from '@/lib/server-only-utils';
+import { withApiAuthRequired } from '@auth0/nextjs-auth0';
 import { NextResponse, type NextRequest } from 'next/server';
 
 interface Place {
@@ -26,14 +27,14 @@ interface Response {
   suggestions: Place[];
 }
 
-export async function GET(req: NextRequest) {
+async function autocomplete(req: NextRequest) {
   const apiKey = process.env.GOOGLE_PLACES_API_KEY!;
   if (!apiKey) {
     return NextResponse.json({ error: 'Missing API Key', data: null });
   }
 
   const { searchParams } = new URL(req.url, `http://${req.headers?.get('host')}`);
-  // Check if your hosting provider gives you the country code
+
   const country = await getGeolocation();
   const input = searchParams.get('input');
   const url = 'https://places.googleapis.com/v1/places:autocomplete';
@@ -67,3 +68,5 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: error, data: null });
   }
 }
+
+export const GET = withApiAuthRequired(autocomplete);

@@ -1,4 +1,5 @@
 import { type AddressType } from '@/components/ui/address-autocomplete';
+import { withApiAuthRequired } from '@auth0/nextjs-auth0';
 import { NextResponse, type NextRequest } from 'next/server';
 
 interface PlusCode {
@@ -65,7 +66,7 @@ function getDepartment(data: GooglePlacesApiResponse) {
   return null;
 }
 
-export async function GET(req: NextRequest) {
+async function placeDetails(req: NextRequest) {
   const apiKey = process.env.GOOGLE_PLACES_API_KEY!;
 
   if (!apiKey) {
@@ -138,3 +139,5 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: err, data: null });
   }
 }
+
+export const GET = withApiAuthRequired(placeDetails);

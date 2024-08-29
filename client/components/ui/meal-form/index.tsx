@@ -8,6 +8,7 @@ import DivWrapper from '@/components/framer/div-wrapper';
 import { customRevalidateTag } from '@/lib/actions';
 import { cn } from '@/lib/utils';
 import type { MealResponse } from '@/types/query';
+
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { AnimatePresence } from 'framer-motion';
@@ -31,7 +32,7 @@ const createMealMutation = async ({
   data: MealSchema;
   uploadToS3: (
     file: File,
-    options: { endpoint: { request: { url: string } } }
+    options: { endpoint: { request: { url: string; headers?: Record<string, string> } } }
   ) => Promise<{
     url: string;
     key: string;
@@ -80,8 +81,8 @@ export default function MealForm() {
   const [activeStep, setActiveStep] = useState<number>(1);
   const [addressMessage, setAddressMessage] = useState<string>('');
   const { toast } = useToast();
-  const { uploadToS3, files } = useS3Upload();
-  const { isPending, error, mutateAsync } = useMutation({
+  const { uploadToS3 } = useS3Upload();
+  const { isPending, mutateAsync } = useMutation({
     mutationFn: createMealMutation,
     onSuccess: (data: MealResponse) => {
       console.log('Meal created successfully:', data);

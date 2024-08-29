@@ -15,17 +15,13 @@
 
 import uuid
 from datetime import datetime
-from enum import Enum
 from typing import Literal, get_args
 
-from geoalchemy2 import Geometry, WKBElement
+from geoalchemy2 import Geometry, WKBElement  # type: ignore
 from sqlalchemy import (
-    Column,
     DateTime,
     ForeignKey,
-    Integer,
     String,
-    Table,
     Uuid,
     event,
     func,
@@ -57,7 +53,7 @@ class User(Base):
     )
 
     meals: Mapped[list["Meal"]] = relationship(
-        back_populates="user", lazy="selectin", cascade="all"
+        back_populates="user", lazy="selectin", cascade="all, delete"
     )
 
 
@@ -109,25 +105,40 @@ class Address(Base):
             )
 
 
-class UnitEnum(str, Enum):
-    MILLIGRAMME = "MILLIGRAMME"
-    GRAMME = "GRAMME"
-    MILLILITRE = "MILLILITRE"
-    CENTILITRE = "CENTILITRE"
-    LITRE = "LITRE"
-    CUILLIERE_CAFE = "CUILLIERE_CAFE"
-    CUILLIERE_SOUPE = "CUILLIERE_SOUPE"
-    UNITE = "UNITE"
+UnitsEnum = Literal[
+    "MILLIGRAMME",
+    "GRAMME",
+    "MILLILITRE",
+    "CENTILITRE",
+    "LITRE",
+    "CUILLIERE_CAFE",
+    "CUILLIERE_SOUPE",
+    "UNITE",
+]
 
 
-ingredient_meal = Table(
-    "ingredient_meal",
-    Base.metadata,
-    Column("ingredient_id", ForeignKey("ingredient.ingredient_id"), primary_key=True),
-    Column("meal_id", ForeignKey("meal.meal_id"), primary_key=True),
-    Column("quantity", Integer, nullable=True),
-    Column("unit", SqlEnum(UnitEnum), nullable=True),
-)
+class IngredientMeal(Base):
+    __tablename__ = "ingredient_meal"
+
+    ingredient_id: Mapped[int] = mapped_column(
+        ForeignKey("ingredient.ingredient_id"), primary_key=True
+    )
+    meal_id: Mapped[int] = mapped_column(
+        ForeignKey("meal.meal_id", ondelete="CASCADE"), primary_key=True
+    )
+    quantity: Mapped[int] = mapped_column(nullable=True)
+    unit: Mapped[UnitsEnum] = mapped_column(
+        SqlEnum(
+            *get_args(UnitsEnum),
+            name="unitenum",
+            create_constraint=True,
+            validate_strings=True,
+        ),
+        nullable=True,
+    )
+
+    ingredient: Mapped["Ingredient"] = relationship(back_populates="ingredient_meals")
+    meal: Mapped["Meal"] = relationship(back_populates="ingredient_meals")
 
 
 class Ingredient(Base):
@@ -139,8 +150,8 @@ class Ingredient(Base):
 
     name: Mapped[str] = mapped_column(String(256), nullable=False, unique=True)
 
-    meals: Mapped[list["Meal"]] = relationship(
-        back_populates="ingredients", secondary=ingredient_meal, lazy="selectin"
+    ingredient_meals: Mapped[list["IngredientMeal"]] = relationship(
+        back_populates="ingredient", lazy="selectin"
     )
 
 
@@ -169,8 +180,8 @@ class Meal(Base):
     weight: Mapped[int] = mapped_column(nullable=False)
 
     additional_information: Mapped[str] = mapped_column(String(500), nullable=True)
-    ingredients: Mapped[list["Ingredient"]] = relationship(
-        back_populates="meals", secondary=ingredient_meal, lazy="selectin"
+    ingredient_meals: Mapped[list["IngredientMeal"]] = relationship(
+        back_populates="meal", lazy="selectin", cascade="all, delete"
     )
 
     address: Mapped["Address"] = relationship(back_populates="meals", lazy="selectin")

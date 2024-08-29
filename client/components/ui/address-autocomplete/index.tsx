@@ -23,7 +23,7 @@ export interface AddressType {
   formattedAddress: string;
   city: string;
   department?: string;
-  postalCode: string;
+  postalCode?: string;
   country: string;
   lat: number;
   lng: number;

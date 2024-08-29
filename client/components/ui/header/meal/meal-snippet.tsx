@@ -31,6 +31,7 @@ export function MealSnippetSkeleton() {
 }
 
 export default function MealSnippet({ params, index }: { params: getMealsParams; index: number }) {
+
   const { data, isLoading, isError } = useQuery({
     queryKey: ['search-meals', params],
     queryFn: async () => {

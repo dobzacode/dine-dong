@@ -12,13 +12,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api import deps
 from app.core.security.authenticate import VerifyToken
-from app.models import Address, DietsEnum, Ingredient, Meal, User, ingredient_meal
+from app.models import Address, DietsEnum, Ingredient, IngredientMeal, Meal, User
 from app.schemas.requests import CreateMealRequest
 from app.schemas.responses import (
     IngredientMealResponse,
     MealResponse,
     MealWithAddressResponse,
-    MealWithIngredientsAndAddressResponse,
 )
 
 router = APIRouter()
@@ -34,7 +33,7 @@ async def get_meals(
     offset: int = Query(0, description="Number of meals to skip"),
     lat: float = Query(45.767572, description="Latitude of the user"),
     lng: float = Query(4.833102, description="Longitude of the user"),
-    radius: int = Query(6200, description="Radius of the search"),
+    radius: int = Query(1000, description="Radius of the search"),
     diet: list[DietsEnum] = Query(None, description="Diet of the meals"),
     name: str = Query("", description="Name of the meals"),
     price_max: int = Query(
@@ -53,7 +52,6 @@ async def get_meals(
     user_location = ST_GeogFromText(f"POINT({lng} {lat})")
 
     try:
-        # Step 1: Filter results using ST_DWithin
         query = (
             select(Meal, Address)
             .join(Address)
@@ -111,9 +109,9 @@ async def get_ingredient_meal_by_id(
     session: AsyncSession = Depends(deps.get_session),
 ):
     query = (
-        select(ingredient_meal)
-        .filter(Ingredient.ingredient_id == ingredient_id)
-        .filter(Meal.meal_id == meal_id)
+        select(IngredientMeal)
+        .filter(IngredientMeal.ingredient_id == ingredient_id)
+        .filter(IngredientMeal.meal_id == meal_id)
     )
     ingredient_meal_data = await session.scalar(query)
     return ingredient_meal_data
@@ -141,33 +139,33 @@ async def get_meal_by_id(
         raise HTTPException(status_code=500, detail="Une erreur est survenue")
 
 
-@router.get(
-    "/{meal_id}/details",
-    response_model=MealWithIngredientsAndAddressResponse,
-    description="Get meal with details by ID",
-)
-async def get_meal_details_by_id(
-    meal_id: str = Path(description="ID of the meal to retrieve"),
-    snippet: bool = Query(False, description="Return a concise snippet of the meal"),
-    session: AsyncSession = Depends(deps.get_session),
-):
-    query = select(Meal).filter(Meal.meal_id == meal_id)
-    meal = await session.scalar(query)
+# @router.get(
+#     "/{meal_id}/details",
+#     response_model=MealWithIngredientsAndAddressResponse,
+#     description="Get meal with details by ID",
+# )
+# async def get_meal_details_by_id(
+#     meal_id: str = Path(description="ID of the meal to retrieve"),
+#     snippet: bool = Query(False, description="Return a concise snippet of the meal"),
+#     session: AsyncSession = Depends(deps.get_session),
+# ):
+#     query = select(Meal).filter(Meal.meal_id == meal_id)
+#     meal = await session.scalar(query)
 
-    if not meal:
-        raise HTTPException(status_code=404, detail="Meal not found")
+#     if not meal:
+#         raise HTTPException(status_code=404, detail="Meal not found")
 
-    for ingredient in meal.ingredients:
-        print("hihi")
-        query = (
-            select(ingredient_meal)
-            .filter(Ingredient.ingredient_id == ingredient.ingredient_id)
-            .filter(Meal.meal_id == meal.meal_id)
-        )
-        ingredient_meal_data = await session.scalar(query)
-        print(ingredient_meal_data, "OHHH")
+#     for ingredient in meal.ingredients:
+#         print("hihi")
+#         query = (
+#             select(IngredientMeal)
+#             .filter(IngredientMeal.ingredient_id == ingredient.ingredient_id)
+#             .filter(IngredientMeal.meal_id == meal.meal_id)
+#         )
+#         ingredient_meal_data = await session.scalar(query)
+#         print(ingredient_meal_data, "OHHH")
 
-    return meal
+#     return meal
 
 
 @router.post(
@@ -211,7 +209,7 @@ async def create_meal(
             query = select(Ingredient).filter(Ingredient.name == ingredient.name)
             existing_ingredient = await session.scalar(query)
             if existing_ingredient:
-                ingredient_meal_data = ingredient_meal.insert().values(
+                ingredient_meal_data = IngredientMeal(
                     meal_id=new_meal.meal_id,
                     ingredient_id=existing_ingredient.ingredient_id,
                     quantity=ingredient.quantity or None,
@@ -222,13 +220,13 @@ async def create_meal(
                 session.add(new_ingredient)
                 await session.flush()
                 await session.refresh(new_ingredient)
-                ingredient_meal_data = ingredient_meal.insert().values(
+                ingredient_meal_data = IngredientMeal(
                     meal_id=new_meal.meal_id,
                     ingredient_id=new_ingredient.ingredient_id,
                     quantity=ingredient.quantity or None,
                     unit=ingredient.unit.name if ingredient.unit else None,
                 )
-            await session.execute(ingredient_meal_data)
+            session.add(ingredient_meal_data)
         await session.commit()
         await session.refresh(new_meal)
 
