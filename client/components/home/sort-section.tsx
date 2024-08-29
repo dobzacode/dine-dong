@@ -85,7 +85,7 @@ const SortSection = () => {
           >
             Distance
           </DropdownMenuRadioItem>
-          <DropdownMenuRadioItem onSelect={(e) => e.preventDefault()} value="prix">
+          <DropdownMenuRadioItem onSelect={(e) => e.preventDefault()} value="price">
             Prix
           </DropdownMenuRadioItem>
         </DropdownMenuRadioGroup>

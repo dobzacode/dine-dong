@@ -21,6 +21,7 @@ export interface getMealsParams {
   price_max?: number;
   weight_max?: number;
   weight_min?: number;
+  sort?: "distance" | "price";
 }
 
 export async function getMeals(

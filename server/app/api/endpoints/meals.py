@@ -1,3 +1,5 @@
+from typing import Literal
+
 from fastapi import APIRouter, Depends, HTTPException, Path, Query, Security
 from geoalchemy2.functions import (  # type: ignore
     ST_Distance,
@@ -44,6 +46,9 @@ async def get_meals(
     weight_min: int = Query(
         0, ge=0, le=1000, description="Minimum weight of the meals"
     ),
+    sort: Literal["distance", "price"] = Query(
+        None, description="Sort by distance or price"
+    ),
 ):
     user_location = ST_GeogFromText(f"POINT({lng} {lat})")
 
@@ -68,8 +73,15 @@ async def get_meals(
             .add_columns(
                 ST_Distance(user_location, Address.geo_location).label("distance")
             )
-            .order_by("distance")
         )
+
+        match sort:
+            case "distance":
+                query = query.order_by("distance")
+            case "price":
+                query = query.order_by(Meal.price)
+            case _:
+                query = query.order_by("distance")
 
         result = await session.execute(query)
         meal_address_distance = result.all()

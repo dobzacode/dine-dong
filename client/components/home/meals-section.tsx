@@ -12,8 +12,9 @@ const MealsSection = () => {
   const searchParams = useSearchParams();
   const fetchOptions: getMealsParams[] = useMemo(() => {
     const diet = (searchParams.getAll('diet') as (keyof typeof DietsEnum)[]) || [];
-    const name = searchParams.get('name') ?? '';
+    const name = searchParams.get('name') ?? undefined;
     const radius = parseInt(searchParams.get('radius') ?? '10', 10);
+    const sort = (searchParams.get('sort') as 'distance' | 'price') ?? undefined;
 
     return new Array(10).fill(0).map((_, i) => ({
       offset: i,
@@ -22,7 +23,8 @@ const MealsSection = () => {
       lng: 4.833102,
       radius,
       diet,
-      name
+      name,
+      sort
     }));
   }, [searchParams]);
 
