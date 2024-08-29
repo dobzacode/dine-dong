@@ -78,7 +78,16 @@ const MealsSection = () => {
 
   if (isError) {
     console.log(error instanceof Error ? error : 'Unknown error');
-    return <div>Une erreur est survenue lors de la récupération des repas.</div>;
+    if (error.message.includes('404')) {
+      return (
+        <div className="flex w-full flex-col items-center justify-center">
+          <h3 className="heading-h1">Aucun repas trouvé</h3>
+        </div>
+      );
+    }
+    return (
+      <h3 className="heading-h1">Une erreur est survenue lors de la récupération des repas.</h3>
+    );
   }
 
   if (!data) {
