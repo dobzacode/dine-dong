@@ -31,10 +31,16 @@ class MealWithAddressResponse(BaseResponse, Meal):
     pass
 
 
-class GetMealsResponse(BaseResponse):
+class MealsResponse(BaseResponse):
     meals: list[MealWithAddressResponse]
     total: int
     hasMore: bool
+
+
+class MealSummary(BaseResponse):
+    meal_id: str
+    name: str
+    description: str | None
 
 
 class IngredientResponse(BaseResponse, Ingredient):
@@ -44,6 +50,12 @@ class IngredientResponse(BaseResponse, Ingredient):
 
 class IngredientDetailsResponse(BaseResponse, Ingredient, IngredientMeal):
     pass
+
+
+class MealDetailsResponse(BaseResponse, Meal):
+    meal_id: str
+    address: AddressWithDistanceResponse
+    ingredients: list[IngredientDetailsResponse]
 
 
 class MealWithIngredientsAndAddressResponse(BaseResponse, Meal):

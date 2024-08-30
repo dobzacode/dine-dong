@@ -26,6 +26,12 @@ export interface GetMealsResponse extends BaseResponse {
   hasMore: boolean;
 }
 
+export interface GetMealSummaryResponse extends BaseResponse {
+  meal_id: string;
+  name: string;
+  description: string | null;
+}
+
 export interface IngredientResponse extends BaseResponse, Ingredient {
   ingredient_id: string;
 }

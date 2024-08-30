@@ -60,6 +60,27 @@ export async function getMeals(
   }
 }
 
+export async function getMealsSummaries<T>(id?: string) {
+  const url = new URL('http://localhost:3000/api/meals/summaries');
+  if (id) {
+    url.searchParams.set('id', id);
+  }
+  const response = await fetch(url);
+
+  switch (response.status) {
+    case 200:
+      return (await response.json()) as T;
+    case 404:
+      throw new Error('404 Aucun repas trouvé');
+    case 422:
+      throw new Error('422 Une erreur est survenue');
+    case 500:
+      throw new Error('500 Erreur serveur');
+    default:
+      throw new Error('Erreur inconnue');
+  }
+}
+
 export function capitalizeFirstLetter(string: string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }

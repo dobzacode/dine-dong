@@ -14,13 +14,18 @@ from app.api import deps
 from app.core.security.authenticate import VerifyToken
 from app.models import Address, DietsEnum, Ingredient, IngredientMeal, Meal, User
 from app.schemas.requests import CreateMealRequest
-from app.schemas.responses import GetMealsResponse, IngredientMealResponse, MealResponse
+from app.schemas.responses import (
+    MealDetailsResponse,
+    MealResponse,
+    MealsResponse,
+    MealSummary,
+)
 
 router = APIRouter()
 auth = VerifyToken()
 
 
-@router.get("", response_model=GetMealsResponse, description="Get all meals")
+@router.get("", response_model=MealsResponse, description="Get all meals")
 async def get_meals(
     session: AsyncSession = Depends(deps.get_session),
     limit: int = Query(20, description="Number of meals to return"),
@@ -122,71 +127,90 @@ async def get_meals(
 
 
 @router.get(
-    "/ingredient_meal/{ingredient_id}/{meal_id}", response_model=IngredientMealResponse
+    "/details/{meal_id}",
+    response_model=MealDetailsResponse,
+    description="Get meal details by ID",
 )
-async def get_ingredient_meal_by_id(
-    ingredient_id: str = Path(description="ID of the ingredient to retrieve"),
+async def get_meal_details_by_id(
     meal_id: str = Path(description="ID of the meal to retrieve"),
     session: AsyncSession = Depends(deps.get_session),
+    lat: float = Query(45.767572, description="Latitude of the user"),
+    lng: float = Query(4.833102, description="Longitude of the user"),
 ):
-    query = (
-        select(IngredientMeal)
-        .filter(IngredientMeal.ingredient_id == ingredient_id)
-        .filter(IngredientMeal.meal_id == meal_id)
-    )
-    ingredient_meal_data = await session.scalar(query)
-    return ingredient_meal_data
-
-
-@router.get(
-    "/{meal_id}",
-    response_model=MealResponse,
-    description="Get a meal by ID",
-)
-async def get_meal_by_id(
-    meal_id: str = Path(description="ID of the meal to retrieve"),
-    session: AsyncSession = Depends(deps.get_session),
-):
+    user_location = ST_GeogFromText(f"POINT({lng} {lat})")
     try:
-        query = select(Meal).filter(Meal.meal_id == meal_id)
-        meal = await session.scalar(query)
+        meal_query = (
+            select(Meal, Address)
+            .join(Address)
+            .filter(Meal.meal_id == meal_id)
+            .add_columns(
+                ST_Distance(user_location, Address.geo_location).label("distance")
+            )
+        )
+        meal_result = await session.execute(meal_query)
+        result = meal_result.first()
 
-        if not meal:
+        if not result:
             raise HTTPException(status_code=404, detail="Meal not found")
+
+        meal, address, distance = result
+        address.distance = distance / 1000
+        meal.address = address
+
+        ingredient_query = (
+            select(IngredientMeal, Ingredient)
+            .join(Ingredient)
+            .filter(IngredientMeal.meal_id == meal.meal_id)
+        )
+        ingredient_result = await session.execute(ingredient_query)
+        meal.ingredients = [
+            {
+                "ingredient_id": im.ingredient_id,
+                "name": i.name,
+                "quantity": im.quantity,
+                "unit": im.unit,
+            }
+            for im, i in ingredient_result.all()
+        ]
 
         return meal
     except Exception as e:
+        print(e, "Error")
+        raise HTTPException(
+            status_code=500, detail="An error occurred while retrieving meal details"
+        )
+
+
+@router.get(
+    "/summaries",
+    response_model=list[MealSummary],
+    description="Get all meal IDs, titles, and descriptions",
+)
+async def get_meal_summaries(
+    session: AsyncSession = Depends(deps.get_session),
+    id: str = Query(None, description="ID of the meal to retrieve"),
+):
+    try:
+        query = select(Meal.meal_id, Meal.name, Meal.additional_information)
+
+        if id:
+            query = query.where(Meal.meal_id == id)
+
+        result = await session.execute(query)
+        meal_summaries = result.all()
+
+        if not meal_summaries:
+            raise HTTPException(status_code=404, detail="No meals found")
+        meals = [
+            {"meal_id": meal_id, "name": meal_name, "description": description}
+            for meal_id, meal_name, description in meal_summaries
+        ]
+        return meals
+    except Exception as e:
         print(e)
-        raise HTTPException(status_code=500, detail="Une erreur est survenue")
-
-
-# @router.get(
-#     "/{meal_id}/details",
-#     response_model=MealWithIngredientsAndAddressResponse,
-#     description="Get meal with details by ID",
-# )
-# async def get_meal_details_by_id(
-#     meal_id: str = Path(description="ID of the meal to retrieve"),
-#     snippet: bool = Query(False, description="Return a concise snippet of the meal"),
-#     session: AsyncSession = Depends(deps.get_session),
-# ):
-#     query = select(Meal).filter(Meal.meal_id == meal_id)
-#     meal = await session.scalar(query)
-
-#     if not meal:
-#         raise HTTPException(status_code=404, detail="Meal not found")
-
-#     for ingredient in meal.ingredients:
-#         print("hihi")
-#         query = (
-#             select(IngredientMeal)
-#             .filter(IngredientMeal.ingredient_id == ingredient.ingredient_id)
-#             .filter(IngredientMeal.meal_id == meal.meal_id)
-#         )
-#         ingredient_meal_data = await session.scalar(query)
-#         print(ingredient_meal_data, "OHHH")
-
-#     return meal
+        raise HTTPException(
+            status_code=500, detail="An error occurred while retrieving meal summaries"
+        )
 
 
 @router.post(
