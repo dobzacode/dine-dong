@@ -6,7 +6,7 @@ import { useEffect, useMemo } from 'react';
 import { getMeals } from '@/lib/utils';
 
 import { useGeoLocation } from '@/hooks/use-geolocation';
-import { GetMealsResponse, MealWithAddressResponse } from '@/types/query';
+import { MealWithAddressResponse, MealsResponse } from '@/types/query';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { motion, type Variants } from 'framer-motion';
 import { useSearchParams } from 'next/navigation';
@@ -48,7 +48,7 @@ const MealsSection = () => {
   }, [searchParams, location]);
 
   const { data, isFetchingNextPage, fetchNextPage, isError, error } = useInfiniteQuery<
-    GetMealsResponse,
+    MealsResponse,
     Error
   >({
     queryKey: ['search-meals', fetchOptions],

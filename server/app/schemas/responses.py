@@ -16,6 +16,7 @@ class AddressWithDistanceResponse(BaseResponse, Address):
 
 
 class UserResponse(BaseResponse, User):
+    user_id: str
     pass
 
 
@@ -56,6 +57,7 @@ class MealDetailsResponse(BaseResponse, Meal):
     meal_id: str
     address: AddressWithDistanceResponse
     ingredients: list[IngredientDetailsResponse]
+    user_id: str
 
 
 class MealWithIngredientsAndAddressResponse(BaseResponse, Meal):

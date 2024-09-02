@@ -1,4 +1,4 @@
-import { GetMealsResponse } from '@/types/query';
+import { MealDetailsResponse, MealsResponse, UserResponse } from '@/types/query';
 import { DietsEnum } from '@/types/schema';
 import { clsx, type ClassValue } from 'clsx';
 import { Children, isValidElement } from 'react';
@@ -27,7 +27,7 @@ export interface getMealsParams {
 export async function getMeals(
   params: getMealsParams,
   nextParams?: NextFetchRequestConfig
-): Promise<GetMealsResponse | Error> {
+): Promise<MealsResponse | Error> {
   const url = new URL('http://localhost:3000/api/meals');
 
   for (const [key, value] of Object.entries(params)) {
@@ -48,7 +48,7 @@ export async function getMeals(
 
   switch (response.status) {
     case 200:
-      return (await response.json()) as GetMealsResponse;
+      return (await response.json()) as MealsResponse;
     case 404:
       throw new Error('404 Aucun repas trouvé');
     case 422:
@@ -60,16 +60,75 @@ export async function getMeals(
   }
 }
 
-export async function getMealsSummaries<T>(id?: string) {
+export async function getMealsSummaries<T>(
+  params?: { id?: string },
+  nextParams?: NextFetchRequestConfig
+) {
   const url = new URL('http://localhost:3000/api/meals/summaries');
-  if (id) {
-    url.searchParams.set('id', id);
+  if (params?.id) {
+    url.searchParams.set('id', params.id);
   }
-  const response = await fetch(url);
+  const response = await fetch(url, { next: nextParams });
 
   switch (response.status) {
     case 200:
       return (await response.json()) as T;
+    case 404:
+      throw new Error('404 Aucun repas trouvé');
+    case 422:
+      throw new Error('422 Une erreur est survenue');
+    case 500:
+      throw new Error('500 Erreur serveur');
+    default:
+      throw new Error('Erreur inconnue');
+  }
+}
+
+export async function getUserInformations(
+  params: { id: string },
+  nextParams?: NextFetchRequestConfig
+) {
+  const url = new URL('http://localhost:3000/api/users');
+
+  for (const [key, value] of Object.entries(params)) {
+    if ((value !== undefined && typeof value === 'number') || typeof value === 'string') {
+      url.searchParams.set(key, value.toString());
+    }
+  }
+
+  const response = await fetch(url.toString(), { next: nextParams });
+
+  switch (response.status) {
+    case 200:
+      return (await response.json()) as UserResponse;
+    case 404:
+      throw new Error('404 Aucun utilisateur trouvé');
+    case 422:
+      throw new Error('422 Une erreur est survenue');
+    case 500:
+      throw new Error('500 Erreur serveur');
+    default:
+      throw new Error('Erreur inconnue');
+  }
+}
+
+export async function getMealDetails(
+  params: { id: string; lat?: number; lng?: number },
+  nextParams?: NextFetchRequestConfig
+) {
+  const url = new URL('http://localhost:3000/api/meals/details');
+
+  for (const [key, value] of Object.entries(params)) {
+    if ((value !== undefined && typeof value === 'number') || typeof value === 'string') {
+      url.searchParams.set(key, value.toString());
+    }
+  }
+
+  const response = await fetch(url.toString());
+
+  switch (response.status) {
+    case 200:
+      return (await response.json()) as MealDetailsResponse;
     case 404:
       throw new Error('404 Aucun repas trouvé');
     case 422:

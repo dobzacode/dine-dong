@@ -60,7 +60,7 @@ class User(Base):
 class Address(Base):
     __tablename__ = "address"
 
-    address_id: Mapped[int] = mapped_column(
+    address_id: Mapped[str] = mapped_column(
         Uuid(as_uuid=False), primary_key=True, default=lambda _: str(uuid.uuid4())
     )
 
@@ -120,10 +120,10 @@ UnitsEnum = Literal[
 class IngredientMeal(Base):
     __tablename__ = "ingredient_meal"
 
-    ingredient_id: Mapped[int] = mapped_column(
+    ingredient_id: Mapped[str] = mapped_column(
         ForeignKey("ingredient.ingredient_id"), primary_key=True
     )
-    meal_id: Mapped[int] = mapped_column(
+    meal_id: Mapped[str] = mapped_column(
         ForeignKey("meal.meal_id", ondelete="CASCADE"), primary_key=True
     )
     quantity: Mapped[int] = mapped_column(nullable=True)
@@ -144,7 +144,7 @@ class IngredientMeal(Base):
 class Ingredient(Base):
     __tablename__ = "ingredient"
 
-    ingredient_id: Mapped[int] = mapped_column(
+    ingredient_id: Mapped[str] = mapped_column(
         Uuid(as_uuid=False), primary_key=True, default=lambda _: str(uuid.uuid4())
     )
 
@@ -162,7 +162,7 @@ PaymentMethodsEnum = Literal["ONLINE", "IN_PERSON"]
 class Meal(Base):
     __tablename__ = "meal"
 
-    meal_id: Mapped[int] = mapped_column(
+    meal_id: Mapped[str] = mapped_column(
         Uuid(as_uuid=False), primary_key=True, default=lambda _: str(uuid.uuid4())
     )
 

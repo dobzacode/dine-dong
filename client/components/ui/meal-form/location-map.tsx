@@ -2,6 +2,7 @@
 
 import { GoogleMap, MarkerF, useLoadScript } from '@react-google-maps/api';
 import { useEffect, useMemo } from 'react';
+import { Skeleton } from '../skeleton';
 
 export default function LocationMap({ lat = 48.8738, lng = 2.295 }: { lat: number; lng: number }) {
   const mapCenter = useMemo(() => ({ lat: lat || 48.8738, lng: lng || 2.295 }), [lat, lng]);
@@ -26,9 +27,7 @@ export default function LocationMap({ lat = 48.8738, lng = 2.295 }: { lat: numbe
   }, [lat, lng]);
 
   if (!isLoaded) {
-    return (
-      <div className="aspect-square w-full animate-pulse rounded-xs bg-primary-900/[0.4]"></div>
-    );
+    return <Skeleton className="aspect-square w-full rounded-xs" />;
   }
 
   return (

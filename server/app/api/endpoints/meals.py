@@ -1,6 +1,6 @@
 from typing import Literal
 
-from fastapi import APIRouter, Depends, HTTPException, Path, Query, Security
+from fastapi import APIRouter, Depends, HTTPException, Query, Security
 from geoalchemy2.functions import (  # type: ignore
     ST_Distance,
     ST_DWithin,
@@ -48,9 +48,8 @@ async def get_meals(
         None, description="Sort by distance or price"
     ),
 ):
-    user_location = ST_GeogFromText(f"POINT({lng} {lat})")
-
     try:
+        user_location = ST_GeogFromText(f"POINT({lng} {lat})")
         query = (
             select(Meal, Address)
             .join(Address)
@@ -127,22 +126,26 @@ async def get_meals(
 
 
 @router.get(
-    "/details/{meal_id}",
+    "/details",
     response_model=MealDetailsResponse,
     description="Get meal details by ID",
 )
 async def get_meal_details_by_id(
-    meal_id: str = Path(description="ID of the meal to retrieve"),
     session: AsyncSession = Depends(deps.get_session),
+    id: str = Query(None, description="ID of the meal to retrieve"),
     lat: float = Query(45.767572, description="Latitude of the user"),
     lng: float = Query(4.833102, description="Longitude of the user"),
 ):
-    user_location = ST_GeogFromText(f"POINT({lng} {lat})")
+    if not id:
+        raise HTTPException(status_code=422, detail="ID is required")
+
     try:
+        user_location = ST_GeogFromText(f"POINT({lng} {lat})")
         meal_query = (
             select(Meal, Address)
+            .select_from(Meal)
             .join(Address)
-            .filter(Meal.meal_id == meal_id)
+            .filter(Meal.meal_id == id)
             .add_columns(
                 ST_Distance(user_location, Address.geo_location).label("distance")
             )
@@ -210,6 +213,44 @@ async def get_meal_summaries(
         print(e)
         raise HTTPException(
             status_code=500, detail="An error occurred while retrieving meal summaries"
+        )
+
+
+@router.get(
+    "/distance",
+    response_model=float,
+)
+async def get_distance(
+    session: AsyncSession = Depends(deps.get_session),
+    lat: float = Query(None, description="Latitude of the user"),
+    lng: float = Query(None, description="Longitude of the user"),
+    id: str = Query(None, description="ID of the meal to retrieve"),
+    user: dict = Security(auth.verify),
+):
+    if not id or not lat or not lng:
+        raise HTTPException(status_code=422, detail="ID, lat or lng is required")
+
+    try:
+        user_location = ST_GeogFromText(f"POINT({lng} {lat})")
+        distance_query = (
+            select(Meal, Address)
+            .join(Address)
+            .filter(Meal.meal_id == id)
+            .add_columns(
+                ST_Distance(user_location, Address.geo_location).label("distance")
+            )
+        )
+        query_result = await session.execute(distance_query)
+        result = query_result.first()
+
+        if not result:
+            raise HTTPException(status_code=404, detail="Meal not found")
+
+        return result.distance / 1000
+    except Exception as e:
+        print(e, "Error")
+        raise HTTPException(
+            status_code=500, detail="An error occurred while retrieving meal details"
         )
 
 
