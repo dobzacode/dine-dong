@@ -81,6 +81,11 @@ async def generate_mock_data(num_entries=10):
     for _ in range(num_entries):
         try:
             open_id = fake.email()
+            email = fake.email()
+            username = fake.user_name()
+            last_name = fake.last_name()
+            first_name = fake.first_name()
+            phone_number = fake.phone_number()
 
             address = generate_french_address(fake)
 
@@ -97,7 +102,14 @@ async def generate_mock_data(num_entries=10):
             diet_list = generate_combined_diet(fake)
             payment_method = fake.random_element(elements=["ONLINE", "IN_PERSON"])
 
-            user = User(open_id=open_id)
+            user = User(
+                open_id=open_id,
+                email=email,
+                username=username,
+                last_name=last_name,
+                first_name=first_name,
+                phone_number=phone_number,
+            )
             session.add(user)
             await session.flush()
             await session.refresh(user)
@@ -143,4 +155,4 @@ async def generate_mock_data(num_entries=10):
 
 
 if __name__ == "__main__":
-    asyncio.run(generate_mock_data(100))
+    asyncio.run(generate_mock_data(40))
