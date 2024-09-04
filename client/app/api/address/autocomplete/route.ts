@@ -1,5 +1,5 @@
 import { getGeolocation } from '@/lib/server-only-utils';
-import { withApiAuthRequired } from '@auth0/nextjs-auth0';
+
 import { NextResponse, type NextRequest } from 'next/server';
 
 interface Place {
@@ -69,4 +69,4 @@ async function autocomplete(req: NextRequest) {
   }
 }
 
-export const GET = withApiAuthRequired(autocomplete);
+export const GET = autocomplete;

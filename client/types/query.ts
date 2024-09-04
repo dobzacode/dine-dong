@@ -12,7 +12,9 @@ interface BaseResponse {}
 
 export interface AddressResponse extends BaseResponse, Address {}
 
-export interface UserResponse extends BaseResponse, User {}
+export interface UserResponse extends BaseResponse, User {
+  user_id: string;
+}
 
 export interface MealResponse extends BaseResponse, Meal {
   meal_id: string;
@@ -48,6 +50,7 @@ export interface MealDetailsResponse extends BaseResponse, MealWithAddressRespon
 
 export interface UserResponse extends BaseResponse, User {
   user_id: string;
+  residency: Address;
 }
 
 export interface IngredientResponse extends BaseResponse, Ingredient {

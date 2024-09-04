@@ -1,18 +1,22 @@
+import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { Button } from '../button';
 
 export default function NextPrev({
   setActiveStep,
   onNext,
   setIsBackward,
   activeStep,
-  isPending
+  maxStep = 4,
+  isPending,
+  finalLabel = 'Ajouter le repas'
 }: {
   setActiveStep: (num: number) => void;
   onNext: () => void;
   setIsBackward: (isBackward: boolean) => void;
   activeStep: number;
+  maxStep?: number;
   isPending: boolean;
+  finalLabel?: string;
 }) {
   return (
     <div className={cn('flex w-full gap-xs', isPending && 'animate-pulse')}>
@@ -32,13 +36,13 @@ export default function NextPrev({
         Précédent
       </Button>
 
-      {activeStep === 4 ? (
+      {activeStep === maxStep ? (
         <Button
           onClick={onNext}
           className={cn('flex w-1/2 rounded-l-none', isPending && 'pointer-events-none')}
           type="submit"
         >
-          Ajouter le repas
+          {finalLabel}
         </Button>
       ) : (
         <Button

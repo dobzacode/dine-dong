@@ -12,24 +12,25 @@ import type { MealResponse } from '@/types/query';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { AnimatePresence } from 'framer-motion';
-import moment from 'moment';
 import { useS3Upload } from 'next-s3-upload';
 import { useCallback, useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import { useToast } from '../use-toast';
-import { mealSchema, type MealSchema } from './meal-schema';
-import NextPrev from './next-prev';
-import StepsIndicator from './steps-indicator';
+import NextPrev from '../../ui/next-prev';
+import StepsIndicator from '../../ui/steps-indicator';
+
+import { useToast } from '@/components/ui/use-toast';
+import { useRouter } from 'next/navigation';
+import { userSchema, type UserSchema } from './user-schema';
 import WizardFinalStep from './wizard-final-step';
 import WizardStepOne from './wizard-step-one';
-import WizardStepThree from './wizard-step-three';
 import WizardStepTwo from './wizard-step-two';
 
-const createMealMutation = async ({
+const createUserMutation = async ({
   data,
-  uploadToS3
+  uploadToS3,
+  sub
 }: {
-  data: MealSchema;
+  data: UserSchema;
   uploadToS3: (
     file: File,
     options: { endpoint: { request: { url: string; headers?: Record<string, string> } } }
@@ -37,67 +38,92 @@ const createMealMutation = async ({
     url: string;
     key: string;
   }>;
+  sub: string | null;
 }) => {
-  const { key } = await uploadToS3(data.stepOne.image, {
-    endpoint: {
-      request: {
-        url: 'http://localhost:3000/api/s3-upload/?folder=meal/original_images'
-      }
-    }
-  });
+  if (!sub) {
+    throw new Error('Sub is required');
+  }
 
-  const response = await fetch('http://localhost:3000/api/protected/meals', {
+  let picturekey: string | null = null;
+
+  if (data.stepOne.image) {
+    const { key } = await uploadToS3(data.stepOne.image, {
+      endpoint: {
+        request: {
+          url: 'http://localhost:3000/api/s3-upload/?folder=user/original_images'
+        }
+      }
+    });
+    picturekey = key;
+  }
+
+  const response = await fetch('http://localhost:3000/api/users', {
     method: 'POST',
     body: JSON.stringify({
-      name: data.stepOne.name,
-      price: data.stepOne.price,
-      cooking_date: data.stepOne.cookingDate,
-      expiration_date: data.stepOne.expirationDate,
-      picture_url: `${process.env.NEXT_PUBLIC_CLOUDFRONT_BUCKET_URL}/${key}`,
-      weight: data.stepTwo.weight,
-      diet: data.stepTwo.diet,
-      ingredients: data.stepTwo.ingredients,
-      additional_information: data.stepTwo.additionalInformation,
+      email: data.stepOne.email,
+      username: data.stepOne.username,
+      first_name: data.stepOne.firstName,
+      last_name: data.stepOne.lastName,
+      phone_number: data.stepOne.phoneNumber,
+      sub: sub,
+      picture_url: picturekey
+        ? `${process.env.NEXT_PUBLIC_CLOUDFRONT_BUCKET_URL}/${picturekey}`
+        : undefined,
       address: {
-        ...data.stepThree.address,
-        formatted_address: data.stepThree.address.formattedAddress,
-        postal_code: data.stepThree.address.postalCode
-      },
-      payment_method: data.stepThree.paymentMethod
+        ...data.stepTwo.address,
+        formatted_address: data.stepTwo.address.formattedAddress,
+        postal_code: data.stepTwo.address.postalCode
+      }
     }),
     headers: {
       'Content-Type': 'application/json'
     }
   });
   if (!response.ok) {
-    throw new Error();
+    const error = (await response.json()) as { detail: string };
+    console.log(error);
+    throw new Error(error.detail);
   }
   const dataResponse = (await response.json()) as MealResponse;
   customRevalidateTag('search-meals');
   return dataResponse;
 };
 
-export default function MealForm() {
+type UserFormProps = {
+  email: string;
+  username: string;
+  firstName: string;
+  lastName: string;
+  sub: string;
+  state: string;
+  auth0domain: string;
+};
+
+export default function UserForm(props: UserFormProps) {
+  const { email, username, firstName, lastName, sub, state, auth0domain } = props;
   const [activeStep, setActiveStep] = useState<number>(1);
   const [addressMessage, setAddressMessage] = useState<string>('');
+
+  const router = useRouter();
 
   const { toast } = useToast();
   const { uploadToS3 } = useS3Upload();
   const { isPending, mutateAsync } = useMutation({
-    mutationFn: createMealMutation,
+    mutationFn: createUserMutation,
     onSuccess: (data: MealResponse) => {
-      console.log('Meal created successfully:', data);
+      console.log('User created successfully:', data);
       toast({
-        title: `Votre nouveau repas ${data.name} a bien été créé`,
+        title: `Votre compte a été créé avec succès !`,
         description: 'Vous pouvez le consulter dans votre tableau de bord',
         className: ' bottom-0 right-0 w-fit ml-auto',
         duration: 5000
       });
+      return router.push(`${auth0domain}/continue?state=${state}`);
     },
     onError: (error: unknown) => {
-      console.error('Error creating meal:', error);
+      console.error('Error creating user:', error);
       toast({
-        title: 'Une erreur est survenue lors de la création du repas',
+        title: 'Une erreur est survenue lors de la création de votre compte',
         description: 'Veuillez réessayer ultérieurement',
 
         duration: 5000
@@ -105,29 +131,20 @@ export default function MealForm() {
     }
   });
 
-  const methods = useForm<MealSchema>({
+  const methods = useForm<UserSchema>({
     shouldUnregister: false,
     mode: 'onChange',
-    resolver: zodResolver(mealSchema),
+    resolver: zodResolver(userSchema),
     defaultValues: {
       stepOne: {
-        name: '',
-        cookingDate: moment().toDate(),
-        expirationDate: moment().add(1, 'day').toDate(),
+        email: email,
+        username: username,
+        firstName: firstName,
+        lastName: lastName,
+        phoneNumber: '',
         image: undefined
       },
       stepTwo: {
-        diet: [],
-
-        ingredients: [
-          {
-            name: '',
-            quantity: undefined,
-            unit: undefined
-          }
-        ]
-      },
-      stepThree: {
         address: {
           address1: '',
           address2: '',
@@ -138,8 +155,7 @@ export default function MealForm() {
           country: '',
           lat: 0,
           lng: 0
-        },
-        paymentMethod: 'ONLINE'
+        }
       }
     }
   });
@@ -155,10 +171,6 @@ export default function MealForm() {
           break;
         case 2:
           isValid = await methods.trigger('stepTwo');
-
-          break;
-        case 3:
-          isValid = await methods.trigger('stepThree');
           break;
         default:
           isValid = true;
@@ -168,8 +180,8 @@ export default function MealForm() {
     [methods]
   );
 
-  const onSubmit = async (data: MealSchema) => {
-    await mutateAsync({ data, uploadToS3 });
+  const onSubmit = async (data: UserSchema) => {
+    await mutateAsync({ data, uploadToS3, sub });
   };
 
   const onNext = useCallback(() => {
@@ -177,8 +189,8 @@ export default function MealForm() {
       .then((isValid) => {
         if (isValid) {
           setIsBackward(false);
-          setActiveStep(Math.min(activeStep + 1, 4));
-        } else if (activeStep === 3) {
+          setActiveStep(Math.min(activeStep + 1, 3));
+        } else if (activeStep === 2) {
           setAddressMessage('Une adresse est requise');
         }
       })
@@ -206,9 +218,8 @@ export default function MealForm() {
 
   const switcher: Record<number, string> = {
     1: 'Informations générales',
-    2: 'Composition du plat',
-    3: 'Retrait et paiement',
-    4: 'Récapitulatif et confirmation'
+    2: 'Addresse principale',
+    3: 'Récapitulatif et confirmation'
   };
 
   return (
@@ -221,7 +232,7 @@ export default function MealForm() {
         onSubmit={handleSubmit(onSubmit)}
       >
         <DivWrapper variant={ComingFromLeftVariantWithFadeExit}>
-          <StepsIndicator setSteps={setActiveStep} steps={activeStep} />
+          <StepsIndicator mealForm={false} steps={activeStep} />
         </DivWrapper>
 
         <AnimatePresence mode="wait">
@@ -255,26 +266,8 @@ export default function MealForm() {
               />
             </DivWrapper>
           )}
+
           {activeStep === 2 && (
-            <DivWrapper
-              inverseOnExit
-              className="flex flex-col gap-xl"
-              variant={
-                isBackward ? ComingFromRightVariantWithFadeExit : ComingFromLeftVariantWithFadeExit
-              }
-              key={`step-two-${activeStep}`}
-            >
-              <WizardStepTwo className={isPending ? 'animate-pulse' : ''} />
-              <NextPrev
-                isPending={isPending}
-                activeStep={activeStep}
-                setActiveStep={setActiveStep}
-                onNext={onNext}
-                setIsBackward={setIsBackward}
-              />
-            </DivWrapper>
-          )}
-          {activeStep === 3 && (
             <DivWrapper
               inverseOnExit
               className="flex flex-col gap-xl"
@@ -283,7 +276,7 @@ export default function MealForm() {
               }
               key={`step-three-${activeStep}`}
             >
-              <WizardStepThree
+              <WizardStepTwo
                 className={isPending ? 'animate-pulse' : ''}
                 addressMessage={addressMessage}
                 setAddressMessage={setAddressMessage}
@@ -297,7 +290,8 @@ export default function MealForm() {
               />
             </DivWrapper>
           )}
-          {activeStep === 4 && (
+
+          {activeStep === 3 && (
             <DivWrapper
               inverseOnExit
               className="flex flex-col gap-xl"
@@ -308,6 +302,8 @@ export default function MealForm() {
             >
               <WizardFinalStep className={isPending ? 'animate-pulse' : ''} />
               <NextPrev
+                maxStep={3}
+                finalLabel="Créer mon compte"
                 isPending={isPending}
                 activeStep={activeStep}
                 setActiveStep={setActiveStep}

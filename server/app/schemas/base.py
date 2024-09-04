@@ -4,10 +4,6 @@ from enum import Enum
 from pydantic import BaseModel
 
 
-class User(BaseModel):
-    open_id: str
-
-
 class Address(BaseModel):
     address1: str
     address2: str | None = None
@@ -18,6 +14,17 @@ class Address(BaseModel):
     country: str
     lat: float
     lng: float
+
+
+class User(BaseModel):
+    email: str
+    username: str
+    is_valid: bool = False
+    first_name: str | None = None
+    last_name: str | None = None
+    phone_number: str | None = None
+    picture_url: str | None = None
+    residency: Address | None = None
 
 
 class DietsEnum(str, Enum):

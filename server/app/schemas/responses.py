@@ -17,6 +17,8 @@ class AddressWithDistanceResponse(BaseResponse, Address):
 
 class UserResponse(BaseResponse, User):
     user_id: str
+    open_id: str
+    residency: Address
     pass
 
 

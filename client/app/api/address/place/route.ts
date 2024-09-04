@@ -1,5 +1,4 @@
 import { type AddressType } from '@/components/ui/address-autocomplete';
-import { withApiAuthRequired } from '@auth0/nextjs-auth0';
 import { NextResponse, type NextRequest } from 'next/server';
 
 interface PlusCode {
@@ -140,4 +139,4 @@ async function placeDetails(req: NextRequest) {
   }
 }
 
-export const GET = withApiAuthRequired(placeDetails);
+export const GET = placeDetails;

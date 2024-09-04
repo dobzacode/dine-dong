@@ -1,7 +1,8 @@
 import { type MealDetailsResponse } from '@/types/query';
-import LocationMap from '../ui/meal-form/location-map';
-import { dietEnum } from '../ui/meal-form/meal-schema';
+
 import { Separator } from '../ui/separator';
+import LocationMap from './meal-form/location-map';
+import { dietEnum } from './meal-form/meal-schema';
 
 export function MealInformations(props: MealDetailsResponse) {
   const {

@@ -1,17 +1,17 @@
 'use client';
 
+import { Button } from '@/components/ui/button';
+import { Calendar } from '@/components/ui/calendar';
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { cn } from '@/lib/utils';
 import { CalendarIcon } from 'lucide-react';
 import moment from 'moment';
 import { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
-import { Button } from '../button';
-import { Calendar } from '../calendar';
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '../form';
 
-import { Input } from '../input';
-import { Popover, PopoverContent, PopoverTrigger } from '../popover';
-import ImageUploader from './image-uploader';
+import { Input } from '@/components/ui/input';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import ImageUploader from '../../ui/image-uploader';
 import type { MealSchema } from './meal-schema';
 
 export default function WizardStepOne({ className }: { className?: string }) {

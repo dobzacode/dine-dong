@@ -1,14 +1,22 @@
 'use-client';
+import { FormControl, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
 import { ImagePlus } from 'lucide-react';
 import Image from 'next/image';
 import React from 'react';
 import { useDropzone } from 'react-dropzone';
 import type { UseFormReturn } from 'react-hook-form';
-import { FormControl, FormItem, FormLabel, FormMessage } from '../form';
-import { Input } from '../input';
-import type { MealSchema } from './meal-schema';
+import type { MealSchema } from '../meal/meal-form/meal-schema';
 
-export default function ImageUploader({ form }: { form: UseFormReturn<MealSchema> }) {
+export default function ImageUploader({
+  form,
+  className,
+  label = 'Photo'
+}: {
+  form: UseFormReturn<MealSchema>;
+  className?: string;
+  label?: string;
+}) {
   const [preview, setPreview] = React.useState<string | ArrayBuffer | null>(
     form.getValues().stepOne.image ? URL.createObjectURL(form.getValues().stepOne.image) : ''
   );
@@ -39,9 +47,9 @@ export default function ImageUploader({ form }: { form: UseFormReturn<MealSchema
   });
 
   return (
-    <FormItem>
+    <FormItem className={className}>
       <FormLabel className={`${fileRejections.length !== 0 && 'text-destructive'}`}>
-        Photo
+        {label}
       </FormLabel>
       <FormControl>
         <div
@@ -64,15 +72,17 @@ export default function ImageUploader({ form }: { form: UseFormReturn<MealSchema
           />
           <Input {...getInputProps()} type="file" />
           {isDragActive ? (
-            <p className="body text-primary-900/[0.4]">Lachez l&apos;image!</p>
+            <p className="body text-center text-primary-900/[0.4]">Lachez l&apos;image!</p>
           ) : (
-            <p className="body text-primary-900/[0.4]">Cliquez ici ou glissez une image</p>
+            <p className="body text-center text-primary-900/[0.4]">
+              Cliquez ici ou glissez une image
+            </p>
           )}
         </div>
       </FormControl>
       <FormMessage>
         {fileRejections.length !== 0 && (
-          <p className="body-sm">
+          <p className="body-sm text-center">
             L&apos;image doit peser moins de 5MB et être de type png, jpg, or jpeg
           </p>
         )}

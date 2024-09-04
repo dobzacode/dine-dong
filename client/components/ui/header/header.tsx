@@ -7,7 +7,7 @@ import { Button } from '../button';
 import { Skeleton } from '../skeleton';
 
 export default function Header() {
-  const { user, isLoading } = useUser();
+  const { user, isLoading, error } = useUser();
 
   return (
     <header className="section-px relative z-50 flex w-screen items-center justify-between overflow-hidden bg-transparent py-md laptop:px-2xl">

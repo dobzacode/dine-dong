@@ -11,11 +11,11 @@ import { useCallback, useEffect, useState } from 'react';
 import useSWR from 'swr';
 import AddressDialog from './address-dialog';
 
+import { type MealSchema } from '@/components/meal/meal-form/meal-schema';
 import { Command as CommandPrimitive } from 'cmdk';
 import type { UseFormReturn } from 'react-hook-form';
 import { FormLabel } from '../form';
 import { Label } from '../label';
-import type { MealSchema } from '../meal-form/meal-schema';
 
 export interface AddressType {
   address1: string;
@@ -37,6 +37,8 @@ interface AddressAutoCompleteProps {
   showInlineError?: boolean;
   placeholder?: string;
   setMapCoord: (mapCoord: { lat: number; lng: number }) => void;
+  formName?: 'meal' | 'user';
+  label?: string;
 }
 
 export default function AddressAutoComplete(props: AddressAutoCompleteProps) {
@@ -47,15 +49,20 @@ export default function AddressAutoComplete(props: AddressAutoCompleteProps) {
     searchInput,
     setSearchInput,
     placeholder,
-    setMapCoord
+    setMapCoord,
+    formName = 'meal',
+    label = 'Adresse de retrait'
   } = props;
 
-  const { address } = form.getValues('stepThree');
+  const { address } = form.getValues(formName === 'meal' ? 'stepThree' : 'stepTwo') as {
+    address: AddressType;
+  };
   const setAddress = useCallback(
     (address: AddressType) => {
-      form.setValue('stepThree.address', address);
+      //@ts-expect-error - type is valid
+      form.setValue(formName === 'meal' ? 'stepThree.address' : 'stepTwo.address', address);
     },
-    [form]
+    [form, formName]
   );
 
   const [selectedPlaceId, setSelectedPlaceId] = useState('');
@@ -94,7 +101,7 @@ export default function AddressAutoComplete(props: AddressAutoCompleteProps) {
       {selectedPlaceId !== '' || address?.formattedAddress ? (
         <div className="flex flex-col">
           <FormLabel htmlFor="address1" className="pb-2 text-black">
-            Adresse de retrait *
+            {label} *
           </FormLabel>
           <div className="flex items-center gap-2">
             <Input value={address?.formattedAddress} readOnly />
@@ -141,6 +148,7 @@ export default function AddressAutoComplete(props: AddressAutoCompleteProps) {
         </div>
       ) : (
         <AddressAutoCompleteInput
+          label={label}
           searchInput={searchInput}
           setSearchInput={setSearchInput}
           selectedPlaceId={selectedPlaceId}
@@ -162,6 +170,7 @@ interface CommonProps {
   searchInput: string;
   setSearchInput: (searchInput: string) => void;
   placeholder?: string;
+  label: string;
 }
 
 function AddressAutoCompleteInput(props: CommonProps) {
@@ -172,7 +181,8 @@ function AddressAutoCompleteInput(props: CommonProps) {
     showInlineError,
     searchInput,
     setSearchInput,
-    placeholder
+    placeholder,
+    label
   } = props;
 
   const [isOpen, setIsOpen] = useState(false);
@@ -204,7 +214,7 @@ function AddressAutoCompleteInput(props: CommonProps) {
       className="relative z-30 overflow-visible"
     >
       <Label htmlFor="address1" className="pb-2">
-        Adresse de retrait *
+        {label} *
       </Label>
       <div className="body flex w-full items-center justify-between rounded-lg">
         <CommandPrimitive.Input

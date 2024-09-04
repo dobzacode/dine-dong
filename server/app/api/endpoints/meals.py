@@ -25,27 +25,21 @@ router = APIRouter()
 auth = VerifyToken()
 
 
-@router.get("", response_model=MealsResponse, description="Get all meals")
+@router.get("", response_model=MealsResponse, description="Obtenir tous les repas")
 async def get_meals(
     session: AsyncSession = Depends(deps.get_session),
-    limit: int = Query(20, description="Number of meals to return"),
-    offset: int = Query(0, description="Number of meals to skip"),
-    lat: float = Query(45.767572, description="Latitude of the user"),
-    lng: float = Query(4.833102, description="Longitude of the user"),
-    radius: int = Query(10, description="Radius of the search in km"),
-    diet: list[DietsEnum] = Query(None, description="Diet of the meals"),
-    name: str = Query("", description="Name of the meals"),
-    max_price: int = Query(
-        1000, ge=0, le=1000, description="Maximum price of the meals"
-    ),
-    weight_max: int = Query(
-        1000, ge=0, le=1000, description="Maximum weight of the meals"
-    ),
-    weight_min: int = Query(
-        0, ge=0, le=1000, description="Minimum weight of the meals"
-    ),
+    limit: int = Query(20, description="Nombre de repas à retourner"),
+    offset: int = Query(0, description="Nombre de repas à ignorer"),
+    lat: float = Query(45.767572, description="Latitude de l'utilisateur"),
+    lng: float = Query(4.833102, description="Longitude de l'utilisateur"),
+    radius: int = Query(10, description="Rayon de recherche en km"),
+    diet: list[DietsEnum] = Query(None, description="Régime des repas"),
+    name: str = Query("", description="Nom des repas"),
+    max_price: int = Query(1000, ge=0, le=1000, description="Prix maximum des repas"),
+    weight_max: int = Query(1000, ge=0, le=1000, description="Poids maximum des repas"),
+    weight_min: int = Query(0, ge=0, le=1000, description="Poids minimum des repas"),
     sort: Literal["distance", "price"] = Query(
-        None, description="Sort by distance or price"
+        None, description="Trier par distance ou prix"
     ),
 ):
     try:
@@ -128,16 +122,16 @@ async def get_meals(
 @router.get(
     "/details",
     response_model=MealDetailsResponse,
-    description="Get meal details by ID",
+    description="Obtenir les détails d'un repas par ID",
 )
 async def get_meal_details_by_id(
     session: AsyncSession = Depends(deps.get_session),
-    id: str = Query(None, description="ID of the meal to retrieve"),
-    lat: float = Query(45.767572, description="Latitude of the user"),
-    lng: float = Query(4.833102, description="Longitude of the user"),
+    id: str = Query(None, description="ID du repas à récupérer"),
+    lat: float = Query(45.767572, description="Latitude de l'utilisateur"),
+    lng: float = Query(4.833102, description="Longitude de l'utilisateur"),
 ):
     if not id:
-        raise HTTPException(status_code=422, detail="ID is required")
+        raise HTTPException(status_code=422, detail="ID est requis")
 
     try:
         user_location = ST_GeogFromText(f"POINT({lng} {lat})")
@@ -154,7 +148,7 @@ async def get_meal_details_by_id(
         result = meal_result.first()
 
         if not result:
-            raise HTTPException(status_code=404, detail="Meal not found")
+            raise HTTPException(status_code=404, detail="Repas non trouvé")
 
         meal, address, distance = result
         address.distance = distance / 1000
@@ -180,18 +174,19 @@ async def get_meal_details_by_id(
     except Exception as e:
         print(e, "Error")
         raise HTTPException(
-            status_code=500, detail="An error occurred while retrieving meal details"
+            status_code=500,
+            detail="Une erreur est survenue lors de la récupération des détails du repas",
         )
 
 
 @router.get(
     "/summaries",
     response_model=list[MealSummary],
-    description="Get all meal IDs, titles, and descriptions",
+    description="Obtenir tous les ID de repas, titres et descriptions",
 )
 async def get_meal_summaries(
     session: AsyncSession = Depends(deps.get_session),
-    id: str = Query(None, description="ID of the meal to retrieve"),
+    id: str = Query(None, description="ID du repas à récupérer"),
 ):
     try:
         query = select(Meal.meal_id, Meal.name, Meal.additional_information)
@@ -203,7 +198,7 @@ async def get_meal_summaries(
         meal_summaries = result.all()
 
         if not meal_summaries:
-            raise HTTPException(status_code=404, detail="No meals found")
+            raise HTTPException(status_code=404, detail="Aucun repas trouvé")
         meals = [
             {"meal_id": meal_id, "name": meal_name, "description": description}
             for meal_id, meal_name, description in meal_summaries
@@ -212,23 +207,25 @@ async def get_meal_summaries(
     except Exception as e:
         print(e)
         raise HTTPException(
-            status_code=500, detail="An error occurred while retrieving meal summaries"
+            status_code=500,
+            detail="Une erreur est survenue lors de la récupération des résumés des repas",
         )
 
 
 @router.get(
     "/distance",
     response_model=float,
+    description="Obtenir la distance entre l'utilisateur et un repas",
 )
 async def get_distance(
     session: AsyncSession = Depends(deps.get_session),
-    lat: float = Query(None, description="Latitude of the user"),
-    lng: float = Query(None, description="Longitude of the user"),
-    id: str = Query(None, description="ID of the meal to retrieve"),
+    lat: float = Query(None, description="Latitude de l'utilisateur"),
+    lng: float = Query(None, description="Longitude de l'utilisateur"),
+    id: str = Query(None, description="ID du repas à récupérer"),
     user: dict = Security(auth.verify),
 ):
     if not id or not lat or not lng:
-        raise HTTPException(status_code=422, detail="ID, lat or lng is required")
+        raise HTTPException(status_code=422, detail="ID, lat ou lng sont requis")
 
     try:
         user_location = ST_GeogFromText(f"POINT({lng} {lat})")
@@ -244,28 +241,37 @@ async def get_distance(
         result = query_result.first()
 
         if not result:
-            raise HTTPException(status_code=404, detail="Meal not found")
+            raise HTTPException(status_code=404, detail="Repas non trouvé")
 
         return result.distance / 1000
     except Exception as e:
         print(e, "Error")
         raise HTTPException(
-            status_code=500, detail="An error occurred while retrieving meal details"
+            status_code=500,
+            detail="Une erreur est survenue lors de la récupération de la distance du repas",
         )
 
 
 @router.post(
-    "", description="Create a new meal", response_model=MealResponse, status_code=201
+    "",
+    description="Créer un nouveau repas",
+    response_model=MealResponse,
+    status_code=201,
 )
 async def create_meal(
     meal_data: CreateMealRequest,
-    current_user: User = Depends(deps.get_current_user),
     session: AsyncSession = Depends(deps.get_session),
+    token: dict[str, str] = Depends(deps.extract_sub_email_from_jwt),
     user: dict = Security(auth.verify),
 ):
+    user = await session.scalar(select(User).where(User.open_id == token.get("sub")))
+
+    if not user:
+        raise HTTPException(status_code=401, detail="Vous n'êtes pas connecté")
+
     try:
         new_address = Address(
-            user=current_user,
+            user=user,
             address1=meal_data.address.address1,
             address2=meal_data.address.address2,
             formatted_address=meal_data.address.formatted_address,
@@ -287,7 +293,7 @@ async def create_meal(
             additional_information=meal_data.additional_information,
             diet=meal_data.diet,
             payment_method=meal_data.payment_method,
-            user=current_user,
+            user=user,
             address=new_address,
         )
         session.add(new_meal)

@@ -14,7 +14,7 @@ import { type DietsEnum } from '@/types/schema';
 import { Check, ChevronDown, RotateCcw, X } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { dietEnum } from '../ui/meal-form/meal-schema';
+import { dietEnum } from '../meal/meal-form/meal-schema';
 
 const DietFilter = () => {
   const searchParams = useSearchParams();

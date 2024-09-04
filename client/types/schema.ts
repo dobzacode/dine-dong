@@ -4,6 +4,13 @@ interface BaseModel {
 }
 export interface User extends BaseModel {
   open_id: string;
+  email: string;
+  username: string;
+  first_name: string | null;
+  last_name: string | null;
+  phone_number: string | null;
+  picture_url: string | null;
+  residency: Address | null;
 }
 
 export interface Address extends BaseModel {

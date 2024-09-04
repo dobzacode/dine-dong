@@ -3,10 +3,11 @@
 import { cn } from '@/lib/utils';
 import { useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
-import AddressAutoComplete from '../address-autocomplete';
-import { FormMessages } from '../address-autocomplete/form-messages';
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '../form';
-import { RadioGroup, RadioGroupItem } from '../radio-group';
+
+import AddressAutoComplete from '@/components/ui/address-autocomplete';
+import { FormMessages } from '@/components/ui/address-autocomplete/form-messages';
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import LocationMap from './location-map';
 import { paymentMethodEnum, type MealSchema } from './meal-schema';
 

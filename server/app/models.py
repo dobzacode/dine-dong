@@ -18,14 +18,7 @@ from datetime import datetime
 from typing import Literal, get_args
 
 from geoalchemy2 import Geometry, WKBElement  # type: ignore
-from sqlalchemy import (
-    DateTime,
-    ForeignKey,
-    String,
-    Uuid,
-    event,
-    func,
-)
+from sqlalchemy import DateTime, ForeignKey, String, Uuid, event, func
 from sqlalchemy import Enum as SqlEnum
 from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
@@ -46,10 +39,33 @@ class User(Base):
     user_id: Mapped[str] = mapped_column(
         Uuid(as_uuid=False), primary_key=True, default=lambda _: str(uuid.uuid4())
     )
-    open_id: Mapped[str] = mapped_column(String(256), nullable=False)
+    open_id: Mapped[str] = mapped_column(String(256), nullable=False, unique=True)
+
+    email: Mapped[str] = mapped_column(String(256), nullable=False, unique=True)
+
+    username: Mapped[str] = mapped_column(
+        String(35),
+        nullable=False,
+        unique=True,
+        default=lambda _: f"user-{uuid.uuid4()}",
+    )
+
+    first_name: Mapped[str] = mapped_column(String(35), nullable=True)
+    last_name: Mapped[str] = mapped_column(String(35), nullable=True)
+
+    phone_number: Mapped[str] = mapped_column(String(256), nullable=True)
+
+    picture_url: Mapped[str] = mapped_column(String(256), nullable=True)
 
     addresses: Mapped[list["Address"]] = relationship(
-        back_populates="user", lazy="selectin"
+        back_populates="user", lazy="selectin", foreign_keys="[Address.user_id]"
+    )
+
+    residency: Mapped["Address"] = relationship(
+        back_populates="resident",
+        lazy="selectin",
+        cascade="all, delete",
+        foreign_keys="[Address.resident_id]",
     )
 
     meals: Mapped[list["Meal"]] = relationship(
@@ -78,8 +94,19 @@ class Address(Base):
         Geometry(geometry_type="POINT", srid=4326, spatial_index=True)
     )
 
-    user: Mapped["User"] = relationship(back_populates="addresses", lazy="selectin")
+    user: Mapped["User"] = relationship(
+        back_populates="addresses", lazy="selectin", foreign_keys="[Address.user_id]"
+    )
     user_id: Mapped[str] = mapped_column(ForeignKey("user_account.user_id"))
+
+    resident: Mapped["User"] = relationship(
+        back_populates="residency",
+        lazy="selectin",
+        foreign_keys="[Address.resident_id]",
+    )
+    resident_id: Mapped[str] = mapped_column(
+        ForeignKey("user_account.user_id"), nullable=True
+    )
 
     meals: Mapped[list["Meal"]] = relationship(
         back_populates="address", lazy="selectin"

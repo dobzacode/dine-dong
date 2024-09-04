@@ -6,7 +6,7 @@ import { useEffect, useMemo } from 'react';
 import { getMeals } from '@/lib/utils';
 
 import { useGeoLocation } from '@/hooks/use-geolocation';
-import { MealWithAddressResponse, MealsResponse } from '@/types/query';
+import type { MealsResponse, MealWithAddressResponse } from '@/types/query';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { motion, type Variants } from 'framer-motion';
 import { useSearchParams } from 'next/navigation';
@@ -80,6 +80,20 @@ const MealsSection = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [fetchNextPage, isFetchingNextPage]);
 
+  if (isError) {
+    console.log(error instanceof Error ? error : 'Unknown error');
+    if (error.message.includes('404')) {
+      return (
+        <div className="flex w-full flex-col items-center justify-center">
+          <h3 className="heading-h1">Aucun repas trouvé</h3>
+        </div>
+      );
+    }
+    return (
+      <h3 className="heading-h1">Une erreur est survenue lors de la récupération des repas.</h3>
+    );
+  }
+
   if (!data) {
     return (
       <div className="flex w-full flex-col gap-lg">
@@ -103,20 +117,6 @@ const MealsSection = () => {
           ))}
         </section>
       </div>
-    );
-  }
-
-  if (isError) {
-    console.log(error instanceof Error ? error : 'Unknown error');
-    if (error.message.includes('404')) {
-      return (
-        <div className="flex w-full flex-col items-center justify-center">
-          <h3 className="heading-h1">Aucun repas trouvé</h3>
-        </div>
-      );
-    }
-    return (
-      <h3 className="heading-h1">Une erreur est survenue lors de la récupération des repas.</h3>
     );
   }
 

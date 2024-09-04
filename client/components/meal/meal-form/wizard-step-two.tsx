@@ -1,16 +1,24 @@
 'use client';
 
 import { cn } from '@/lib/utils';
-import { PopoverContent } from '@radix-ui/react-popover';
+import { Popover, PopoverContent } from '@radix-ui/react-popover';
 import { Info, PlusIcon, TrashIcon } from 'lucide-react';
 import { useFieldArray, useFormContext } from 'react-hook-form';
-import { Button } from '../button';
-import { Checkbox } from '../checkbox';
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '../form';
-import { Input } from '../input';
-import { Popover, PopoverTrigger } from '../popover';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../select';
-import { Textarea } from '../textarea';
+
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+
+import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Input } from '@/components/ui/input';
+import { PopoverTrigger } from '@/components/ui/popover';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
 import { dietEnum, unitEnum, type MealSchema } from './meal-schema';
 
 export default function WizardStepTwo({ className }: { className?: string }) {

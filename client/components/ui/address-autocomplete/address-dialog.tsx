@@ -17,7 +17,8 @@ import { type ZodError } from 'zod';
 import type { AddressType } from '.';
 
 import { Loader2 } from 'lucide-react';
-import { addressSchema } from '../meal-form/meal-schema';
+
+import { addressSchema } from '@/components/meal/meal-form/meal-schema';
 import { FormMessages } from './form-messages';
 
 interface AddressDialogProps {
@@ -140,7 +141,7 @@ export default function AddressDialog(props: React.PropsWithChildren<AddressDial
         address2: address2 || address.address2,
         locality: city || address.city,
         department: department ?? address.department,
-        'postal-code': postalCode || address.postalCode
+        'postal-code': postalCode ?? address.postalCode
       });
 
       console.log(Boolean(address1), address.address1);
@@ -161,7 +162,7 @@ export default function AddressDialog(props: React.PropsWithChildren<AddressDial
   useEffect(() => {
     setAddress1(address.address1);
     setAddress2(address.address2 || '');
-    setPostalCode(address.postalCode);
+    setPostalCode(address.postalCode ?? '');
     setCity(address.city);
     setDepartment(address.department ?? '');
 
