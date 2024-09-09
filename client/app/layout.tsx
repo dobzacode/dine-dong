@@ -1,3 +1,4 @@
+import Scroll from '@/components/scroll-fixture';
 import Providers from '@/components/wrapper/providers';
 import type { Metadata } from 'next';
 import './globals.css';
@@ -18,6 +19,7 @@ export default async function RootLayout({
       <body className="background">
         <Providers>{children}</Providers>
       </body>
+      <Scroll />
     </html>
   );
 }
