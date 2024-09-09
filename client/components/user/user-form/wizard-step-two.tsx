@@ -45,6 +45,7 @@ export default function WizardStepTwo({
           name="stepTwo.address"
           render={() => (
             <AddressAutoComplete
+              placeholder="Ajouter une adresse"
               formName="user"
               label={'Lieu de résidence'}
               //@ts-expect-error - type is valid<

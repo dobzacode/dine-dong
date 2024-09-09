@@ -222,7 +222,7 @@ function AddressAutoCompleteInput(props: CommonProps) {
           onValueChange={setSearchInput}
           onBlur={close}
           onFocus={open}
-          placeholder={placeholder ?? 'Ajouter une adresse'}
+          placeholder={'Ajouter une adresse'}
           className="body file:body flex h-10 w-full rounded-xs border border-input bg-background px-3 py-2 ring-offset-background file:border-0 file:bg-transparent file:font-medium placeholder:text-primary-900/[0.4] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
         />
       </div>
@@ -234,7 +234,7 @@ function AddressAutoCompleteInput(props: CommonProps) {
         />
       )}
 
-      {isOpen && (
+      {isOpen && searchInput !== '' ? (
         <div className="relative h-auto animate-in fade-in-0 zoom-in-95">
           <CommandList>
             <div className="absolute top-1.5 z-50 w-full">
@@ -284,7 +284,7 @@ function AddressAutoCompleteInput(props: CommonProps) {
             </div>
           </CommandList>
         </div>
-      )}
+      ) : null}
     </Command>
   );
 }

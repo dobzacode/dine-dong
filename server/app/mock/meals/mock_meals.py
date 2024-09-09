@@ -115,6 +115,7 @@ async def generate_mock_data(num_entries=10):
             await session.refresh(user)
             address_model = Address(
                 user_id=user.user_id,
+                resident_id=user.user_id,
                 address1=address["address1"],
                 formatted_address=address["formatted_address"],
                 city=address["city"],

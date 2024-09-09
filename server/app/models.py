@@ -39,6 +39,7 @@ class User(Base):
     user_id: Mapped[str] = mapped_column(
         Uuid(as_uuid=False), primary_key=True, default=lambda _: str(uuid.uuid4())
     )
+
     open_id: Mapped[str] = mapped_column(String(256), nullable=False, unique=True)
 
     email: Mapped[str] = mapped_column(String(256), nullable=False, unique=True)

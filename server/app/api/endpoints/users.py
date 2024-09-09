@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, Query, Security
-from sqlalchemy import or_, select
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api import deps
@@ -26,24 +26,24 @@ async def read_current_user(
         raise HTTPException(status_code=422, detail="ID ou sub est requis")
 
     try:
+        print(id, sub)
         user_query = (
-            select(User)
-            .where(or_(User.user_id == id, User.open_id == sub))
-            .join(Address, User.residency)
+            select(User).join(Address, User.residency).where(User.user_id == id)
         )
-        result = await session.scalar(user_query)
-        user = result
+        user = await session.scalar(user_query)
+        print(user_query)
 
-        if not user:
-            raise HTTPException(status_code=404, detail="Utilisateur non trouvé")
-
-        return user
     except Exception as e:
         print(e, "Error")
         raise HTTPException(
             status_code=500,
             detail="Une erreur est survenue lors de la récupération des détails de l'utilisateur",
         )
+
+    if not user:
+        raise HTTPException(status_code=404, detail="Utilisateur non trouvé")
+
+    return user
 
 
 @router.get(

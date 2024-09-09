@@ -16,7 +16,7 @@ export async function UserInformations({ id }: { id: string }) {
           skeletoncss={'h-full w-full object-cover absolute object-center rounded-xs'}
           priority
           fill
-          src={'/placeholder.jpg'}
+          src={user.picture_url ?? '/placeholder.jpg'}
           alt={'user.name'}
           sizes={'(max-width: 768px) 100vw, 200px'}
           className="rounded-xs object-cover object-center"
