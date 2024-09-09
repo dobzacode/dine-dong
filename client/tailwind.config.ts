@@ -16,7 +16,7 @@ const config = {
   darkMode: 'class',
   theme: {
     screens: {
-      'mobile-sm': '320px',
+      'mobile-sm': '380px',
       mobile: '480px',
       'mobile-lg': '640px',
       tablet: '768px',

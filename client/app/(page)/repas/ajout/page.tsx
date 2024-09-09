@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 
 export default async function Home() {
   return (
-    <section className="container mx-auto flex h-full max-w-[1200px] justify-center pt-3xl">
+    <section className="container mx-auto flex h-full max-w-[1200px] flex-col justify-center pt-3xl">
       <MealForm />
     </section>
   );

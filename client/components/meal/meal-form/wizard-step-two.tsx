@@ -34,12 +34,12 @@ export default function WizardStepTwo({ className }: { className?: string }) {
   return (
     <>
       <fieldset className={cn('flex flex-col gap-md text-primary-container-fg', className)}>
-        <div className="flex w-full gap-md text-primary-container-fg">
+        <div className="flex w-full gap-md text-primary-container-fg max-mobile:flex-col">
           <FormField
             control={form.control}
             name="stepTwo.weight"
             render={({ field }) => (
-              <FormItem className="flex w-1/2 flex-col">
+              <FormItem className="flex w-1/2 flex-col max-mobile:w-full">
                 <FormLabel>Poids du repas (en grammes)</FormLabel>
                 <FormControl>
                   <Input
@@ -60,7 +60,7 @@ export default function WizardStepTwo({ className }: { className?: string }) {
             control={form.control}
             name="stepTwo.diet"
             render={() => (
-              <FormItem className="flex w-1/2 flex-col">
+              <FormItem className="flex w-1/2 flex-col max-mobile:w-full">
                 <FormLabel className="body">Régime alimentaire (optionnel)</FormLabel>
                 <div className="grid grid-cols-2 gap-sm">
                   {dietEnum.map((item) => (
@@ -146,15 +146,20 @@ export default function WizardStepTwo({ className }: { className?: string }) {
         <div className="flex w-full flex-col gap-sm">
           <ul className="flex w-full grow flex-col gap-xs">
             {fields.map((field, index) => (
-              <li className={cn('flex w-full gap-xs')} key={field.id}>
+              <li
+                className={cn(
+                  'flex w-full gap-xs max-mobile:grid max-mobile:grid-cols-6 max-mobile:grid-rows-2'
+                )}
+                key={field.id}
+              >
                 <FormField
                   control={form.control}
                   name={`stepTwo.ingredients.${index}.name`}
                   render={({ field }) => (
-                    <FormItem>
+                    <FormItem className="grow max-mobile:col-span-5 max-mobile:col-start-1 max-mobile:row-start-1">
                       <FormControl>
                         <Input
-                          className="grow rounded-r-none"
+                          className="rounded-r-none"
                           placeholder="Haricots rouges *"
                           {...field}
                         />
@@ -171,7 +176,7 @@ export default function WizardStepTwo({ className }: { className?: string }) {
                   control={form.control}
                   name={`stepTwo.ingredients.${index}.quantity`}
                   render={({ field }) => (
-                    <FormItem>
+                    <FormItem className="max-mobile:col-span-1 max-mobile:col-start-1 max-mobile:row-start-2">
                       <FormControl>
                         <Input
                           className={cn('rounded-none', !field.value && 'text-primary-900/[0.4]')}
@@ -201,7 +206,7 @@ export default function WizardStepTwo({ className }: { className?: string }) {
                   control={form.control}
                   name={`stepTwo.ingredients.${index}.unit`}
                   render={({ field }) => (
-                    <FormItem className="grow">
+                    <FormItem className="grow max-mobile:col-span-4 max-mobile:col-start-2 max-mobile:row-start-2">
                       <Select defaultValue={field.value} onValueChange={field.onChange}>
                         <FormControl>
                           <SelectTrigger className="rounded-none">
@@ -233,10 +238,10 @@ export default function WizardStepTwo({ className }: { className?: string }) {
                     }
                     remove(index);
                   }}
-                  className="rounded-l-none bg-background hover:bg-background/80 hover:[&>svg]:text-error"
+                  className="rounded-l-none bg-background hover:bg-background/80 max-mobile:col-start-6 max-mobile:row-start-1 hover:[&>svg]:text-error"
                   variant={'outline'}
                 >
-                  <TrashIcon className="h-4 w-4 text-error opacity-50" />
+                  <TrashIcon className="h-4 w-4 shrink-0 text-error opacity-50" />
                 </Button>
               </li>
             ))}

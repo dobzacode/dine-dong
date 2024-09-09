@@ -54,6 +54,8 @@ class User(Base):
     first_name: Mapped[str] = mapped_column(String(35), nullable=True)
     last_name: Mapped[str] = mapped_column(String(35), nullable=True)
 
+    about_me: Mapped[str] = mapped_column(String(256), nullable=True)
+
     phone_number: Mapped[str] = mapped_column(String(256), nullable=True)
 
     picture_url: Mapped[str] = mapped_column(String(256), nullable=True)

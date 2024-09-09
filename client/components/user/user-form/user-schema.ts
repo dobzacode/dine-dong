@@ -33,8 +33,21 @@ const firstStepSchema = z.object({
         return true;
       }
     }, "L'adresse email est déjà prise"),
-  firstName: z.string().max(35, 'Le prénom ne doit pas dépasser 35 caractères').refine(isAlphanumeric, "Le prénom ne doit contenir que des lettres et des chiffres"),
-  lastName: z.string().max(35, 'Le nom ne doit pas dépasser 35 caractères').refine(isAlphanumeric, "Le prénom ne doit contenir que des lettres et des chiffres"),
+  firstName: z
+    .string()
+    .max(35, 'Le prénom ne doit pas dépasser 35 caractères')
+    .refine(
+      (value) => (value === '' ? true : isAlphanumeric(value)),
+      'Le prénom ne doit contenir que des lettres et des chiffres'
+    ),
+  lastName: z
+    .string()
+    .max(35, 'Le nom ne doit pas dépasser 35 caractères')
+    .refine(
+      (value) => (value === '' ? true : isAlphanumeric(value)),
+      'Le prénom ne doit contenir que des lettres et des chiffres'
+    ),
+  aboutMe: z.string().max(256, 'Le texte ne doit pas dépasser 256 caractères'),
   phoneNumber: z
     .string()
     .refine(isValidPhoneNumber, { message: 'Le numéro de téléphone est invalide' })

@@ -23,12 +23,12 @@ export default function WizardStepOne({ className }: { className?: string }) {
   return (
     <>
       <fieldset className={cn('flex flex-col gap-md text-primary-container-fg', className)}>
-        <fieldset className="flex w-full gap-md">
+        <fieldset className="flex w-full gap-md max-mobile-sm:flex-col">
           <FormField
             control={form.control}
             name="stepOne.name"
             render={({ field }) => (
-              <FormItem className="flex w-1/2 flex-col">
+              <FormItem className="flex w-1/2 flex-col max-mobile-sm:w-full">
                 <FormLabel>Nom du repas</FormLabel>
                 <FormControl>
                   <Input required placeholder="Chili con carne" {...field} />
@@ -41,7 +41,7 @@ export default function WizardStepOne({ className }: { className?: string }) {
             control={form.control}
             name="stepOne.price"
             render={({ field }) => (
-              <FormItem className="flex w-1/2 flex-col">
+              <FormItem className="flex w-1/2 flex-col max-mobile-sm:w-full">
                 <FormLabel>Prix du repas (en euros)</FormLabel>
                 <FormControl>
                   <Input
@@ -59,12 +59,12 @@ export default function WizardStepOne({ className }: { className?: string }) {
             )}
           />
         </fieldset>
-        <fieldset className="flex w-full justify-between gap-md">
+        <fieldset className="flex w-full justify-between gap-md max-mobile-sm:flex-col">
           <FormField
             control={form.control}
             name="stepOne.cookingDate"
             render={({ field }) => (
-              <FormItem className="flex w-1/2 flex-col">
+              <FormItem className="flex w-1/2 flex-col max-mobile-sm:w-full">
                 <FormLabel>Date de préparation</FormLabel>
                 <Popover open={isCookingCalendarOpen} onOpenChange={setIsCookingCalendarOpen}>
                   <PopoverTrigger asChild>
@@ -114,7 +114,7 @@ export default function WizardStepOne({ className }: { className?: string }) {
             control={form.control}
             name="stepOne.expirationDate"
             render={({ field }) => (
-              <FormItem className="flex w-1/2 flex-col">
+              <FormItem className="flex w-1/2 flex-col max-mobile-sm:w-full">
                 <FormLabel>Date de péremption</FormLabel>
                 <Popover open={isExpirationCalendarOpen} onOpenChange={setIsExpirationCalendarOpen}>
                   <PopoverTrigger asChild>

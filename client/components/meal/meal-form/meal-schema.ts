@@ -73,7 +73,7 @@ const secondStepSchema = z.object({
           .string()
           .min(1, "Le nom de l'ingrédient est requis")
           .max(25, 'Le nom ne doit pas dépasser 25 caractères')
-          .refine(isAlpha, "Le nom de l'ingrédient ne doit contenir que des lettres"),
+          .refine((value) => (value === '' ? true : isAlpha(value)), "Le nom de l'ingrédient ne doit contenir que des lettres"),
         quantity: z.coerce
           .number()
           .min(1, 'La quantité doit être supérieure à 0')

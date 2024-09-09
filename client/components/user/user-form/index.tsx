@@ -64,6 +64,7 @@ const createUserMutation = async ({
       username: data.stepOne.username,
       first_name: data.stepOne.firstName,
       last_name: data.stepOne.lastName,
+      about_me: data.stepOne.aboutMe,
       phone_number: data.stepOne.phoneNumber,
       sub: sub,
       picture_url: picturekey
@@ -139,8 +140,9 @@ export default function UserForm(props: UserFormProps) {
       stepOne: {
         email: email,
         username: username,
-        firstName: firstName,
-        lastName: lastName,
+        firstName: firstName ?? '',
+        lastName: lastName ?? '',
+        aboutMe: '',
         phoneNumber: '',
         image: undefined
       },
@@ -226,7 +228,7 @@ export default function UserForm(props: UserFormProps) {
     <FormProvider {...methods}>
       <form
         className={cn(
-          'section-px container mx-auto flex flex-col gap-xl laptop:max-w-[800px]',
+          'section-px container mx-auto flex flex-col gap-xl laptop-sm:max-w-[800px]',
           isPending && 'pointer-events-none'
         )}
         onSubmit={handleSubmit(onSubmit)}

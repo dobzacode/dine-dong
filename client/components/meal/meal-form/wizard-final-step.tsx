@@ -10,8 +10,8 @@ export default function WizardFinalStep({ className }: { className?: string }) {
 
   return (
     <div className={cn('flex flex-col gap-lg', className)}>
-      <section className="flex w-full gap-lg">
-        <div className="flex h-fit w-fit shrink-0 grow flex-col gap-md rounded-xs border bg-background p-md text-primary-container-fg">
+      <section className="flex w-full gap-lg max-mobile-lg:flex-col">
+        <div className="flex h-fit w-full shrink-0 grow flex-col gap-md rounded-xs border bg-background p-md text-primary-container-fg mobile-lg:w-fit">
           <h3 className="heading-h3 font-semibold text-primary-container-fg">
             Informations générales
           </h3>
@@ -43,7 +43,7 @@ export default function WizardFinalStep({ className }: { className?: string }) {
             </div>
           </div>
         </div>
-        <div className="relative w-8xl overflow-hidden rounded-xs">
+        <div className="relative mobile-lg:w-8xl overflow-hidden rounded-xs max-mobile-lg:aspect-square">
           <Image
             className="grow-0 rounded-xs object-cover"
             sizes={`(max-width: 768px) 100vw, 800px`}

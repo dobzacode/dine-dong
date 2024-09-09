@@ -216,7 +216,7 @@ export default function MealForm() {
     <FormProvider {...methods}>
       <form
         className={cn(
-          'section-px container mx-auto flex flex-col gap-xl laptop:max-w-[800px]',
+          'section-px container mx-auto flex flex-col gap-xl laptop-sm:max-w-[800px]',
           isPending && 'pointer-events-none'
         )}
         onSubmit={handleSubmit(onSubmit)}
