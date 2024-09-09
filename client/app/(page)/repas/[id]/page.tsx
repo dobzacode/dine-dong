@@ -46,8 +46,8 @@ export default async function Home({ params }: Props) {
   }
 
   return (
-    <section className="section-px inner-section-gap shadow-primary-40 container flex justify-center">
-      <div className="relative h-[75vh] w-2/3 rounded-xs">
+    <section className="section-px shadow-primary-40 container flex flex-col justify-center gap-sm tablet:flex-row">
+      <div className="relative aspect-square w-full rounded-xs tablet:w-2/3">
         <ImagePulsing
           skeletoncss={'h-full w-full object-cover absolute object-center rounded-xs'}
           priority
@@ -58,7 +58,7 @@ export default async function Home({ params }: Props) {
           className="rounded-xs object-cover object-center"
         />
       </div>
-      <div className="flex flex-col gap-md">
+      <div className="flex flex-col gap-sm">
         <UserInformations id={meal.user_id} />
         <MealInformations {...meal} />
       </div>
