@@ -21,7 +21,7 @@ export function MealInformations(props: MealDetailsResponse) {
       <div className="flex flex-col">
         <h2 className="heading-h1 font-bold text-primary-container-fg">{name}</h2>
         {dietArr.length > 0 && (
-          <div className="body-sm flex items-center gap-xs text-primary-900/70 opacity-90">
+          <div className="body-sm flex items-center gap-xs text-grayed opacity-90">
             {dietArr.map((diet, index) => (
               <>
                 <p key={diet} className="body-sm flex items-center gap-sm">
@@ -33,7 +33,7 @@ export function MealInformations(props: MealDetailsResponse) {
           </div>
         )}
         {additional_information && (
-          <p className="body-sm w-[30ch] pt-sm text-primary-900/70 opacity-90">
+          <p className="body-sm w-[30ch] pt-sm text-grayed opacity-90">
             {additional_information}
           </p>
         )}
@@ -41,7 +41,7 @@ export function MealInformations(props: MealDetailsResponse) {
       <Separator />
       <div className="flex flex-col">
         <h1 className="heading-h4 font-bold text-primary-container-fg">Liste des ingrédients</h1>
-        <div className="body-sm flex items-center gap-xs text-primary-900/70 opacity-90">
+        <div className="body-sm flex items-center gap-xs text-grayed opacity-90">
           {ingredients.map((ingredient, index) => (
             <>
               <p className="body-sm flex items-center gap-sm">{ingredient.name}</p>
@@ -55,10 +55,10 @@ export function MealInformations(props: MealDetailsResponse) {
       <Separator />
       <div className="flex flex-col">
         <h2 className="heading-h4 font-bold text-primary-container-fg">Paiement</h2>
-        <p className="body-sm text-primary-900/70 opacity-90">
+        <p className="body-sm text-grayed opacity-90">
           {payment_method === 'ONLINE' ? 'Paiement en ligne' : 'Paiement en personne'}
         </p>
-        <p className="body-sm pt-sm text-primary-900/70 opacity-90">
+        <p className="body-sm pt-sm text-grayed opacity-90">
           <span className="font-semibold">{price} €</span> le plat de{' '}
           <span className="font-semibold">{weight} grammes</span>
         </p>
@@ -66,8 +66,8 @@ export function MealInformations(props: MealDetailsResponse) {
       <Separator />
       <div className="flex flex-col">
         <h2 className="heading-h4 font-bold text-primary-container-fg">Livraison</h2>
-        <p className="body-sm text-primary-900/70 opacity-90">A venir récupérer</p>
-        <p className="body-sm py-sm text-primary-900/70 opacity-90">{formatted_address}</p>
+        <p className="body-sm text-grayed opacity-90">A venir récupérer</p>
+        <p className="body-sm py-sm text-grayed opacity-90">{formatted_address}</p>
         <div className="w-full py-sm">
           <LocationMap lat={lat} lng={lng} />
         </div>

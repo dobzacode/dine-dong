@@ -85,7 +85,7 @@ export async function getMealsSummaries<T>(
 }
 
 export async function getUserInformations(
-  params: { id?: string; sub?: string },
+  params: { id?: string; sub?: string, username?: string },
   nextParams?: NextFetchRequestConfig
 ) {
   const url = new URL('http://localhost:3000/api/users');
@@ -111,6 +111,8 @@ export async function getUserInformations(
       throw new Error('Erreur inconnue');
   }
 }
+
+
 
 export async function checkUsernameAvailability(username: string) {
   const url = new URL('http://localhost:3000/api/users/check-username-availability');

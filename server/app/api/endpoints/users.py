@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, Query, Security
-from sqlalchemy import select
+from sqlalchemy import or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api import deps
@@ -17,21 +17,24 @@ auth = VerifyToken()
     description="Obtenir les informations de l'utilisateur par ID",
     response_model=UserResponse,
 )
-async def read_current_user(
+async def get_user_informations(
     session: AsyncSession = Depends(deps.get_session),
     id: str = Query(None, description="ID de l'utilisateur à récupérer"),
     sub: str = Query(None, description="Sub de l'utilisateur à récupérer"),
+    username: str = Query(None, description="Pseudo de l'utilisateur à récupérer"),
 ):
-    if not id and not sub:
-        raise HTTPException(status_code=422, detail="ID ou sub est requis")
+    if not id and not sub and not username:
+        raise HTTPException(status_code=422, detail="ID, sub ou username requis")
 
     try:
-        print(id, sub)
         user_query = (
-            select(User).join(Address, User.residency).where(User.user_id == id)
+            select(User)
+            .join(Address, User.residency)
+            .where(
+                or_(User.user_id == id, User.username == username, User.open_id == sub)
+            )
         )
         user = await session.scalar(user_query)
-        print(user_query)
 
     except Exception as e:
         print(e, "Error")
@@ -121,6 +124,24 @@ async def check_email_availability(
         raise HTTPException(
             status_code=500,
             detail="Une erreur est survenue lors de la récupération des détails de l'utilisateur",
+        )
+
+
+@router.get("/get-user-params", response_model=list[str])
+async def get_user_params(
+    session: AsyncSession = Depends(deps.get_session),
+):
+    try:
+        user_query = select(User.username)
+        result = await session.execute(user_query)
+        usernames = result.scalars().all()
+
+        return usernames
+    except Exception as e:
+        print(e, "Error")
+        raise HTTPException(
+            status_code=500,
+            detail="Une erreur est survenue lors de la récupération des pseudos des utilisateurs",
         )
 
 

@@ -22,8 +22,8 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata | undefined> {
-  const meal = await getMealsSummaries<MealSummaryResponse>(params, {
-    tags: [`meal-summary-${params.id}`]
+  const meal = await getMealDetails(params, {
+    tags: [`meal-details-${params.id}`]
   });
 
   if (!meal || meal instanceof Error) {
@@ -32,7 +32,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata | un
 
   return {
     title: meal.name,
-    description: meal.description
+    description: meal.additional_information ?? null
   } satisfies Metadata;
 }
 

@@ -1,6 +1,12 @@
 import FilterSortMenu from '@/components/home/filter-sort-menu';
 import MealsSection from '@/components/home/meals-section';
 import SearchBar from '@/components/home/search-bar';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Dine Dong | Accueil',
+  description: "Accueil de l'application"
+};
 
 export default async function Home() {
   return (

@@ -1,6 +1,12 @@
 import UserForm from '@/components/user/user-form';
 import { verify } from 'jsonwebtoken';
+import { Metadata } from 'next';
 import { redirect } from 'next/navigation';
+
+export const metadata: Metadata = {
+  title: 'Création de compte | Accueil',
+  description: 'Création de compte'
+};
 
 export default async function Page({
   searchParams

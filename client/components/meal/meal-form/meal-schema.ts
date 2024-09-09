@@ -1,4 +1,5 @@
 import { DietsEnum, PaymentMethodsEnum, UnitEnum } from '@/types/schema';
+import { isAlpha } from 'validator';
 import { z } from 'zod';
 
 export const MAX_FILE_SIZE = 5000000;
@@ -19,7 +20,8 @@ const firstStepSchema = z.object({
   name: z
     .string()
     .min(1, 'Le nom du plat est requis')
-    .max(60, 'Le nom ne doit pas dépasser 60 caractères'),
+    .max(60, 'Le nom ne doit pas dépasser 60 caractères')
+    .refine(isAlpha, 'Le nom ne doit contenir que des lettres'),
   price: z.coerce
     .number({
       message: 'Le prix est requis'
@@ -70,7 +72,8 @@ const secondStepSchema = z.object({
         name: z
           .string()
           .min(1, "Le nom de l'ingrédient est requis")
-          .max(25, 'Le nom ne doit pas dépasser 25 caractères'),
+          .max(25, 'Le nom ne doit pas dépasser 25 caractères')
+          .refine(isAlpha, "Le nom de l'ingrédient ne doit contenir que des lettres"),
         quantity: z.coerce
           .number()
           .min(1, 'La quantité doit être supérieure à 0')

@@ -1,5 +1,6 @@
 import { checkEmailAvailability, checkUsernameAvailability } from '@/lib/utils';
 import { isValidPhoneNumber } from 'react-phone-number-input';
+import { isAlphanumeric } from 'validator';
 import { z } from 'zod';
 
 export const MAX_FILE_SIZE = 5000000;
@@ -23,6 +24,7 @@ const firstStepSchema = z.object({
     .string()
     .min(1, "Le nom d'utilisateur est requis")
     .max(35, "Le nom d'utilisateur ne doit pas dépasser 35 caractères")
+    .refine(isAlphanumeric, "Le nom d'utilisateur ne doit contenir que des lettres et des chiffres")
     .refine(async (username) => {
       if (username.trim()) {
         const isAvailable = await checkUsernameAvailability(username);
@@ -31,8 +33,8 @@ const firstStepSchema = z.object({
         return true;
       }
     }, "L'adresse email est déjà prise"),
-  firstName: z.string().max(35, 'Le prénom ne doit pas dépasser 35 caractères'),
-  lastName: z.string().max(35, 'Le nom ne doit pas dépasser 35 caractères'),
+  firstName: z.string().max(35, 'Le prénom ne doit pas dépasser 35 caractères').refine(isAlphanumeric, "Le prénom ne doit contenir que des lettres et des chiffres"),
+  lastName: z.string().max(35, 'Le nom ne doit pas dépasser 35 caractères').refine(isAlphanumeric, "Le prénom ne doit contenir que des lettres et des chiffres"),
   phoneNumber: z
     .string()
     .refine(isValidPhoneNumber, { message: 'Le numéro de téléphone est invalide' })

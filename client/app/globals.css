@@ -104,12 +104,20 @@
     @apply text-primary-500 dark:text-primary-300;
   }
 
+  .text-grayed {
+    @apply text-primary-900/70;
+  }
+
   .disable-opacity {
     @apply opacity-50 shadow-none;
   }
 
   .section-px {
     @apply px-md mobile:px-md mobile-lg:px-lg tablet:px-xl laptop-sm:px-3xl laptop:px-4xl;
+  }
+
+  .section-py {
+    @apply py-md mobile:py-md mobile-lg:py-lg tablet:py-xl laptop-sm:py-2xl laptop:py-2xl;
   }
 
   .inner-section-gap {
