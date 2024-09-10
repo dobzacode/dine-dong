@@ -10,6 +10,7 @@ import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/comp
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/components/ui/use-toast';
+import { customRevalidateTag } from '@/lib/actions';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { Settings } from 'lucide-react';
@@ -77,7 +78,7 @@ const modifyProfileMutation = async ({
   return dataResponse;
 };
 
-export default function ProfilForm({ user }: { user: UserResponse }) {
+export default function ProfilForm({ user, sub }: { user: UserResponse; sub: string }) {
   const { last_name, first_name, picture_url, residency, about_me, user_id } = user;
 
   const { toast } = useToast();
@@ -85,6 +86,7 @@ export default function ProfilForm({ user }: { user: UserResponse }) {
   const { isPending, mutateAsync } = useMutation({
     mutationFn: modifyProfileMutation,
     onSuccess: (data: string) => {
+      customRevalidateTag(`user-informations-${sub}`);
       console.log('User modified successfully:', data);
       toast({
         title: `Votre profile a été modifié avec succès !`,

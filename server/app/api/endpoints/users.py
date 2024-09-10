@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.api import deps
 from app.core.security.authenticate import VerifyToken
 from app.models import Address, User
-from app.schemas.requests import CreateUserRequest, modifyUserProfileRequest
+from app.schemas.requests import CreateUserRequest, modifyUserRequest
 from app.schemas.responses import UserResponse
 from app.utils.utils import update_if_not_none
 
@@ -199,8 +199,8 @@ async def create_user(
     response_model=str,
     status_code=200,
 )
-async def modify_user_profile(
-    user_data: modifyUserProfileRequest,
+async def modify_user(
+    user_data: modifyUserRequest,
     session: AsyncSession = Depends(deps.get_session),
     token: dict[str, str] = Depends(deps.extract_sub_email_from_jwt),
     auth: dict = Security(auth.verify),
@@ -220,6 +220,9 @@ async def modify_user_profile(
         )
 
     try:
+        update_if_not_none(user, "username", user_data.username)
+        update_if_not_none(user, "email", user_data.email)
+        update_if_not_none(user, "phone_number", user_data.phone_number)
         update_if_not_none(user, "first_name", user_data.first_name)
         update_if_not_none(user, "last_name", user_data.last_name)
         update_if_not_none(user, "about_me", user_data.about_me)

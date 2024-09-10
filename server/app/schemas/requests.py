@@ -17,8 +17,11 @@ class CreateUserRequest(User):
     sub: str
 
 
-class modifyUserProfileRequest(BaseRequest):
+class modifyUserRequest(BaseRequest):
     user_id: str
+    username: str | None = None
+    email: str | None = None
+    phone_number: str | None = None
     first_name: str | None = None
     last_name: str | None = None
     about_me: str | None = None

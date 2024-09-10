@@ -1,11 +1,9 @@
 import { addressSchema } from '@/components/meal/meal-form/meal-schema';
+import { ACCEPTED_IMAGE_TYPES, MAX_FILE_SIZE } from '@/components/settings/profil/profil-schema';
 import { checkEmailAvailability, checkUsernameAvailability } from '@/lib/utils';
 import { isValidPhoneNumber } from 'react-phone-number-input';
 import { isAlpha, isAlphanumeric, isEmail } from 'validator';
 import { z } from 'zod';
-
-export const MAX_FILE_SIZE = 5000000;
-export const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
 
 export const firstStepSchema = z.object({
   email: z
@@ -34,7 +32,7 @@ export const firstStepSchema = z.object({
       } else {
         return true;
       }
-    }, "L'adresse email est déjà prise"),
+    }, "Le nom d'utilisateur est déjà pris"),
   firstName: z
     .string()
     .max(35, 'Le prénom ne doit pas dépasser 35 caractères')

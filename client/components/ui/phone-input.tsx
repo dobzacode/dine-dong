@@ -24,16 +24,22 @@ import { ScrollArea } from './scroll-area';
 type PhoneInputProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'value'> &
   Omit<RPNInput.Props<typeof RPNInput.default>, 'onChange'> & {
     onChange?: (value: RPNInput.Value) => void;
+    isBordered?: boolean;
   };
 
 const PhoneInput: React.ForwardRefExoticComponent<PhoneInputProps> = React.forwardRef<
   React.ElementRef<typeof RPNInput.default>,
   PhoneInputProps
->(({ className, onChange, ...props }, ref) => {
+>(({ className, onChange, isBordered, ...props }, ref) => {
   return (
     <RPNInput.default
       ref={ref}
-      className={cn('flex', className)}
+      className={cn(
+        'flex',
+        className,
+        isBordered &&
+          'border-b focus-within:border-primary-400 [&>*:focus-visible]:ring-0 [&>*]:rounded-none [&>*]:border-x-0 [&>*]:border-b-0 [&>*]:border-t-0 [&>*]:px-2 [&>*]:ring-0'
+      )}
       flagComponent={FlagComponent}
       countrySelectComponent={CountrySelect}
       inputComponent={InputComponent}

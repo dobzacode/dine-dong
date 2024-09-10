@@ -45,6 +45,10 @@ export default function Loading() {
           </div>
         </div>
       </div>
+      <div className="flex w-full gap-sm">
+        <Skeleton className="h-12 w-1/2 rounded rounded-r-none" />
+        <Skeleton className="h-12 w-1/2 rounded rounded-l-none" />
+      </div>
     </section>
   );
 }

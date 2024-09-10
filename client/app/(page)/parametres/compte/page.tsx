@@ -1,4 +1,4 @@
-import ProfilForm from '@/components/settings/profil/profil-form';
+import AccountForm from '@/components/settings/account/account-form';
 import { getUserInformations } from '@/lib/utils';
 import { getSession } from '@auth0/nextjs-auth0';
 import { redirect } from 'next/navigation';
@@ -20,5 +20,5 @@ export default async function Page() {
     { tags: [`user-informations-${session.user.sub}`] }
   );
 
-  return <ProfilForm user={user} sub={session.user.sub as string} />;
+  return <AccountForm user={user} sub={session.user.sub as string} />;
 }
