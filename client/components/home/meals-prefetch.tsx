@@ -15,7 +15,7 @@ export default async function MealsPrefetch({
     name,
     diet,
     radius: typeof radius === 'string' ? parseInt(radius) : undefined,
-    sort: sort !== 'distance' || 'price' ? undefined : sort,
+    sort: sort,
     max_price,
     lat: typeof lat === 'string' ? parseFloat(lat) : undefined,
     lng: typeof lng === 'string' ? parseFloat(lng) : undefined
