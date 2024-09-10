@@ -5,7 +5,7 @@ import type { UserResponse } from '@/types/query';
 
 import AddressAutoComplete from '@/components/ui/address-autocomplete';
 import { FormMessages } from '@/components/ui/address-autocomplete/form-messages';
-import { Button, buttonVariants } from '@/components/ui/button';
+import { Button } from '@/components/ui/button';
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -169,18 +169,18 @@ export default function ProfilForm({ user }: { user: UserResponse }) {
     <FormProvider {...form}>
       <form
         className={cn(
-          'section-px container mx-auto flex flex-col gap-md laptop-sm:max-w-[800px]',
+          'laptop-sm:section-px container mx-auto flex flex-col gap-md laptop-sm:max-w-[800px]',
           isPending && 'pointer-events-none animate-pulse'
         )}
       >
         <fieldset className="flex w-full flex-col justify-between gap-lg rounded-xs border border-input bg-background p-lg">
-          <div className="flex w-full justify-between gap-lg">
-            <div className="flex w-full grow flex-col gap-lg">
+          <div className="flex w-full gap-lg">
+            <div className="flex w-full flex-col gap-lg">
               <FormField
                 control={form.control}
                 name="firstName"
                 render={({ field }) => (
-                  <FormItem className="flex w-full flex-col">
+                  <FormItem className="flex flex-col">
                     <FormLabel>Prénom</FormLabel>
                     <FormControl>
                       <Input
@@ -215,40 +215,36 @@ export default function ProfilForm({ user }: { user: UserResponse }) {
               control={form.control}
               name="image"
               render={({ field }) => (
-                <FormItem className="flex h-full w-full flex-col">
-                  <FormLabel className="">Photo de profil</FormLabel>
+                <FormItem className="flex h-full w-fit shrink-0 flex-col">
+                  <FormLabel className="w-fit">Photo de profil</FormLabel>
 
-                  <div className="flex w-full flex-row gap-sm">
-                    <div className="relative aspect-square h-full w-5xl rounded-xs">
-                      <Image
-                        alt="Photo de profil"
-                        fill
-                        sizes={'10vw'}
-                        src={imagePreview as string}
-                        className="rounded-xs object-cover"
-                        priority
-                      />
-                    </div>
-                    <Input
-                      placeholder="Choisir une photo"
-                      type="file"
-                      accept="image/*"
-                      onChange={handleImageUpload}
-                      className="hidden"
-                      id="file-input"
+                  <div className="relative aspect-square h-full w-5xl rounded-xs">
+                    <Image
+                      alt="Photo de profil"
+                      fill
+                      sizes={'10vw'}
+                      src={imagePreview as string}
+                      className="rounded-xs object-cover"
+                      priority
                     />
-                    <label htmlFor="file-input" className="shrink-0 cursor-pointer">
-                      <span
-                        className={cn(
-                          buttonVariants({ variant: 'outline' }),
-                          'body-sm flex gap-xs'
-                        )}
-                      >
-                        <Settings className="shrink-0" size={16} />
-                        Modifier
-                      </span>
-                    </label>
+                    <div className="absolute right-0 top-0 z-20">
+                      <Input
+                        placeholder="Choisir une photo"
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageUpload}
+                        className="hidden"
+                        id="file-input"
+                      />
+                      <label htmlFor="file-input" className="shrink-0 cursor-pointer">
+                        <Settings
+                          className="body-sm flex h-8 w-8 shrink-0 rounded-xs rounded-br-none rounded-tl-none rounded-tr-none border border-input bg-background p-1.5 hover:opacity-90"
+                          size={16}
+                        />
+                      </label>
+                    </div>
                   </div>
+
                   <FormMessage />
                 </FormItem>
               )}
@@ -274,7 +270,7 @@ export default function ProfilForm({ user }: { user: UserResponse }) {
             )}
           />
         </fieldset>
-        <fieldset className="flex w-full flex-col justify-between gap-lg rounded-xs border border-input bg-background p-lg">
+        <fieldset className="flex w-full shrink-0 flex-col justify-between gap-lg rounded-xs border border-input bg-background p-lg">
           <FormField
             control={form.control}
             name="stepTwo.address"

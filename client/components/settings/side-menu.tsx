@@ -7,9 +7,9 @@ export default function SideMenu() {
   const pathname = usePathname();
 
   return (
-    <aside className="flex w-1/3 flex-col gap-md">
+    <aside className="flex w-1/3 flex-col gap-md max-laptop-sm:px-sm">
       <h1 className="heading-h1 font-medium">Paramètres</h1>
-      <nav className="[&>a]:heading-h4 flex flex-col gap-sm">
+      <nav className="[&>a]:heading-h4 flex gap-md laptop-sm:flex-col laptop-sm:gap-sm">
         <Link
           className={pathname === '/parametres/profil' ? '' : 'text-grayed'}
           href="/parametres/profil"
