@@ -8,22 +8,14 @@ import { getMeals } from '@/lib/utils';
 import { useGeoLocation } from '@/hooks/use-geolocation';
 import type { MealsResponse, MealWithAddressResponse } from '@/types/query';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { motion, type Variants } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useSearchParams } from 'next/navigation';
-import { Skeleton } from '../ui/skeleton';
+import { delayFadeInVariant } from '../framer/div-variants';
 import MealSnippet, { MealSnippetSkeleton } from './meal/meal-snippet';
+import MealsSectionSkeleton from './meals-section-skeleton';
 import Reset from './reset';
 
-const delayFadeInVariant: Variants = {
-  hidden: { opacity: 0 },
-  enter: (custom) => ({
-    opacity: 1,
-    transition: { duration: 0.4, delay: 0.05 * custom }
-  }),
-  exit: { opacity: 0, transition: { duration: 0.5 } }
-};
-
-const MealsSection = () => {
+const MealsSection = ({ prefetchMeals }: { prefetchMeals: MealsResponse }) => {
   const searchParams = useSearchParams();
   const location = useGeoLocation();
 
@@ -52,11 +44,12 @@ const MealsSection = () => {
     Error
   >({
     queryKey: ['search-meals', fetchOptions],
-    //@ts-expect-error - type is valid
+    //@ts-expect-error - type is valid<
     queryFn: async ({ pageParam = 0 }) => {
       const response = await getMeals({ ...fetchOptions, offset: pageParam, limit: 20 });
       return response;
     },
+    initialData: { pages: [prefetchMeals], pageParams: [undefined] },
     getNextPageParam: (lastPage, allPages) => (lastPage.hasMore ? allPages.length * 20 : undefined),
     refetchOnWindowFocus: false,
     retry: false
@@ -95,29 +88,7 @@ const MealsSection = () => {
   }
 
   if (!data) {
-    return (
-      <div className="flex w-full flex-col gap-lg">
-        <div className="flex w-full items-end justify-between gap-xs">
-          <Skeleton className="h-6 w-20" />
-          <Skeleton className="h-9 w-36 rounded-full" />
-        </div>
-        <section className="flex w-full flex-wrap gap-md mobile-lg:grid mobile-lg:grid-cols-2 mobile-lg:gap-y-xl tablet:grid-cols-3 tablet:gap-x-md tablet:gap-y-2xl laptop:grid-cols-5">
-          {Array.from({ length: 20 }).map((_, i) => (
-            <motion.div
-              initial="hidden"
-              className="w-full"
-              exit="exit"
-              animate="enter"
-              key={`search-meal-skeleton-${i}`}
-              variants={delayFadeInVariant}
-              custom={i}
-            >
-              <MealSnippetSkeleton />
-            </motion.div>
-          ))}
-        </section>
-      </div>
-    );
+    return <MealsSectionSkeleton />;
   }
 
   //@ts-expect-error - type is valid
@@ -126,7 +97,7 @@ const MealsSection = () => {
 
   //@ts-expect-error - type is valid
   // eslint-disable-next-line
-  const totalCount = data?.pages?.[0]?.total;
+  const totalCount = data?.pages?.[0]?.total ?? 0;
 
   return (
     <div className="flex w-full flex-col gap-lg">

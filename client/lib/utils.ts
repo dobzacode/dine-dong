@@ -10,6 +10,11 @@ export function cn(...inputs: ClassValue[]) {
 
 export const fetcher = (url: string) => fetch(url).then((r) => r.json());
 
+export function getErrorMessage(error: unknown) {
+  if (error instanceof Error) return error.message;
+  return String(error);
+}
+
 export interface getMealsParams {
   limit?: number;
   offset?: unknown;
@@ -18,7 +23,7 @@ export interface getMealsParams {
   radius?: number;
   diet?: (keyof typeof DietsEnum)[];
   name?: string;
-  price_max?: number;
+  max_price?: number;
   weight_max?: number;
   weight_min?: number;
   sort?: 'distance' | 'price';
@@ -26,7 +31,8 @@ export interface getMealsParams {
 
 export async function getMeals(
   params: getMealsParams,
-  nextParams?: NextFetchRequestConfig
+  nextParams?: NextFetchRequestConfig,
+  cache?: RequestCache
 ): Promise<MealsResponse | Error> {
   const url = new URL('http://localhost:3000/api/meals');
 
@@ -43,7 +49,8 @@ export async function getMeals(
   }
 
   const response = await fetch(url.toString(), {
-    next: nextParams
+    next: nextParams,
+    cache: cache ?? 'default'
   });
 
   switch (response.status) {
@@ -85,7 +92,7 @@ export async function getMealsSummaries<T>(
 }
 
 export async function getUserInformations(
-  params: { id?: string; sub?: string, username?: string },
+  params: { id?: string; sub?: string; username?: string },
   nextParams?: NextFetchRequestConfig
 ) {
   const url = new URL('http://localhost:3000/api/users');
@@ -111,8 +118,6 @@ export async function getUserInformations(
       throw new Error('Erreur inconnue');
   }
 }
-
-
 
 export async function checkUsernameAvailability(username: string) {
   const url = new URL('http://localhost:3000/api/users/check-username-availability');
