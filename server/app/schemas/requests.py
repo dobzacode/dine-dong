@@ -15,7 +15,15 @@ class IngredientRequest(Ingredient):
 class CreateUserRequest(User):
     address: Address
     sub: str
-    pass
+
+
+class modifyUserProfileRequest(BaseRequest):
+    user_id: str
+    first_name: str | None = None
+    last_name: str | None = None
+    about_me: str | None = None
+    picture_url: str | None = None
+    residency: Address | None = None
 
 
 class AddressRequest(Address):

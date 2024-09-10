@@ -6,6 +6,7 @@ export interface User extends BaseModel {
   open_id: string;
   email: string;
   username: string;
+  about_me: string | null;
   first_name: string | null;
   last_name: string | null;
   phone_number: string | null;

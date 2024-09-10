@@ -22,6 +22,7 @@ class User(BaseModel):
     is_valid: bool = False
     first_name: str | None = None
     last_name: str | None = None
+    about_me: str | None = None
     phone_number: str | None = None
     picture_url: str | None = None
     residency: Address | None = None

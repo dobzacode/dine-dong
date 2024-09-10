@@ -46,7 +46,7 @@ export default async function Home({ params }: Props) {
   }
 
   return (
-    <section className="section-px shadow-primary-40 container flex flex-col justify-center gap-sm tablet:flex-row">
+    <section className="section-px shadow-primary-40 section-py container flex flex-col justify-center gap-sm tablet:flex-row">
       <div className="relative aspect-square w-full rounded-xs tablet:w-2/3">
         <ImagePulsing
           skeletoncss={'h-full w-full object-cover absolute object-center rounded-xs'}

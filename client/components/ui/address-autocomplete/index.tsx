@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Command, CommandEmpty, CommandGroup, CommandList } from '@/components/ui/command';
 import { Input } from '@/components/ui/input';
 import { useDebounce } from '@/hooks/use-debounce';
-import { fetcher } from '@/lib/utils';
+import { cn, fetcher } from '@/lib/utils';
 import { Delete, Loader2, Pencil } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 import useSWR from 'swr';
@@ -39,6 +39,7 @@ interface AddressAutoCompleteProps {
   setMapCoord: (mapCoord: { lat: number; lng: number }) => void;
   formName?: 'meal' | 'user';
   label?: string;
+  className?: string;
 }
 
 export default function AddressAutoComplete(props: AddressAutoCompleteProps) {
@@ -94,8 +95,6 @@ export default function AddressAutoComplete(props: AddressAutoCompleteProps) {
     }
   }, [data, setAddress]);
 
-  console.log(data);
-
   return (
     <>
       {selectedPlaceId !== '' || address?.formattedAddress ? (
@@ -104,7 +103,7 @@ export default function AddressAutoComplete(props: AddressAutoCompleteProps) {
             {label} *
           </FormLabel>
           <div className="flex items-center gap-2">
-            <Input value={address?.formattedAddress} readOnly />
+            <Input className={props.className} value={address?.formattedAddress} readOnly />
             <AddressDialog
               isLoading={isLoading}
               dialogTitle={dialogTitle}
@@ -148,6 +147,7 @@ export default function AddressAutoComplete(props: AddressAutoCompleteProps) {
         </div>
       ) : (
         <AddressAutoCompleteInput
+          className={props.className}
           label={label}
           searchInput={searchInput}
           setSearchInput={setSearchInput}
@@ -171,6 +171,7 @@ interface CommonProps {
   setSearchInput: (searchInput: string) => void;
   placeholder?: string;
   label: string;
+  className?: string;
 }
 
 function AddressAutoCompleteInput(props: CommonProps) {
@@ -223,7 +224,10 @@ function AddressAutoCompleteInput(props: CommonProps) {
           onBlur={close}
           onFocus={open}
           placeholder={'Ajouter une adresse'}
-          className="body file:body flex h-10 w-full rounded-xs border border-input bg-background px-3 py-2 ring-offset-background file:border-0 file:bg-transparent file:font-medium placeholder:text-primary-900/[0.4] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+          className={cn(
+            'body file:body flex h-10 w-full rounded-xs border border-input bg-background px-3 py-2 ring-offset-background file:border-0 file:bg-transparent file:font-medium placeholder:text-primary-900/[0.4] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50',
+            props.className
+          )}
         />
       </div>
       {searchInput !== '' && !isOpen && !selectedPlaceId && showInlineError && (

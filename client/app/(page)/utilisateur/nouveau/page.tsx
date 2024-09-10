@@ -44,7 +44,7 @@ export default async function Page({
   };
 
   return (
-    <section className="container mx-auto flex h-full max-w-[1200px] flex-col items-center justify-center pt-3xl">
+    <section className="section-py container mx-auto flex h-full max-w-[1200px] flex-col items-center justify-center">
       <UserForm
         auth0domain={auth0domain}
         email={email}

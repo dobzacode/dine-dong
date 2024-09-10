@@ -5,8 +5,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.api import deps
 from app.core.security.authenticate import VerifyToken
 from app.models import Address, User
-from app.schemas.requests import CreateUserRequest
+from app.schemas.requests import CreateUserRequest, modifyUserProfileRequest
 from app.schemas.responses import UserResponse
+from app.utils.utils import update_if_not_none
 
 router = APIRouter()
 auth = VerifyToken()
@@ -189,4 +190,63 @@ async def create_user(
         raise HTTPException(
             status_code=500,
             detail="Une erreur est survenue lors de la création de l'utilisateur",
+        )
+
+
+@router.put(
+    "",
+    description="Modifie un utilisateur",
+    response_model=str,
+    status_code=200,
+)
+async def modify_user_profile(
+    user_data: modifyUserProfileRequest,
+    session: AsyncSession = Depends(deps.get_session),
+    token: dict[str, str] = Depends(deps.extract_sub_email_from_jwt),
+    auth: dict = Security(auth.verify),
+):
+    if not user_data.user_id:
+        raise HTTPException(status_code=422, detail="ID de l'utilisateur est requis")
+
+    user = await session.scalar(select(User).where(User.user_id == user_data.user_id))
+
+    if not user:
+        raise HTTPException(status_code=404, detail="Utilisateur non trouvé")
+
+    if user.open_id != token.get("sub"):
+        raise HTTPException(
+            status_code=401,
+            detail="Vous n'êtes pas autorisé à modifier cet utilisateur",
+        )
+
+    try:
+        update_if_not_none(user, "first_name", user_data.first_name)
+        update_if_not_none(user, "last_name", user_data.last_name)
+        update_if_not_none(user, "about_me", user_data.about_me)
+        update_if_not_none(user, "picture_url", user_data.picture_url)
+
+        if user_data.residency:
+            for field in [
+                "address1",
+                "address2",
+                "formatted_address",
+                "city",
+                "department",
+                "postal_code",
+                "country",
+                "lat",
+                "lng",
+            ]:
+                update_if_not_none(
+                    user.residency, field, getattr(user_data.residency, field)
+                )
+
+        await session.commit()
+        await session.refresh(user)
+        return user.username
+    except Exception as e:
+        print(e)
+        raise HTTPException(
+            status_code=500,
+            detail="Une erreur est survenue lors de la modification du profil de l'utilisateur",
         )

@@ -1,17 +1,19 @@
+import { addressSchema } from '@/components/meal/meal-form/meal-schema';
 import { checkEmailAvailability, checkUsernameAvailability } from '@/lib/utils';
 import { isValidPhoneNumber } from 'react-phone-number-input';
-import { isAlphanumeric } from 'validator';
+import { isAlpha, isAlphanumeric, isEmail } from 'validator';
 import { z } from 'zod';
 
 export const MAX_FILE_SIZE = 5000000;
 export const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
 
-const firstStepSchema = z.object({
+export const firstStepSchema = z.object({
   email: z
     .string()
     .email("L'adresse email est invalide")
     .min(1, "L'adresse email est requise")
     .max(255, "L'adresse email ne doit pas dépasser 255 caractères")
+    .refine(isEmail, "L'adresse email est invalide")
     .refine(async (email) => {
       if (email.trim()) {
         const isAvailable = await checkEmailAvailability(email);
@@ -19,7 +21,7 @@ const firstStepSchema = z.object({
       } else {
         return true;
       }
-    }, "Le nom d'utilisateur est déjà pris"),
+    }, "L'adresse email est déjà prise"),
   username: z
     .string()
     .min(1, "Le nom d'utilisateur est requis")
@@ -37,15 +39,15 @@ const firstStepSchema = z.object({
     .string()
     .max(35, 'Le prénom ne doit pas dépasser 35 caractères')
     .refine(
-      (value) => (value === '' ? true : isAlphanumeric(value)),
-      'Le prénom ne doit contenir que des lettres et des chiffres'
+      (value) => (value === '' ? true : isAlpha(value)),
+      'Le prénom ne doit contenir que des lettres'
     ),
   lastName: z
     .string()
     .max(35, 'Le nom ne doit pas dépasser 35 caractères')
     .refine(
-      (value) => (value === '' ? true : isAlphanumeric(value)),
-      'Le prénom ne doit contenir que des lettres et des chiffres'
+      (value) => (value === '' ? true : isAlpha(value)),
+      'Le prénom ne doit contenir que des lettres'
     ),
   aboutMe: z.string().max(256, 'Le texte ne doit pas dépasser 256 caractères'),
   phoneNumber: z
@@ -65,24 +67,6 @@ const firstStepSchema = z.object({
       'Seul les formats JPG, JPEG, PNG et WEBP sont acceptés'
     )
     .optional()
-});
-
-export const addressSchema = z.object({
-  address1: z
-    .string()
-    .min(1, "La ligne d'adresse 1 est obligatoire")
-    .max(150, "La ligne d'adresse 1 ne doit pas dépasser 150 caractères"),
-  address2: z.string(),
-  formattedAddress: z.string(),
-  city: z
-    .string()
-    .min(1, 'La ville est obligatoire')
-    .max(50, 'La ville ne doit pas dépasser 50 caractères'),
-  department: z.string().max(50, 'Le département ne doit pas dépasser 50 caractères').optional(),
-  postalCode: z.string().max(5, 'Le code postal ne doit pas dépasser 5 caractères').optional(),
-  country: z.string().max(50, 'Le pays ne doit pas dépasser 50 caractères'),
-  lat: z.number(),
-  lng: z.number()
 });
 
 export const secondStepSchema = z.object({

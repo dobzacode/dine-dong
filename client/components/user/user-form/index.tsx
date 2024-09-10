@@ -7,7 +7,7 @@ import {
 import DivWrapper from '@/components/framer/div-wrapper';
 import { customRevalidateTag } from '@/lib/actions';
 import { cn } from '@/lib/utils';
-import type { MealResponse } from '@/types/query';
+import type { UserResponse } from '@/types/query';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
@@ -85,8 +85,8 @@ const createUserMutation = async ({
     console.log(error);
     throw new Error(error.detail);
   }
-  const dataResponse = (await response.json()) as MealResponse;
-  customRevalidateTag('search-meals');
+  const dataResponse = (await response.json()) as UserResponse;
+  customRevalidateTag('get-user-params');
   return dataResponse;
 };
 
@@ -111,7 +111,7 @@ export default function UserForm(props: UserFormProps) {
   const { uploadToS3 } = useS3Upload();
   const { isPending, mutateAsync } = useMutation({
     mutationFn: createUserMutation,
-    onSuccess: (data: MealResponse) => {
+    onSuccess: (data: UserResponse) => {
       console.log('User created successfully:', data);
       toast({
         title: `Votre compte a été créé avec succès !`,

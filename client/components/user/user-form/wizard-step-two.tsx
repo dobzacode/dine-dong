@@ -29,8 +29,6 @@ export default function WizardStepTwo({
     lng: form.watch('stepTwo.address.lng')
   });
 
-  console.log(form.getValues('stepTwo.address'));
-
   useEffect(() => {
     if (searchInput && !formattedAddress) {
       setAddressMessage('');
