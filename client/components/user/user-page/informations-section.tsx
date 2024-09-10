@@ -1,5 +1,6 @@
 import ImagePulsing from '@/components/ui/image-pulsing';
 import Rating from '@/components/ui/rating';
+import { constructS3Url } from '@/lib/utils';
 import { UserResponse } from '@/types/query';
 import { MapPin } from 'lucide-react';
 
@@ -11,10 +12,10 @@ export default function InformationsSection({ user }: { user: UserResponse }) {
           skeletoncss={'h-full w-full object-cover absolute object-center rounded-xs'}
           priority
           fill
-          src={user.picture_url ?? '/placeholder.jpg'}
+          src={constructS3Url(user.picture_key ?? 'static/default-avatar.png')}
           alt={'user.name'}
-          sizes={'(max-width: 768px) 100vw, 200px'}
-          className="rounded-xs object-cover object-center"
+          sizes={'(max-width: 768px) 100vw, 300px'}
+          className="rounded-xs object-contain object-center"
         />
       </div>
       <div className="flex h-full flex-col justify-between">

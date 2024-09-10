@@ -10,6 +10,17 @@ export function cn(...inputs: ClassValue[]) {
 
 export const fetcher = (url: string) => fetch(url).then((r) => r.json());
 
+export const getFileExtension = (filename: string) => {
+  const index = filename.lastIndexOf('.');
+  if (index === -1) {
+    return '';
+  }
+  return filename.substring(index);
+};
+
+export const constructS3Url = (key: string) =>
+  `${process.env.NEXT_PUBLIC_CLOUDFRONT_BUCKET_URL}/${key}`;
+
 export function getErrorMessage(error: unknown) {
   if (error instanceof Error) return error.message;
   return String(error);

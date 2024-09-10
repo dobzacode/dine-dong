@@ -1,6 +1,6 @@
 'use client';
 
-import { cn } from '@/lib/utils';
+import { cn, constructS3Url } from '@/lib/utils';
 import type { UserResponse } from '@/types/query';
 
 import AddressAutoComplete from '@/components/ui/address-autocomplete';
@@ -23,17 +23,23 @@ import { profileSchema, type ProfileSchema } from './profil-schema';
 const modifyProfileMutation = async ({
   data,
   uploadToS3,
-  user_id
+  user_id,
+  sub
 }: {
   data: ProfileSchema;
   uploadToS3: (
     file: File,
-    options: { endpoint: { request: { url: string; headers?: Record<string, string> } } }
+    options: {
+      endpoint: {
+        request: { url: string; headers?: Record<string, string>; body?: Record<string, string> };
+      };
+    }
   ) => Promise<{
     url: string;
     key: string;
   }>;
   user_id: string;
+  sub: string;
 }) => {
   let picturekey: string | null = null;
 
@@ -41,7 +47,7 @@ const modifyProfileMutation = async ({
     const { key } = await uploadToS3(data.image, {
       endpoint: {
         request: {
-          url: 'http://localhost:3000/api/s3-upload/?folder=user/original_images'
+          url: `http://localhost:3000/api/s3-upload/?folder=dynamic/${sub}/user`
         }
       }
     });
@@ -55,9 +61,8 @@ const modifyProfileMutation = async ({
       first_name: data.firstName,
       last_name: data.lastName,
       about_me: data.aboutMe,
-      picture_url: picturekey
-        ? `${process.env.NEXT_PUBLIC_CLOUDFRONT_BUCKET_URL}/${picturekey}`
-        : undefined,
+      picture_key:
+        picturekey ?? `${process.env.NEXT_PUBLIC_CLOUDFRONT_BUCKET_URL}/static/default-avatar.png`,
       residency: {
         ...data.stepTwo.address,
         formatted_address: data.stepTwo.address.formattedAddress,
@@ -79,7 +84,7 @@ const modifyProfileMutation = async ({
 };
 
 export default function ProfilForm({ user, sub }: { user: UserResponse; sub: string }) {
-  const { last_name, first_name, picture_url, residency, about_me, user_id } = user;
+  const { last_name, first_name, picture_key, residency, about_me, user_id } = user;
 
   const { toast } = useToast();
   const { uploadToS3 } = useS3Upload();
@@ -111,7 +116,7 @@ export default function ProfilForm({ user, sub }: { user: UserResponse; sub: str
       firstName: first_name ?? '',
       lastName: last_name ?? '',
       aboutMe: about_me ?? '',
-      image: picture_url ?? undefined,
+      image: picture_key ?? undefined,
       stepTwo: {
         address: {
           address1: residency?.address1 ?? '',
@@ -131,8 +136,7 @@ export default function ProfilForm({ user, sub }: { user: UserResponse; sub: str
   const { isDirty } = useFormState({ control: form.control });
 
   const [imagePreview, setImagePreview] = useState<string | ArrayBuffer | null>(
-    picture_url ??
-      'https://d3kbjm1qjacb3b.cloudfront.net/meal/original_images/ce3fa948-8a87-4ae5-ab8a-84c10c9ebb19-scoute_3.jpg'
+    constructS3Url(picture_key ?? 'static/default-avatar.png')
   );
 
   const [mapCoord, setMapCoord] = useState<{ lat: number; lng: number }>({
@@ -303,7 +307,7 @@ export default function ProfilForm({ user, sub }: { user: UserResponse; sub: str
             if (!isValid) {
               return setAddressMessage('Une adresse est requise');
             }
-            await mutateAsync({ data: form.getValues(), uploadToS3, user_id });
+            await mutateAsync({ data: form.getValues(), uploadToS3, user_id, sub });
           }}
           disabled={!isDirty}
         >

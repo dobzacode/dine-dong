@@ -47,13 +47,16 @@ const createUserMutation = async ({
   let picturekey: string | null = null;
 
   if (data.stepOne.image) {
-    const { key } = await uploadToS3(data.stepOne.image, {
-      endpoint: {
-        request: {
-          url: 'http://localhost:3000/api/s3-upload/?folder=user/original_images'
+    const { key } = await uploadToS3(
+      { ...data.stepOne.image, name: 'avatar' },
+      {
+        endpoint: {
+          request: {
+            url: `http://localhost:3000/api/s3-upload/?folder=dynamic/${sub}/user`
+          }
         }
       }
-    });
+    );
     picturekey = key;
   }
 
@@ -67,9 +70,7 @@ const createUserMutation = async ({
       about_me: data.stepOne.aboutMe,
       phone_number: data.stepOne.phoneNumber,
       sub: sub,
-      picture_url: picturekey
-        ? `${process.env.NEXT_PUBLIC_CLOUDFRONT_BUCKET_URL}/${picturekey}`
-        : undefined,
+      picture_key: picturekey ? picturekey : undefined,
       address: {
         ...data.stepTwo.address,
         formatted_address: data.stepTwo.address.formattedAddress,

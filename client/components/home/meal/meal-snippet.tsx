@@ -1,6 +1,6 @@
 'use client';
 
-import { capitalizeFirstLetter } from '@/lib/utils';
+import { capitalizeFirstLetter, constructS3Url } from '@/lib/utils';
 import { type MealWithAddressResponse } from '@/types/query';
 import Link from 'next/link';
 import ImagePulsing from '../../ui/image-pulsing';
@@ -25,20 +25,20 @@ export function MealSnippetSkeleton() {
 }
 
 export default function MealSnippet(props: MealSnippetProps) {
-  const { diet, name, picture_url, price, weight, address, meal_id } = props;
+  const { diet, name, picture_key, price, weight, address, meal_id } = props;
 
   return (
     <Link href={`/repas/${meal_id}`} className="flex w-full flex-col gap-sm">
       <div
-        key={`${picture_url}-${name}-parent`}
+        key={`${picture_key}-${name}-parent`}
         className="relative aspect-[5/2] w-full overflow-hidden rounded-xs mobile-lg:aspect-square"
       >
         <ImagePulsing
           skeletoncss={'h-full w-full object-cover absolute object-center'}
-          key={`${picture_url}-${name}`}
+          key={`${picture_key}-${name}`}
           priority
           fill
-          src={picture_url}
+          src={constructS3Url(picture_key)}
           alt={name}
           sizes={'(max-width: 768px) 100vw, 200px'}
           className="object-cover object-center"

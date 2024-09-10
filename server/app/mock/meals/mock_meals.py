@@ -95,7 +95,7 @@ async def generate_mock_data(num_entries=10):
             expiration_date = cooking_date + datetime.timedelta(
                 days=fake.random_int(min=1, max=3)
             )
-            picture_url = fake.image_url()
+            picture_key = fake.image_url()
             weight = fake.random_int(min=100, max=1000)
             additional_information = fake.text()
 
@@ -136,7 +136,7 @@ async def generate_mock_data(num_entries=10):
                 name=meal_name,
                 cooking_date=cooking_date,
                 expiration_date=expiration_date,
-                picture_url=picture_url,
+                picture_key=picture_key,
                 weight=weight,
                 additional_information=additional_information,
                 diet=diet_list,

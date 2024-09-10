@@ -28,21 +28,27 @@ import WizardStepTwo from './wizard-step-two';
 
 const createMealMutation = async ({
   data,
-  uploadToS3
+  uploadToS3,
+  sub
 }: {
   data: MealSchema;
   uploadToS3: (
     file: File,
-    options: { endpoint: { request: { url: string; headers?: Record<string, string> } } }
+    options: {
+      endpoint: {
+        request: { url: string; headers?: Record<string, string>; body?: Record<string, string> };
+      };
+    }
   ) => Promise<{
     url: string;
     key: string;
   }>;
+  sub: string;
 }) => {
   const { key } = await uploadToS3(data.stepOne.image, {
     endpoint: {
       request: {
-        url: 'http://localhost:3000/api/s3-upload/?folder=meal/original_images'
+        url: `http://localhost:3000/api/s3-upload/?folder=dynamic/${sub}/meal`
       }
     }
   });
@@ -54,7 +60,7 @@ const createMealMutation = async ({
       price: data.stepOne.price,
       cooking_date: data.stepOne.cookingDate,
       expiration_date: data.stepOne.expirationDate,
-      picture_url: `${process.env.NEXT_PUBLIC_CLOUDFRONT_BUCKET_URL}/${key}`,
+      picture_key: `${key}`,
       weight: data.stepTwo.weight,
       diet: data.stepTwo.diet,
       ingredients: data.stepTwo.ingredients,
@@ -78,7 +84,7 @@ const createMealMutation = async ({
   return dataResponse;
 };
 
-export default function MealForm() {
+export default function MealForm({ sub }: { sub: string }) {
   const [activeStep, setActiveStep] = useState<number>(1);
   const [addressMessage, setAddressMessage] = useState<string>('');
 
@@ -170,7 +176,7 @@ export default function MealForm() {
   );
 
   const onSubmit = async (data: MealSchema) => {
-    await mutateAsync({ data, uploadToS3 });
+    await mutateAsync({ data, uploadToS3, sub });
   };
 
   const onNext = useCallback(() => {

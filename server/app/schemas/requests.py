@@ -25,7 +25,7 @@ class modifyUserRequest(BaseRequest):
     first_name: str | None = None
     last_name: str | None = None
     about_me: str | None = None
-    picture_url: str | None = None
+    picture_key: str | None = None
     residency: Address | None = None
 
 

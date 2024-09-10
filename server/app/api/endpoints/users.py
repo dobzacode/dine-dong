@@ -164,7 +164,7 @@ async def create_user(
             first_name=user_data.first_name,
             last_name=user_data.last_name,
             phone_number=user_data.phone_number,
-            picture_url=user_data.picture_url,
+            picture_key=user_data.picture_key,
         )
 
         new_address = Address(
@@ -226,7 +226,7 @@ async def modify_user(
         update_if_not_none(user, "first_name", user_data.first_name)
         update_if_not_none(user, "last_name", user_data.last_name)
         update_if_not_none(user, "about_me", user_data.about_me)
-        update_if_not_none(user, "picture_url", user_data.picture_url)
+        update_if_not_none(user, "picture_key", user_data.picture_key)
 
         if user_data.residency:
             for field in [

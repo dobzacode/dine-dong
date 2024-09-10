@@ -1,4 +1,4 @@
-import { getUserInformations } from '@/lib/utils';
+import { constructS3Url, getUserInformations } from '@/lib/utils';
 import Link from 'next/link';
 import ImagePulsing from '../ui/image-pulsing';
 import Rating from '../ui/rating';
@@ -20,10 +20,10 @@ export async function UserInformations({ id }: { id: string }) {
           skeletoncss={'h-full w-full object-cover absolute object-center rounded-xs'}
           priority
           fill
-          src={user.picture_url ?? '/placeholder.jpg'}
+          src={constructS3Url(user.picture_key ?? 'static/default-avatar.png')}
           alt={'user.name'}
           sizes={'(max-width: 768px) 100vw, 200px'}
-          className="rounded-xs object-cover object-center"
+          className="rounded-xs object-contain"
         />
       </Link>
       <div className="flex flex-col">

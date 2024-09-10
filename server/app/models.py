@@ -58,7 +58,7 @@ class User(Base):
 
     phone_number: Mapped[str] = mapped_column(String(256), nullable=True)
 
-    picture_url: Mapped[str] = mapped_column(String(256), nullable=True)
+    picture_key: Mapped[str] = mapped_column(String(256), nullable=True)
 
     addresses: Mapped[list["Address"]] = relationship(
         back_populates="user", lazy="selectin", foreign_keys="[Address.user_id]"
@@ -205,7 +205,7 @@ class Meal(Base):
         DateTime(timezone=True), nullable=False
     )
 
-    picture_url: Mapped[str] = mapped_column(String(256), nullable=False)
+    picture_key: Mapped[str] = mapped_column(String(256), nullable=False)
 
     weight: Mapped[int] = mapped_column(nullable=False)
 

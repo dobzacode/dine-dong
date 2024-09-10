@@ -24,7 +24,7 @@ class User(BaseModel):
     last_name: str | None = None
     about_me: str | None = None
     phone_number: str | None = None
-    picture_url: str | None = None
+    picture_key: str | None = None
     residency: Address | None = None
 
 
@@ -60,7 +60,7 @@ class Meal(BaseModel):
     name: str
     cooking_date: datetime
     expiration_date: datetime
-    picture_url: str
+    picture_key: str
     price: int
     weight: int
     diet: list[DietsEnum] | None = []

@@ -1,7 +1,7 @@
 import { MealInformations } from '@/components/meal/meal-informations';
 import { UserInformations } from '@/components/meal/user-informations';
 import ImagePulsing from '@/components/ui/image-pulsing';
-import { getMealDetails, getMealsSummaries } from '@/lib/utils';
+import { constructS3Url, getMealDetails, getMealsSummaries } from '@/lib/utils';
 import { type MealSummaryResponse } from '@/types/query';
 import { type Metadata } from 'next';
 
@@ -52,7 +52,7 @@ export default async function Home({ params }: Props) {
           skeletoncss={'h-full w-full object-cover absolute object-center rounded-xs'}
           priority
           fill
-          src={meal.picture_url}
+          src={constructS3Url(meal.picture_key)}
           alt={meal.name}
           sizes={'(max-width: 768px) 100vw, 80vw'}
           className="rounded-xs object-cover object-center"

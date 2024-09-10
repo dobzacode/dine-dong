@@ -288,7 +288,7 @@ async def create_meal(
             name=meal_data.name,
             cooking_date=meal_data.cooking_date,
             expiration_date=meal_data.expiration_date,
-            picture_url=meal_data.picture_url,
+            picture_key=meal_data.picture_key,
             weight=meal_data.weight,
             additional_information=meal_data.additional_information,
             diet=meal_data.diet,

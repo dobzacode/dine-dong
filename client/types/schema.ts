@@ -10,7 +10,7 @@ export interface User extends BaseModel {
   first_name: string | null;
   last_name: string | null;
   phone_number: string | null;
-  picture_url: string | null;
+  picture_key: string | null;
   residency: Address | null;
 }
 
@@ -60,7 +60,7 @@ export interface Meal extends BaseModel {
   cooking_date: Date;
   price: number;
   expiration_date: Date;
-  picture_url: string;
+  picture_key: string;
   weight: number;
   diet: DietsEnum[];
   additional_information: string | null;
