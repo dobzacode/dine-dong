@@ -1,4 +1,5 @@
 import DietFilter from './diet-filter';
+import Reset from './reset';
 import SliderFilter from './slider-filter';
 import SortSection from './sort-section';
 
@@ -31,6 +32,7 @@ export default function FilterSortMenu() {
         <DietFilter />
         <SortSection />
       </section>
+      <Reset />
     </section>
   );
 }

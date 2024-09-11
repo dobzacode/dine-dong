@@ -9,7 +9,8 @@ export default async function MealsPrefetch({
   sort,
   max_price,
   lat,
-  lng
+  lng,
+  user_id
 }: getMealsParams) {
   const fetchOptions = {
     name,
@@ -18,21 +19,21 @@ export default async function MealsPrefetch({
     sort: sort,
     max_price,
     lat: typeof lat === 'string' ? parseFloat(lat) : undefined,
-    lng: typeof lng === 'string' ? parseFloat(lng) : undefined
+    lng: typeof lng === 'string' ? parseFloat(lng) : undefined,
+    user_id
   };
-
-  console.log(fetchOptions);
 
   let prefetchMeals: MealsResponse | Error;
 
   try {
-    prefetchMeals = await getMeals({ ...fetchOptions }, { tags: ['search-meals'] });
+    prefetchMeals = await getMeals({ ...fetchOptions }, { next: { tags: ['search-meals'] } });
   } catch (error) {
     const message = getErrorMessage(error);
     if (message.includes('404')) {
       return (
         <div className="flex w-full flex-col items-center justify-center">
           <h3 className="heading-h1">Aucun repas trouvé</h3>
+         
         </div>
       );
     }
@@ -43,6 +44,7 @@ export default async function MealsPrefetch({
 
   return (
     <MealsSection
+      fetchOptions={fetchOptions}
       prefetchMeals={
         prefetchMeals instanceof Error ? { meals: [], total: 200, hasMore: true } : prefetchMeals
       }

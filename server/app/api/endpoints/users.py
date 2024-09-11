@@ -1,12 +1,12 @@
-from fastapi import APIRouter, Depends, HTTPException, Query, Security
+from fastapi import APIRouter, Depends, HTTPException, Path, Query, Security
 from sqlalchemy import or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api import deps
 from app.core.security.authenticate import VerifyToken
-from app.models import Address, User
+from app.models import Address, Meal, User
 from app.schemas.requests import CreateUserRequest, modifyUserRequest
-from app.schemas.responses import UserResponse
+from app.schemas.responses import MealResponse, UserResponse
 from app.utils.utils import update_if_not_none
 
 router = APIRouter()
@@ -144,6 +144,34 @@ async def get_user_params(
             status_code=500,
             detail="Une erreur est survenue lors de la récupération des pseudos des utilisateurs",
         )
+
+
+@router.get(
+    "/{id}/meals",
+    response_model=list[MealResponse],
+    description="Obtenir tous les repas de l'utilisateur",
+    status_code=200,
+)
+async def get_user_meals(
+    id: str = Path(
+        ..., description="ID de l'utilisateur dont les repas seront récupérés"
+    ),
+    session: AsyncSession = Depends(deps.get_session),
+):
+    if not id:
+        raise HTTPException(status_code=422, detail="ID de l'utilisateur est requis")
+    try:
+        result = await session.execute(select(Meal).where(Meal.user_id == id))
+        meals = result.all()
+    except Exception as e:
+        print(e)
+        raise HTTPException(
+            status_code=500,
+            detail="Une erreur est survenue lors de la récupération des repas de l'utilisateur",
+        )
+    if not meals:
+        raise HTTPException(status_code=404, detail="Aucun repas trouvé")
+    return meals[0]
 
 
 @router.post(

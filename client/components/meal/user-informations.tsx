@@ -4,7 +4,7 @@ import ImagePulsing from '../ui/image-pulsing';
 import Rating from '../ui/rating';
 
 export async function UserInformations({ id }: { id: string }) {
-  const user = await getUserInformations({ id }, { tags: [`user-informations-${id}`] });
+  const user = await getUserInformations({ id }, { next: { tags: [`user-informations-${id}`] } });
 
   if (!user || user instanceof Error) {
     return null;

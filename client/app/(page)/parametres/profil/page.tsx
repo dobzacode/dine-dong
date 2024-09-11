@@ -17,7 +17,7 @@ export default async function Page() {
 
   const user = await getUserInformations(
     { sub: session.user.sub as string },
-    { tags: [`user-informations-${session.user.sub}`] }
+    { next: { tags: [`user-informations-${session.user.sub}`] } }
   );
 
   return <ProfilForm user={user} sub={session.user.sub as string} />;

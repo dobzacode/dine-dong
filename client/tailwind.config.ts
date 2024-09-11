@@ -88,6 +88,7 @@ const config = {
         '4xl': '96px',
         '3xl': '64px',
         '2xl': '48px',
+        button: '40px',
         xl: '32px',
         lg: '24px',
         md: '16px',

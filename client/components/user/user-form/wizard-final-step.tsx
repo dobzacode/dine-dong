@@ -1,6 +1,6 @@
 'use client';
 
-import { cn } from '@/lib/utils';
+import { cn, constructS3Url } from '@/lib/utils';
 import Image from 'next/image';
 import { useFormContext } from 'react-hook-form';
 import { type UserSchema } from './user-schema';
@@ -40,7 +40,7 @@ export default function WizardFinalStep({ className }: { className?: string }) {
           <Image
             className="grow-0 rounded-xs object-cover"
             sizes={`(max-width: 768px) 100vw, 800px`}
-            src={image ? URL.createObjectURL(image) : '/placeholder.jpg'}
+            src={image ? URL.createObjectURL(image) : constructS3Url('static/default-avatar.png')}
             alt="photo"
             fill
           />

@@ -27,7 +27,7 @@ export default function InformationsSection({ user }: { user: UserResponse }) {
           <p className="body-sm">A propos :</p>
           <p className="body flex items-center gap-xs">
             <MapPin size={16} />
-            {user.residency.city} {user.residency.country}
+            {user.residency.city}, {user.residency.country}
           </p>
         </div>
       </div>

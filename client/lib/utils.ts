@@ -1,4 +1,4 @@
-import { MealDetailsResponse, MealsResponse, UserResponse } from '@/types/query';
+import { MealDetailsResponse, MealResponse, MealsResponse, UserResponse } from '@/types/query';
 import { DietsEnum } from '@/types/schema';
 import { clsx, type ClassValue } from 'clsx';
 import { Children, isValidElement } from 'react';
@@ -38,12 +38,12 @@ export interface getMealsParams {
   weight_max?: number;
   weight_min?: number;
   sort?: 'distance' | 'price';
+  user_id?: string;
 }
 
 export async function getMeals(
   params: getMealsParams,
-  nextParams?: NextFetchRequestConfig,
-  cache?: RequestCache
+  request: RequestInit = {}
 ): Promise<MealsResponse | Error> {
   const url = new URL('http://localhost:3000/api/meals');
 
@@ -59,10 +59,7 @@ export async function getMeals(
     }
   }
 
-  const response = await fetch(url.toString(), {
-    next: nextParams,
-    cache: cache ?? 'default'
-  });
+  const response = await fetch(url.toString(), request);
 
   switch (response.status) {
     case 200:
@@ -78,15 +75,12 @@ export async function getMeals(
   }
 }
 
-export async function getMealsSummaries<T>(
-  params?: { id?: string },
-  nextParams?: NextFetchRequestConfig
-) {
+export async function getMealsSummaries<T>(params?: { id?: string }, request: RequestInit = {}) {
   const url = new URL('http://localhost:3000/api/meals/summaries');
   if (params?.id) {
     url.searchParams.set('id', params.id);
   }
-  const response = await fetch(url, { next: nextParams });
+  const response = await fetch(url, request);
 
   switch (response.status) {
     case 200:
@@ -104,7 +98,7 @@ export async function getMealsSummaries<T>(
 
 export async function getUserInformations(
   params: { id?: string; sub?: string; username?: string },
-  nextParams?: NextFetchRequestConfig
+  request: RequestInit = {}
 ) {
   const url = new URL('http://localhost:3000/api/users');
 
@@ -114,7 +108,7 @@ export async function getUserInformations(
     }
   }
 
-  const response = await fetch(url.toString(), { next: nextParams });
+  const response = await fetch(url.toString(), request);
 
   switch (response.status) {
     case 200:
@@ -220,7 +214,7 @@ export async function isUserRegistered(token: string) {
 
 export async function getMealDetails(
   params: { id: string; lat?: number; lng?: number },
-  nextParams?: NextFetchRequestConfig
+  request: RequestInit = {}
 ) {
   const url = new URL('http://localhost:3000/api/meals/details');
 
@@ -230,11 +224,30 @@ export async function getMealDetails(
     }
   }
 
-  const response = await fetch(url.toString());
+  const response = await fetch(url.toString(), request);
 
   switch (response.status) {
     case 200:
       return (await response.json()) as MealDetailsResponse;
+    case 404:
+      throw new Error('404 Aucun repas trouvé');
+    case 422:
+      throw new Error('422 Une erreur est survenue');
+    case 500:
+      throw new Error('500 Erreur serveur');
+    default:
+      throw new Error('Erreur inconnue');
+  }
+}
+
+export async function getUserMeals(sub: string, request: RequestInit = {}) {
+  const url = new URL(`http://localhost:3000/api/users/${sub}/meals`);
+
+  const response = await fetch(url.toString(), request);
+
+  switch (response.status) {
+    case 200:
+      return (await response.json()) as MealResponse[];
     case 404:
       throw new Error('404 Aucun repas trouvé');
     case 422:

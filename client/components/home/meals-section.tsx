@@ -1,43 +1,36 @@
 'use client';
 
-import type { DietsEnum } from '@/types/schema';
 import { useEffect, useMemo } from 'react';
 
-import { getMeals } from '@/lib/utils';
+import { getMeals, getMealsParams } from '@/lib/utils';
 
 import { useGeoLocation } from '@/hooks/use-geolocation';
 import type { MealsResponse, MealWithAddressResponse } from '@/types/query';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
-import { useSearchParams } from 'next/navigation';
 import { delayFadeInVariant } from '../framer/div-variants';
 import MealSnippet, { MealSnippetSkeleton } from './meal/meal-snippet';
 import MealsSectionSkeleton from './meals-section-skeleton';
-import Reset from './reset';
 
-const MealsSection = ({ prefetchMeals }: { prefetchMeals: MealsResponse }) => {
-  const searchParams = useSearchParams();
+const MealsSection = ({
+  prefetchMeals,
+  fetchOptions: passedOptions
+}: {
+  prefetchMeals: MealsResponse;
+  fetchOptions: getMealsParams;
+}) => {
   const location = useGeoLocation();
 
   const fetchOptions = useMemo(() => {
-    const diet = (searchParams.getAll('diet') as (keyof typeof DietsEnum)[]) || [];
-    const name = searchParams.get('name') ?? undefined;
-    const radius = parseInt(searchParams.get('radius') ?? '10', 10);
-    const sort = (searchParams.get('sort') as 'distance' | 'price') ?? undefined;
-    const max_price = parseInt(searchParams.get('max_price') ?? '0') || undefined;
-    const lat = location?.lat ?? 45.767572;
-    const lng = location?.lng ?? 4.833102;
+    const lat = location?.lat ?? passedOptions.lat ?? 45.767572;
+    const lng = location?.lng ?? passedOptions.lng ?? 4.833102;
 
     return {
       lat,
       lng,
-      radius,
-      diet,
-      name,
-      sort,
-      max_price
+      ...passedOptions
     };
-  }, [searchParams, location]);
+  }, [location, passedOptions]);
 
   const { data, isFetchingNextPage, fetchNextPage, isError, error } = useInfiniteQuery<
     MealsResponse,
@@ -101,10 +94,8 @@ const MealsSection = ({ prefetchMeals }: { prefetchMeals: MealsResponse }) => {
 
   return (
     <div className="flex w-full flex-col gap-lg">
-      <div className="flex w-full items-end justify-between gap-xs">
-        <p className="body font-medium">{totalCount} repas</p>
-        <Reset />
-      </div>
+      <p className="body pt-sm font-medium">{totalCount} repas</p>
+
       <section className="flex w-full flex-wrap gap-md mobile-lg:grid mobile-lg:grid-cols-2 mobile-lg:gap-y-xl tablet:grid-cols-3 tablet:gap-x-md tablet:gap-y-2xl laptop:grid-cols-5">
         {allMeals.map((meal, i) => (
           <MealSnippet key={`search-meal-${i}`} {...meal} />

@@ -24,7 +24,7 @@ export default function SearchBar({ className }: { className?: string }) {
     const newSearchParams = new URLSearchParams(searchParams.toString());
     newSearchParams.set('name', debouncedSearchTerm);
     console.log(searchParams.get('name'), searchTerm, debouncedSearchTerm);
-    const url = new URL(window.location.origin);
+    const url = new URL(window.location.href);
     url.search = newSearchParams.toString();
     router.push(url.toString());
   }, [debouncedSearchTerm]);

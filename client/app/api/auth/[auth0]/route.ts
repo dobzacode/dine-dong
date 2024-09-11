@@ -1,8 +1,13 @@
-import { handleAuth, handleLogin, type HandleAuth } from '@auth0/nextjs-auth0';
+import { handleAuth, handleLogin, handleLogout, type HandleAuth } from '@auth0/nextjs-auth0';
 
 export const GET = handleAuth({
   login: handleLogin({
     authorizationParams: {
+      audience: 'http://localhost:8080/api/'
+    }
+  }),
+  logout: handleLogout({
+    logoutParams: {
       audience: 'http://localhost:8080/api/'
     }
   }),

@@ -1,6 +1,7 @@
 from typing import Literal
 
-from fastapi import APIRouter, Depends, HTTPException, Query, Security
+from fastapi import APIRouter, Depends, HTTPException, Query, Security, status
+from fastapi.responses import JSONResponse
 from geoalchemy2.functions import (  # type: ignore
     ST_Distance,
     ST_DWithin,
@@ -41,6 +42,7 @@ async def get_meals(
     sort: Literal["distance", "price"] = Query(
         None, description="Trier par distance ou prix"
     ),
+    user_id: str = Query(None, description="ID de l'utilisateur"),
 ):
     try:
         user_location = ST_GeogFromText(f"POINT({lng} {lat})")
@@ -58,6 +60,7 @@ async def get_meals(
             .where(func.lower(Meal.name).startswith(f"{name.lower()}"))
             .where((Meal.weight <= weight_max) & (Meal.weight >= weight_min))
             .where(Meal.price <= max_price)
+            .where(user_id is None or Meal.user_id == user_id)
             .limit(limit)
             .offset(offset)
             .add_columns(
@@ -91,6 +94,7 @@ async def get_meals(
             .where(func.lower(Meal.name).like(f"%{name.lower()}%"))
             .where((Meal.weight <= weight_max) & (Meal.weight >= weight_min))
             .where(Meal.price <= max_price)
+            .where(user_id is None or Meal.user_id == user_id)
         )
 
         total_result = await session.execute(total_query)
@@ -148,7 +152,10 @@ async def get_meal_details_by_id(
         result = meal_result.first()
 
         if not result:
-            raise HTTPException(status_code=404, detail="Repas non trouvé")
+            return JSONResponse(
+                status_code=status.HTTP_404_NOT_FOUND,
+                content={"message": "Repas non trouvé"},
+            )
 
         meal, address, distance = result
         address.distance = distance / 1000
@@ -197,19 +204,20 @@ async def get_meal_summaries(
         result = await session.execute(query)
         meal_summaries = result.all()
 
-        if not meal_summaries:
-            raise HTTPException(status_code=404, detail="Aucun repas trouvé")
-        meals = [
-            {"meal_id": meal_id, "name": meal_name, "description": description}
-            for meal_id, meal_name, description in meal_summaries
-        ]
-        return meals
     except Exception as e:
         print(e)
         raise HTTPException(
             status_code=500,
             detail="Une erreur est survenue lors de la récupération des résumés des repas",
         )
+
+    if not meal_summaries:
+        raise HTTPException(status_code=404, detail="Aucun repas trouvé")
+    meals = [
+        {"meal_id": meal_id, "name": meal_name, "description": description}
+        for meal_id, meal_name, description in meal_summaries
+    ]
+    return meals
 
 
 @router.get(
@@ -240,16 +248,17 @@ async def get_distance(
         query_result = await session.execute(distance_query)
         result = query_result.first()
 
-        if not result:
-            raise HTTPException(status_code=404, detail="Repas non trouvé")
-
-        return result.distance / 1000
     except Exception as e:
         print(e, "Error")
         raise HTTPException(
             status_code=500,
             detail="Une erreur est survenue lors de la récupération de la distance du repas",
         )
+
+    if not result:
+        raise HTTPException(status_code=404, detail="Repas non trouvé")
+
+    return result.distance / 1000
 
 
 @router.post(
@@ -320,6 +329,7 @@ async def create_meal(
                 )
             session.add(ingredient_meal_data)
         await session.commit()
+
         await session.refresh(new_meal)
 
         return new_meal

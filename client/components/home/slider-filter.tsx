@@ -59,7 +59,7 @@ const SliderFilter = ({
     const newSearchParams = new URLSearchParams(searchParams.toString());
     newSearchParams.set(type, sliderValue.toString());
 
-    const url = new URL(window.location.origin);
+    const url = new URL(window.location.href);
     url.search = newSearchParams.toString();
     router.push(url.toString());
 
@@ -67,7 +67,7 @@ const SliderFilter = ({
   };
 
   const handleReinitialize = () => {
-    const url = new URL(window.location.origin);
+    const url = new URL(window.location.href);
     setValue(defaultValue);
     setSliderValue(defaultValue);
     const newSearchParams = new URLSearchParams(searchParams.toString());
@@ -81,7 +81,7 @@ const SliderFilter = ({
     <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
       <DropdownMenuTrigger
         className={cn(
-          `body duration-mediumjustify-between flex h-10 w-fit items-center gap-sm rounded-full border border-input bg-background px-3 py-2 ring-offset-background duration-medium focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50 data-[placeholder]:text-primary-900/[0.4] [&>span]:line-clamp-1`,
+          `body flex h-10 w-fit items-center justify-between gap-sm rounded-full border border-input bg-background px-3 py-2 outline-none ring-offset-background duration-medium focus:outline-none focus:ring-0 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50 data-[placeholder]:text-primary-900/[0.4] [&>span]:line-clamp-1`,
           searchParams.get(type) && 'border-primary-900 bg-primary-900 text-white'
         )}
       >

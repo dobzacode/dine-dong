@@ -23,7 +23,9 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata | undefined> {
   const meal = await getMealDetails(params, {
-    tags: [`meal-details-${params.id}`]
+    next: {
+      tags: [`meal-details-${params.id}`]
+    }
   });
 
   if (!meal || meal instanceof Error) {
@@ -38,12 +40,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata | un
 
 export default async function Home({ params }: Props) {
   const meal = await getMealDetails(params, {
-    tags: [`meal-details-${params.id}`]
+    next: {
+      tags: [`meal-details-${params.id}`]
+    }
   });
 
   if (!meal || meal instanceof Error) {
     return <h1>Error</h1>;
   }
+
+  console.log(meal.meal_id);
 
   return (
     <section className="section-px shadow-primary-40 section-py container flex flex-col justify-center gap-sm tablet:flex-row">

@@ -16,6 +16,6 @@ export default async function ActionsWrapper({ sub }: { sub: string }) {
       Modifier mon profil
     </Link>
   ) : (
-    <Link href="/connexion">Connexion</Link>
+    <></>
   );
 }

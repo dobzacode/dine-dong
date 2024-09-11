@@ -47,16 +47,13 @@ const createUserMutation = async ({
   let picturekey: string | null = null;
 
   if (data.stepOne.image) {
-    const { key } = await uploadToS3(
-      { ...data.stepOne.image, name: 'avatar' },
-      {
-        endpoint: {
-          request: {
-            url: `http://localhost:3000/api/s3-upload/?folder=dynamic/${sub}/user`
-          }
+    const { key } = await uploadToS3(data.stepOne.image, {
+      endpoint: {
+        request: {
+          url: `http://localhost:3000/api/s3-upload/?folder=dynamic/${sub}/user`
         }
       }
-    );
+    });
     picturekey = key;
   }
 

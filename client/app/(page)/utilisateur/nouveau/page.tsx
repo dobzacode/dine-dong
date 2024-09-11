@@ -1,4 +1,6 @@
 import UserForm from '@/components/user/user-form';
+import { getUserInformations } from '@/lib/utils';
+import { UserResponse } from '@/types/query';
 import { verify } from 'jsonwebtoken';
 import { Metadata } from 'next';
 import { redirect } from 'next/navigation';
@@ -42,6 +44,21 @@ export default async function Page({
     firstName?: string;
     username?: string;
   };
+
+  let user: UserResponse | null = null;
+
+  try {
+    user = await getUserInformations(
+      { sub: sub },
+      { next: { tags: [`user-informations-${sub}`] } }
+    );
+  } catch (error) {
+    console.error(error);
+  }
+
+  if (user) {
+    redirect(`${auth0domain}/continue?state=${state}`);
+  }
 
   return (
     <section className="section-py container mx-auto flex h-full max-w-[1200px] flex-col items-center justify-center">
