@@ -20,7 +20,7 @@ export default function UserMenu({ user }: { user: UserResponse }) {
     <DropdownMenu open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger className="focus-visible:outline-none">
         <div className="flex items-center gap-xs">
-          <div className="h-button w-button relative overflow-hidden rounded-full">
+          <div className="relative h-button w-button overflow-hidden rounded-full">
             <Image
               fill
               src={constructS3Url(user.picture_key ?? 'static/default-avatar.png')}
@@ -36,7 +36,7 @@ export default function UserMenu({ user }: { user: UserResponse }) {
           )}
         </div>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-fit rounded-xs">
+      <DropdownMenuContent className="w-fit rounded-xs [&>a]:cursor-pointer">
         <DropdownMenuItem asChild>
           <Link href={`/utilisateur/${user.username}`}>Mon profil</Link>
         </DropdownMenuItem>

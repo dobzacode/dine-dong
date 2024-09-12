@@ -79,7 +79,7 @@ export default async function Home({
             Evaluations
           </TabsTrigger>
         </TabsList>
-        <TabsContent value="plats" className="flex flex-col gap-sm p-sm">
+        <TabsContent value="plats" className="flex flex-col gap-sm px-sm pt-md">
           <FilterSortMenu />
           <MealsPrefetch user_id={user.user_id} {...searchParams} />
         </TabsContent>
