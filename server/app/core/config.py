@@ -50,6 +50,9 @@ class Settings(BaseSettings):
     stripe_secret_key: str
     webhook_secret: str
 
+    kv_rest_api_url: str
+    kv_rest_api_token: str
+
     @computed_field  # type: ignore[misc]
     @property
     def sqlalchemy_database_uri(self) -> URL:

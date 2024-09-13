@@ -45,7 +45,7 @@ export default async function Page({
     username?: string;
   };
 
-  let user: UserResponse | null = null;
+  let user: UserResponse | null | Error = null;
 
   try {
     user = await getUserInformations(
@@ -53,10 +53,10 @@ export default async function Page({
       { next: { tags: [`user-informations-${sub}`] } }
     );
   } catch (error) {
-    console.error(error);
+    console.log(error);
   }
 
-  if (user) {
+  if (user instanceof Error || user) {
     redirect(`${auth0domain}/continue?state=${state}`);
   }
 

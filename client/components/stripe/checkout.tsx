@@ -1,10 +1,5 @@
-'use client';
-
-import { Elements } from '@stripe/react-stripe-js';
-import { BaseStripeElementsOptions, loadStripe } from '@stripe/stripe-js';
-import { useQuery } from '@tanstack/react-query';
-import { FaSpinner } from 'react-icons/fa';
-import CheckoutForm from './checkout-form';
+import { CreatePaymentIntent, getErrorMessage } from '@/lib/utils';
+import InitStripe from './init-stripe';
 
 interface CheckoutProps {
   amount: number;
@@ -12,133 +7,46 @@ interface CheckoutProps {
   description: string;
   userId: string;
   mealId: string;
+  isNewPaymentIntent: boolean;
 }
 
-const appearance: BaseStripeElementsOptions['appearance'] = {
-  theme: 'flat',
-  rules: {
-    '.Input': {
-      borderBottom: '1px solid #fbe1b7',
-      height: '40px',
-      padding: '8px 12px',
-      margin: '6px 0',
-      fontWeight: '300'
-    },
-    '.Input:focus': {
-      borderBottom: '1px solid #f2a426',
-      outline: '0px',
-      ring: '0px',
-      boxShadow: '0px'
-    },
-    '.Input--invalid': {
-      borderBottom: '1px solid #f91f3c',
-      outline: '0px',
-      ring: '0px',
-      boxShadow: '0px'
-    },
-    '.Dropdown': {
-      border: '10px solid #fbe1b7',
-      padding: '8px 12px',
-      margin: '0 -12px',
-      borderRadius: '4px',
-      backgroundColor: 'black'
-    },
-    '.Label': {
-      fontSize: '14px',
-      fontWeight: '500'
-    },
-    '.Error': {
-      fontSize: '14px'
-    }
-  },
-  variables: {
-    colorPrimary: '#f2a426',
-    colorBackground: 'hsl(37 20% 98%)',
-    colorText: '#000000',
-    colorDanger: '#f91f3c',
-    spacingUnit: '2px',
-    borderRadius: '0px',
-    tabLogoSelectedColor: '#ffffff',
-    iconLoadingIndicatorColor: '#ffffff',
-    iconMenuHoverColor: '#ffffff',
-    fontFamily: 'Poppins',
-    gridRowSpacing: '16px',
-    gridColumnSpacing: '16px'
-  }
-};
-
-const initStripe = async () => {
-  return loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
-};
-
-const fetchClientSecret = async ({
+const Checkout = async ({
   amount,
   currency = 'eur',
   description,
+  userId,
   mealId,
-  userId
+  isNewPaymentIntent
 }: CheckoutProps) => {
-  const response = await fetch('http://localhost:3000/api/protected/stripe/payment-intent', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      amount: amount + parseInt(process.env.NEXT_PUBLIC_MEAL_FEE!),
+  let data: { clientSecret: string; id: string };
+
+  try {
+    data = await CreatePaymentIntent({
+      amount,
       currency,
       description,
       userId,
-      mealId: mealId
-    })
-  });
-  const data = (await response.json()) as { clientSecret: string };
-  console.log(data);
-  if (!response.ok) throw new Error('Une erreur est survenue');
-  return data.clientSecret;
-};
+      mealId,
+      isNewPaymentIntent
+    });
+  } catch (error) {
+    const message = getErrorMessage(error);
+    if (message.includes('403')) {
+      console.log(error);
+      return (
+        <div className="text-danger mt-2">
+          Vous n&apos;êtes pas connecté. Veuillez vous connecter.
+        </div>
+      );
+    }
+    return (
+      <div className="text-danger mt-2">
+        Une erreur est survenue lors de la création du paiement. Veuillez réessayer.
+      </div>
+    );
+  }
 
-const Checkout = ({ amount, currency = 'eur', description, userId, mealId }: CheckoutProps) => {
-  const stripePromise = initStripe();
-
-  const {
-    data: clientSecret,
-    isLoading,
-    isError
-  } = useQuery({
-    queryKey: ['clientSecret'],
-    queryFn: () => fetchClientSecret({ amount, currency, description, userId, mealId }),
-    refetchOnWindowFocus: false,
-    retry: false,
-    staleTime: 0
-  });
-
-  if (isLoading) return <FaSpinner className="animate-spin" />;
-
-  if (isError)
-    return <div className="text-danger mt-2">Failed to initialize payment. Please try again.</div>;
-
-  return (
-    <Elements
-      stripe={stripePromise}
-      options={{
-        locale: 'fr-FR',
-        clientSecret,
-        appearance,
-        loader: 'never',
-        fonts: [
-          {
-            cssSrc:
-              'https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap',
-            family: 'Poppins'
-          }
-        ]
-      }}
-    >
-      <CheckoutForm
-        mealSummaryDetails={{
-          price: amount
-        }}
-      />
-    </Elements>
-  );
+  return <InitStripe clientSecret={data.clientSecret} price={amount} />;
 };
 
 export default Checkout;

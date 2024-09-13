@@ -44,6 +44,7 @@ class CreatePaymentIntentRequest(BaseModel):
     description: str
     userId: str
     mealId: str
+    isNewPaymentIntent: bool
 
 
 class CreateIngredientRequest(BaseRequest):

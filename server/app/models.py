@@ -75,6 +75,8 @@ class User(Base):
         back_populates="user", lazy="selectin", cascade="all, delete"
     )
 
+    orders: Mapped[list["Order"]] = relationship(back_populates="user", lazy="selectin")
+
 
 class Address(Base):
     __tablename__ = "address"
@@ -245,3 +247,23 @@ class Meal(Base):
     user_id: Mapped[str] = mapped_column(
         ForeignKey("user_account.user_id"), nullable=False
     )
+
+    order: Mapped["Order"] = relationship(
+        back_populates="meal", uselist=False, cascade="all, delete"
+    )
+
+
+class Order(Base):
+    __tablename__ = "order"
+
+    order_id: Mapped[str] = mapped_column(
+        Uuid(as_uuid=False), primary_key=True, default=lambda _: str(uuid.uuid4())
+    )
+
+    user: Mapped["User"] = relationship(back_populates="orders", lazy="selectin")
+    user_id: Mapped[str] = mapped_column(
+        ForeignKey("user_account.user_id"), nullable=False
+    )
+
+    meal: Mapped["Meal"] = relationship(back_populates="order", lazy="selectin")
+    meal_id: Mapped[str] = mapped_column(ForeignKey("meal.meal_id"), nullable=False)

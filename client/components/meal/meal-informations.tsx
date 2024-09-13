@@ -1,9 +1,7 @@
 import { type MealDetailsResponse } from '@/types/query';
 
-import { cn } from '@/lib/utils';
-import Link from 'next/link';
-import { buttonVariants } from '../ui/button';
 import { Separator } from '../ui/separator';
+import MealBuyButton from './meal-buy-button';
 import LocationMap from './meal-form/location-map';
 import { dietEnum } from './meal-form/meal-schema';
 
@@ -65,12 +63,7 @@ export function MealInformations(props: MealDetailsResponse) {
           <span className="font-semibold">{weight} grammes</span>
         </p>
       </div>
-      <Link
-        className={cn(buttonVariants({ variant: 'default' }), 'w-full')}
-        href={`/repas/${meal_id}/achat`}
-      >
-        Acheter
-      </Link>
+      <MealBuyButton mealId={meal_id} />
       <Separator />
       <div className="flex flex-col">
         <h2 className="heading-h4 font-bold text-primary-container-fg">Livraison</h2>

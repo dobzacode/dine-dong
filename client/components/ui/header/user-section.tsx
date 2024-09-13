@@ -14,10 +14,23 @@ export default async function UserSection() {
     );
   }
 
-  const user = await getUserInformations(
-    { sub: session.user.sub as string },
-    { next: { tags: [`user-informations-${session.user.sub}`] } }
-  );
+  let user = null;
+  try {
+    user = await getUserInformations(
+      { sub: session.user.sub as string },
+      { next: { tags: [`user-informations-${session.user.sub}`] } }
+    );
+  } catch (error) {
+    console.error(error);
+  }
+
+  if (!user || user instanceof Error) {
+    return (
+      <a className={cn(buttonVariants({ variant: 'outline' }))} href="/api/auth/login">
+        Connexion
+      </a>
+    );
+  }
 
   return <UserMenu user={user} />;
 }
