@@ -9,8 +9,9 @@ import CheckoutForm from './checkout-form';
 interface CheckoutProps {
   amount: number;
   currency?: string;
-  description?: string;
-  userId?: string;
+  description: string;
+  userId: string;
+  mealId: string;
 }
 
 const appearance: BaseStripeElementsOptions['appearance'] = {
@@ -74,6 +75,7 @@ const fetchClientSecret = async ({
   amount,
   currency = 'eur',
   description,
+  mealId,
   userId
 }: CheckoutProps) => {
   const response = await fetch('http://localhost:3000/api/protected/stripe/payment-intent', {
@@ -83,7 +85,8 @@ const fetchClientSecret = async ({
       amount: amount + parseInt(process.env.NEXT_PUBLIC_MEAL_FEE!),
       currency,
       description,
-      userId
+      userId,
+      mealId: mealId
     })
   });
   const data = (await response.json()) as { clientSecret: string };
@@ -92,7 +95,7 @@ const fetchClientSecret = async ({
   return data.clientSecret;
 };
 
-const Checkout = ({ amount, currency = 'eur', description, userId }: CheckoutProps) => {
+const Checkout = ({ amount, currency = 'eur', description, userId, mealId }: CheckoutProps) => {
   const stripePromise = initStripe();
 
   const {
@@ -101,7 +104,7 @@ const Checkout = ({ amount, currency = 'eur', description, userId }: CheckoutPro
     isError
   } = useQuery({
     queryKey: ['clientSecret'],
-    queryFn: () => fetchClientSecret({ amount, currency, description, userId }),
+    queryFn: () => fetchClientSecret({ amount, currency, description, userId, mealId }),
     refetchOnWindowFocus: false,
     retry: false,
     staleTime: 0

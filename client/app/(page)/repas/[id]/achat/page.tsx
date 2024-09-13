@@ -41,6 +41,7 @@ export default async function Page({ params }: { params: { id: string } }) {
     <section className="section-px shadow-primary-40 section-py container flex flex-col justify-center gap-sm tablet:flex-row">
       <aside className="w-1/3 min-w-fit">
         <Checkout
+          mealId={meal.meal_id}
           amount={meal.price}
           userId={user.user_id}
           description={`${meal.name}:${meal.meal_id} par ${user.username}`}

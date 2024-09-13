@@ -43,6 +43,7 @@ class CreatePaymentIntentRequest(BaseModel):
     currency: str
     description: str
     userId: str
+    mealId: str
 
 
 class CreateIngredientRequest(BaseRequest):

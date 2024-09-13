@@ -21,7 +21,7 @@ async def create_payment_intent(
             amount=request.amount * 100,
             currency=request.currency,
             description=request.description,
-            metadata={"userId": request.userId},
+            metadata={"userId": request.userId, "mealId": request.mealId},
         )
         return {"status": "success", "clientSecret": payment_intent.client_secret}
     except Exception as e:
