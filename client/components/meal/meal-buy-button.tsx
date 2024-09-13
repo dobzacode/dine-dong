@@ -31,7 +31,7 @@ export default async function MealBuyButton({ mealId }: { mealId: string }) {
           ? 'pointer-events-none opacity-50'
           : ''
       )}
-      href={`/repas/${mealId}/achat`}
+      href={user?.user_id ? `/repas/${mealId}/achat` : '/api/auth/login'}
     >
       Acheter
     </Link>

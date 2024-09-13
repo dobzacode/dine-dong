@@ -1,7 +1,7 @@
 import { getUserInformations } from '@/lib/user/user-fetch';
 import { cn } from '@/lib/utils';
 import { getSession } from '@auth0/nextjs-auth0';
-import { buttonVariants } from '../button';
+import { Button, buttonVariants } from '../button';
 import UserMenu from './user-menu';
 
 export default async function UserSection() {
@@ -27,9 +27,9 @@ export default async function UserSection() {
 
   if (!user || user instanceof Error) {
     return (
-      <a className={cn(buttonVariants({ variant: 'outline' }))} href="/api/auth/login">
+      <Button variant={'outline'} disabled={true}>
         Connexion
-      </a>
+      </Button>
     );
   }
 
