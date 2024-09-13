@@ -1,5 +1,5 @@
 import ProfilForm from '@/components/settings/profil/profil-form';
-import { getUserInformations } from '@/lib/utils';
+import { getErrorMessage, getUserInformations } from '@/lib/utils';
 import { getSession } from '@auth0/nextjs-auth0';
 import { redirect } from 'next/navigation';
 
@@ -15,10 +15,17 @@ export default async function Page() {
     redirect('/');
   }
 
-  const user = await getUserInformations(
-    { sub: session.user.sub as string },
-    { next: { tags: [`user-informations-${session.user.sub}`] } }
-  );
+  let user;
+  try {
+    user = await getUserInformations(
+      { sub: session.user.sub as string },
+      { next: { tags: [`user-informations-${session.user.sub}`] } }
+    );
+  } catch (error) {
+    const message = getErrorMessage(error);
+    console.log(message);
+    redirect('/');
+  }
 
   return <ProfilForm user={user} sub={session.user.sub as string} />;
 }

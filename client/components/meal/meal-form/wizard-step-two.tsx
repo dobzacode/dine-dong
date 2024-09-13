@@ -39,7 +39,7 @@ export default function WizardStepTwo({ className }: { className?: string }) {
             control={form.control}
             name="stepTwo.weight"
             render={({ field }) => (
-              <FormItem className="flex w-1/2 flex-col max-mobile:w-full">
+              <FormItem className="flex w-1/2 flex-col font-medium max-mobile:w-full">
                 <FormLabel>Poids du repas (en grammes)</FormLabel>
                 <FormControl>
                   <Input

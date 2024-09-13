@@ -38,5 +38,12 @@ class CreateMealRequest(Meal):
     address: Address
 
 
+class CreatePaymentIntentRequest(BaseModel):
+    amount: int
+    currency: str
+    description: str
+    userId: str
+
+
 class CreateIngredientRequest(BaseRequest):
     name: str

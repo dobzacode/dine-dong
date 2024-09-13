@@ -45,6 +45,10 @@ class Settings(BaseSettings):
     auth0_api_audience: str
     auth0_issuer: str
     auth0_algorithms: str
+    base_url: str
+
+    stripe_secret_key: str
+    webhook_secret: str
 
     @computed_field  # type: ignore[misc]
     @property
@@ -67,4 +71,4 @@ class Settings(BaseSettings):
 
 @lru_cache(maxsize=1)
 def get_settings() -> Settings:
-    return Settings()  # type: ignore
+    return Settings()

@@ -1,9 +1,10 @@
 import { MealInformations } from '@/components/meal/meal-informations';
 import { UserInformations } from '@/components/meal/user-informations';
 import ImagePulsing from '@/components/ui/image-pulsing';
-import { constructS3Url, getMealDetails, getMealsSummaries } from '@/lib/utils';
+import { constructS3Url, getErrorMessage, getMealDetails, getMealsSummaries } from '@/lib/utils';
 import { type MealSummaryResponse } from '@/types/query';
 import { type Metadata } from 'next';
+import { notFound, redirect } from 'next/navigation';
 
 type Props = {
   params: { id: string };
@@ -39,17 +40,21 @@ export async function generateMetadata({ params }: Props): Promise<Metadata | un
 }
 
 export default async function Home({ params }: Props) {
-  const meal = await getMealDetails(params, {
-    next: {
-      tags: [`meal-details-${params.id}`]
+  
+  let meal;
+  try {
+    meal = await getMealDetails(params, {
+      next: {
+        tags: [`meal-details-${params.id}`]
+      }
+    });
+  } catch (error) {
+    const message = getErrorMessage(error);
+    if (message.includes('404')) {
+      return notFound();
     }
-  });
-
-  if (!meal || meal instanceof Error) {
-    return <h1>Error</h1>;
+    redirect(`/`);
   }
-
-  console.log(meal.meal_id);
 
   return (
     <section className="section-px shadow-primary-40 section-py container flex flex-col justify-center gap-sm tablet:flex-row">
@@ -66,6 +71,7 @@ export default async function Home({ params }: Props) {
       </div>
       <div className="flex flex-col gap-sm">
         <UserInformations id={meal.user_id} />
+
         <MealInformations {...meal} />
       </div>
     </section>

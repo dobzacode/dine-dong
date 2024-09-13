@@ -205,10 +205,6 @@
   box-sizing: border-box;
 }
 
-html {
-  font-family: roboto;
-}
-
 .hamburger .line {
   transition:
     y 300ms ease-in 300ms,

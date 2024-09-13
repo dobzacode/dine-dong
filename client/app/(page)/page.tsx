@@ -21,6 +21,7 @@ export default async function Home({
       <SearchBar className="section-px w-full tablet:hidden laptop:px-0" />
       <section className="section-px container flex flex-col items-center gap-sm">
         <FilterSortMenu />
+
         <Suspense fallback={<MealsSectionSkeleton />}>
           <MealsPrefetch {...{ name, diet, radius, sort, max_price, lat, lng }} />
         </Suspense>
