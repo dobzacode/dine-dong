@@ -1,10 +1,9 @@
 import { addressSchema } from '@/components/meal/meal-form/meal-schema';
 import { ACCEPTED_IMAGE_TYPES, MAX_FILE_SIZE } from '@/components/settings/profil/profil-schema';
-import { checkEmailAvailability, checkUsernameAvailability } from '@/lib/utils';
+import { checkEmailAvailability, checkUsernameAvailability } from '@/lib/user/user-fetch';
 import { isValidPhoneNumber } from 'react-phone-number-input';
 import { isAlpha, isAlphanumeric, isEmail } from 'validator';
 import { z } from 'zod';
-
 export const firstStepSchema = z.object({
   email: z
     .string()

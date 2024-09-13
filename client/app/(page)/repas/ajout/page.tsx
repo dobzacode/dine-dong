@@ -1,6 +1,6 @@
 import MealForm from '@/components/meal/meal-form';
 import { getSession } from '@auth0/nextjs-auth0';
-import { Metadata } from 'next';
+import { type Metadata } from 'next';
 import { redirect } from 'next/navigation';
 
 export const metadata: Metadata = {

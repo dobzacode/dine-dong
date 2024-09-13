@@ -8,22 +8,19 @@ import type {
   User
 } from './schema';
 
-interface BaseResponse {}
+export interface AddressResponse extends Address {}
 
-export interface AddressResponse extends BaseResponse, Address {}
-
-export interface UserResponse extends BaseResponse, User {
+export interface UserResponse extends User {
   user_id: string;
 }
 
-export interface MealResponse extends BaseResponse, Meal {
+export interface MealResponse extends Meal {
   meal_id: string;
   user_id: string;
 }
 
 export interface MealWithAddressResponse
-  extends BaseResponse,
-    Omit<Meal, 'cooking_date' | 'expiration_date' | 'payment_method'> {
+  extends Omit<Meal, 'cooking_date' | 'expiration_date' | 'payment_method'> {
   meal_id: string;
   expiration_date: string;
   cooking_date: string;
@@ -31,43 +28,40 @@ export interface MealWithAddressResponse
   payment_method: keyof typeof PaymentMethodsEnum;
 }
 
-export interface MealsResponse extends BaseResponse {
+export interface MealsPaginatedResponse {
   meals: MealWithAddressResponse[];
   total: number;
   hasMore: boolean;
 }
 
-export interface MealSummaryResponse extends BaseResponse {
+export interface MealSummaryResponse {
   meal_id: string;
   name: string;
   description: string | null;
 }
 
-export interface MealDetailsResponse extends BaseResponse, MealWithAddressResponse {
+export interface MealDetailsResponse extends MealWithAddressResponse {
   ingredients: IngredientDetailsResponse[];
   user_id: string;
 }
 
-export interface UserResponse extends BaseResponse, User {
+export interface UserResponse extends User {
   user_id: string;
   residency: Address;
 }
 
-export interface IngredientResponse extends BaseResponse, Ingredient {
+export interface IngredientResponse extends Ingredient {
   ingredient_id: string;
 }
 
-export interface IngredientDetailsResponse
-  extends BaseResponse,
-    Ingredient,
-    IngredientMealResponse {}
+export interface IngredientDetailsResponse extends Ingredient, IngredientMealResponse {}
 
-export interface MealWithIngredientsAndAddressResponse extends BaseResponse, Meal {
+export interface MealWithIngredientsAndAddressResponse extends Meal {
   ingredients: IngredientDetailsResponse[];
   address: Address;
 }
 
-export interface IngredientMealResponse extends BaseResponse, Omit<IngredientMeal, 'unit'> {
+export interface IngredientMealResponse extends Omit<IngredientMeal, 'unit'> {
   unit: keyof typeof UnitEnum;
   meal_id: string;
   ingredient_id: string;

@@ -13,7 +13,7 @@ import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
 import { FormProvider, useForm, useFormState } from 'react-hook-form';
 import fr from 'react-phone-number-input/locale/fr';
-import { AccountSchema, createAccountSchema } from './account-schema';
+import { type AccountSchema, createAccountSchema } from './account-schema';
 
 const modifyProfileMutation = async ({
   data,

@@ -1,6 +1,6 @@
 import { sanitizeKey, uuid } from 'next-s3-upload';
 import { POST as route } from 'next-s3-upload/route';
-import { NextRequest } from 'next/server';
+import { type NextRequest } from 'next/server';
 
 export const POST = route.configure({
   async key(req: NextRequest, filename) {

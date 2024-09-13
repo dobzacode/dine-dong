@@ -1,4 +1,4 @@
-import { checkEmailAvailability, checkUsernameAvailability } from '@/lib/utils';
+import { checkEmailAvailability, checkUsernameAvailability } from '@/lib/user/user-fetch';
 import { isValidPhoneNumber } from 'react-phone-number-input';
 import { isAlphanumeric, isEmail } from 'validator';
 import { z } from 'zod';

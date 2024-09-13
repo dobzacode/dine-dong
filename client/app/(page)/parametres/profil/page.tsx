@@ -1,7 +1,8 @@
 import ProfilForm from '@/components/settings/profil/profil-form';
-import { getErrorMessage, getUserInformations } from '@/lib/utils';
+import { getUserInformations } from '@/lib/user/user-fetch';
+import { getErrorMessage } from '@/lib/utils';
 import { getSession } from '@auth0/nextjs-auth0';
-import { redirect } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 
 export const metadata = {
   title: 'Paramètres | Profil',
@@ -23,7 +24,9 @@ export default async function Page() {
     );
   } catch (error) {
     const message = getErrorMessage(error);
-    console.log(message);
+    if (message.includes('404')) {
+      return notFound();
+    }
     redirect('/');
   }
 

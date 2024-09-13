@@ -1,6 +1,6 @@
 'use client';
 
-import { Variants } from 'framer-motion';
+import { type Variants } from 'framer-motion';
 
 export const delayFadeInVariant: Variants = {
   hidden: { opacity: 0 },
@@ -10,7 +10,6 @@ export const delayFadeInVariant: Variants = {
   }),
   exit: { opacity: 0, transition: { duration: 0.5 } }
 };
-
 
 export const ComingFromTopVariant: Variants = {
   hidden: {

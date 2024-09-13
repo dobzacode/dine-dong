@@ -4,8 +4,10 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import ActionsWrapper from '@/components/user/user-page/actions-wrapper';
 import InformationsSection from '@/components/user/user-page/informations-section';
-import { getMealsParams, getUserInformations } from '@/lib/utils';
-import { Metadata } from 'next';
+import { type getMealsParams } from '@/lib/meal/meal-fetch';
+import { getUserInformations } from '@/lib/user/user-fetch';
+
+import { type Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 

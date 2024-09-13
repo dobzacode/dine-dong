@@ -1,8 +1,9 @@
 import UserForm from '@/components/user/user-form';
-import { getUserInformations } from '@/lib/utils';
-import { UserResponse } from '@/types/query';
+import { getUserInformations } from '@/lib/user/user-fetch';
+
+import { type UserResponse } from '@/types/query';
 import { verify } from 'jsonwebtoken';
-import { Metadata } from 'next';
+import { type Metadata } from 'next';
 import { redirect } from 'next/navigation';
 
 export const metadata: Metadata = {

@@ -1,6 +1,6 @@
 'use client';
 import { useTheme } from 'next-themes';
-import { FC, useEffect, useState } from 'react';
+import { type FC, useEffect, useState } from 'react';
 import { FaMoon, FaSun } from 'react-icons/fa';
 import { Button } from '../button';
 

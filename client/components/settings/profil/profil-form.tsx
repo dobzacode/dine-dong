@@ -139,7 +139,8 @@ export default function ProfilForm({ user, sub }: { user: UserResponse; sub: str
     constructS3Url(picture_key ?? 'static/default-avatar.png')
   );
 
-  const [mapCoord, setMapCoord] = useState<{ lat: number; lng: number }>({
+  const [_, setMapCoord] = useState<{ lat: number; lng: number }>({
+    // eslint-disable-line @typescript-eslint/no-unused-vars
     lat: residency?.lat ?? 45.767572,
     lng: residency?.lng ?? 4.833102
   });

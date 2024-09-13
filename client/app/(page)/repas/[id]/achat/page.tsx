@@ -1,5 +1,7 @@
 import Checkout from '@/components/stripe/checkout';
-import { getErrorMessage, getMealDetails, getUserInformations } from '@/lib/utils';
+import { getMealDetails } from '@/lib/meal/meal-fetch';
+import { getUserInformations } from '@/lib/user/user-fetch';
+import { getErrorMessage } from '@/lib/utils';
 import { getSession } from '@auth0/nextjs-auth0';
 import { kv } from '@vercel/kv';
 import { notFound, redirect } from 'next/navigation';

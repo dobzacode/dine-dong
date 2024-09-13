@@ -2,7 +2,7 @@ import FilterSortMenu from '@/components/home/filter-sort-menu';
 import MealsPrefetch from '@/components/home/meals-prefetch';
 import MealsSectionSkeleton from '@/components/home/meals-section-skeleton';
 import SearchBar from '@/components/home/search-bar';
-import { getMealsParams } from '@/lib/utils';
+import { type getMealsParams } from '@/lib/meal/meal-fetch';
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
 

@@ -1,8 +1,7 @@
 import { dietEnum } from '@/components/meal/meal-form/meal-schema';
 import { cn } from '@/lib/utils';
-import { DietsEnum } from '@/types/schema';
+import { type DietsEnum } from '@/types/schema';
 import { Tag } from 'lucide-react';
-
 
 export default function Dietlabel({
   diet,

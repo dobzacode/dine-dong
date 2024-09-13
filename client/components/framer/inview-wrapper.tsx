@@ -1,6 +1,20 @@
 'use client';
 
-import { MotionStyle, Variants, motion } from 'framer-motion';
+import {
+  motion,
+  type MotionStyle,
+  type TargetAndTransition,
+  type VariantLabels,
+  type Variants
+} from 'framer-motion';
+import { type RefObject } from 'react';
+
+interface ViewportOptions {
+  root?: RefObject<Element>;
+  once?: boolean;
+  margin?: string;
+  amount?: 'some' | 'all' | number;
+}
 
 export default function InviewWrapper({
   style,
@@ -18,15 +32,19 @@ export default function InviewWrapper({
   variant: Variants | undefined;
   children: React.ReactNode;
   className?: string;
-  viewport?: any;
+  viewport?: ViewportOptions;
   inverseOnExit?: boolean;
   id?: string;
   tag?: string;
   noExit?: boolean;
-  whileHover?: any;
+  whileHover?: VariantLabels | TargetAndTransition;
 }) {
-  //@ts-expect-error tag is a string
-  const MotionComponent = motion[tag];
+  const MotionComponent = motion[tag as keyof typeof motion];
+
+  const determineExitVariant = () => {
+    if (noExit) return;
+    return inverseOnExit ? 'exit' : 'hidden';
+  };
 
   return (
     <MotionComponent
@@ -39,10 +57,7 @@ export default function InviewWrapper({
       whileInView="enter"
       initial="hidden"
       whileHover={whileHover}
-      exit={() => {
-        if (noExit) return;
-        return inverseOnExit ? 'exit' : 'hidden';
-      }}
+      exit={determineExitVariant()}
     >
       {children}
     </MotionComponent>

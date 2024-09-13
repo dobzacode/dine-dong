@@ -93,7 +93,7 @@ export default function AddressAutoComplete(props: AddressAutoCompleteProps) {
         lng: data.data.address.lng
       });
     }
-  }, [data, setAddress]);
+  }, [data, setAddress, setMapCoord]);
 
   return (
     <>

@@ -1,7 +1,7 @@
 'use client';
 
 import { constructS3Url } from '@/lib/utils';
-import { UserResponse } from '@/types/query';
+import { type UserResponse } from '@/types/query';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';

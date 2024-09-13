@@ -1,4 +1,5 @@
-import { CreatePaymentIntent, getErrorMessage } from '@/lib/utils';
+import { CreatePaymentIntent } from '@/lib/stripe/stripe-fetch';
+import { getErrorMessage } from '@/lib/utils';
 import InitStripe from './init-stripe';
 
 interface CheckoutProps {

@@ -1,5 +1,6 @@
-import { getErrorMessage, getMeals, getMealsParams } from '@/lib/utils';
-import { MealsResponse } from '@/types/query';
+import { getMeals, type getMealsParams } from '@/lib/meal/meal-fetch';
+import { getErrorMessage } from '@/lib/utils';
+import { type MealsPaginatedResponse } from '@/types/query';
 import MealsSection from './meals-section';
 
 export default async function MealsPrefetch({
@@ -23,7 +24,7 @@ export default async function MealsPrefetch({
     user_id
   };
 
-  let prefetchMeals: MealsResponse | Error;
+  let prefetchMeals: MealsPaginatedResponse | Error;
 
   try {
     prefetchMeals = await getMeals({ ...fetchOptions }, { next: { tags: ['search-meals'] } });
@@ -33,7 +34,6 @@ export default async function MealsPrefetch({
       return (
         <div className="flex w-full flex-col items-center justify-center">
           <h3 className="heading-h1">Aucun repas trouvé</h3>
-         
         </div>
       );
     }

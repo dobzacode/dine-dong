@@ -1,10 +1,17 @@
-import { constructS3Url, getUserInformations } from '@/lib/utils';
+import { getUserInformations } from '@/lib/user/user-fetch';
+import { constructS3Url, getErrorMessage } from '@/lib/utils';
 import Link from 'next/link';
 import ImagePulsing from '../ui/image-pulsing';
 import Rating from '../ui/rating';
 
 export async function UserInformations({ id }: { id: string }) {
-  const user = await getUserInformations({ id }, { next: { tags: [`user-informations-${id}`] } });
+  let user = null;
+  try {
+    user = await getUserInformations({ id }, { next: { tags: [`user-informations-${id}`] } });
+  } catch (error) {
+    const message = getErrorMessage(error);
+    console.log(message);
+  }
 
   if (!user || user instanceof Error) {
     return null;

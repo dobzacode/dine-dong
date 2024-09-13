@@ -1,7 +1,7 @@
 'use client';
 
 import { Elements } from '@stripe/react-stripe-js';
-import { BaseStripeElementsOptions, loadStripe } from '@stripe/stripe-js';
+import { type BaseStripeElementsOptions, loadStripe } from '@stripe/stripe-js';
 import CheckoutForm from './checkout-form';
 
 const appearance: BaseStripeElementsOptions['appearance'] = {

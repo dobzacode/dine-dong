@@ -43,7 +43,7 @@ export default function WizardFinalStep({ className }: { className?: string }) {
             </div>
           </div>
         </div>
-        <div className="relative mobile-lg:w-8xl overflow-hidden rounded-xs max-mobile-lg:aspect-square">
+        <div className="relative overflow-hidden rounded-xs max-mobile-lg:aspect-square mobile-lg:w-8xl">
           <Image
             className="grow-0 rounded-xs object-cover"
             sizes={`(max-width: 768px) 100vw, 800px`}

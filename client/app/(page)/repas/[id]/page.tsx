@@ -1,7 +1,8 @@
 import { MealInformations } from '@/components/meal/meal-informations';
 import { UserInformations } from '@/components/meal/user-informations';
 import ImagePulsing from '@/components/ui/image-pulsing';
-import { constructS3Url, getErrorMessage, getMealDetails, getMealsSummaries } from '@/lib/utils';
+import { getMealDetails, getMealsSummaries } from '@/lib/meal/meal-fetch';
+import { constructS3Url, getErrorMessage } from '@/lib/utils';
 import { type MealSummaryResponse } from '@/types/query';
 import { type Metadata } from 'next';
 import { notFound, redirect } from 'next/navigation';
@@ -40,7 +41,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata | un
 }
 
 export default async function Home({ params }: Props) {
-  
   let meal;
   try {
     meal = await getMealDetails(params, {

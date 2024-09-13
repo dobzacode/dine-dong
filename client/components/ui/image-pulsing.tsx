@@ -19,6 +19,7 @@ export default function ImagePulsing({ skeletoncss, ...props }: ImagePulsingProp
           setIsLoading(false);
         }}
         {...props}
+        alt={props.alt ?? ''}
       />
     </>
   );

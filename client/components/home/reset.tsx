@@ -9,7 +9,6 @@ export default function Reset() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-
   return (
     <button
       onClick={() => router.replace(pathname)}

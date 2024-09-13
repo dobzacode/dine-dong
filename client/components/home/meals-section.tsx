@@ -2,10 +2,9 @@
 
 import { useEffect, useMemo } from 'react';
 
-import { getMeals, getMealsParams } from '@/lib/utils';
-
 import { useGeoLocation } from '@/hooks/use-geolocation';
-import type { MealsResponse, MealWithAddressResponse } from '@/types/query';
+import { getMeals, type getMealsParams } from '@/lib/meal/meal-fetch';
+import type { MealsPaginatedResponse, MealWithAddressResponse } from '@/types/query';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import { delayFadeInVariant } from '../framer/div-variants';
@@ -16,7 +15,7 @@ const MealsSection = ({
   prefetchMeals,
   fetchOptions: passedOptions
 }: {
-  prefetchMeals: MealsResponse;
+  prefetchMeals: MealsPaginatedResponse;
   fetchOptions: getMealsParams;
 }) => {
   const location = useGeoLocation();
@@ -33,7 +32,7 @@ const MealsSection = ({
   }, [location, passedOptions]);
 
   const { data, isFetchingNextPage, fetchNextPage, isError, error } = useInfiniteQuery<
-    MealsResponse,
+    MealsPaginatedResponse,
     Error
   >({
     queryKey: ['search-meals', fetchOptions],

@@ -10,7 +10,7 @@ export const POST = withApiProxy;
 
 async function apiProxy(request: NextRequest, proxyPath: string): Promise<Response> {
   let accessToken;
-  
+
   try {
     const accessTokenResult = await getAccessToken(request, new NextResponse(), {
       authorizationParams: { audience: 'http://localhost:8080/api/' }

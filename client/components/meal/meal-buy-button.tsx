@@ -1,4 +1,5 @@
-import { cn, getUserInformations } from '@/lib/utils';
+import { getUserInformations } from '@/lib/user/user-fetch';
+import { cn } from '@/lib/utils';
 import { getSession } from '@auth0/nextjs-auth0';
 import { kv } from '@vercel/kv';
 import Link from 'next/link';

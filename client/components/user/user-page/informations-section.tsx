@@ -1,7 +1,7 @@
 import ImagePulsing from '@/components/ui/image-pulsing';
 import Rating from '@/components/ui/rating';
 import { constructS3Url } from '@/lib/utils';
-import { UserResponse } from '@/types/query';
+import { type UserResponse } from '@/types/query';
 import { MapPin } from 'lucide-react';
 
 export default function InformationsSection({ user }: { user: UserResponse }) {
