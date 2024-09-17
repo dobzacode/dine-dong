@@ -113,7 +113,7 @@
   }
 
   .section-px {
-    @apply px-md mobile:px-md mobile-lg:px-lg tablet:px-xl laptop-sm:px-3xl laptop:px-4xl;
+    @apply px-xs mobile-sm:px-sm mobile:px-md mobile-lg:px-lg tablet:px-xl laptop-sm:px-xl laptop:px-2xl;
   }
 
   .section-py {

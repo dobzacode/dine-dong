@@ -80,7 +80,7 @@ const createMealMutation = async ({
     throw new Error();
   }
   const dataResponse = (await response.json()) as MealResponse;
-  customRevalidateTag(['search-meals', `user-${dataResponse.user_id}-meals`]);
+  customRevalidateTag(['search-meals', `user-${dataResponse.user_sub}-meals`]);
   return dataResponse;
 };
 

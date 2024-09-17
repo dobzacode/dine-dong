@@ -1,16 +1,19 @@
 'use client';
 
+import { UserResponse } from '@/types/query';
 import { PaymentElement, useElements, useStripe } from '@stripe/react-stripe-js';
 import { ShieldCheck } from 'lucide-react';
 import React from 'react';
 import { Button } from '../ui/button';
 
 const CheckoutForm = ({
-  mealSummaryDetails
+  mealSummaryDetails,
+  user
 }: {
   mealSummaryDetails: {
     price: number;
   };
+  user: UserResponse;
 }) => {
   const stripe = useStripe();
   const elements = useElements();

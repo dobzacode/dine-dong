@@ -16,15 +16,14 @@ class AddressWithDistanceResponse(BaseResponse, Address):
 
 
 class UserResponse(BaseResponse, User):
-    user_id: str
-    open_id: str
+    user_sub: str
     residency: Address
     pass
 
 
 class MealResponse(BaseResponse, Meal):
     meal_id: str
-    user_id: str
+    user_sub: str
     pass
 
 
@@ -59,7 +58,7 @@ class MealDetailsResponse(BaseResponse, Meal):
     meal_id: str
     address: AddressWithDistanceResponse
     ingredients: list[IngredientDetailsResponse]
-    user_id: str
+    user_sub: str
 
 
 class MealWithIngredientsAndAddressResponse(BaseResponse, Meal):

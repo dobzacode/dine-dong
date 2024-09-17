@@ -1,21 +1,22 @@
 import { CreatePaymentIntent } from '@/lib/stripe/stripe-fetch';
 import { getErrorMessage } from '@/lib/utils';
+import { UserResponse } from '@/types/query';
 import InitStripe from './init-stripe';
 
 interface CheckoutProps {
   amount: number;
   currency?: string;
   description: string;
-  userId: string;
   mealId: string;
   isNewPaymentIntent: boolean;
+  user: UserResponse;
 }
 
 const Checkout = async ({
   amount,
   currency = 'eur',
   description,
-  userId,
+  user,
   mealId,
   isNewPaymentIntent
 }: CheckoutProps) => {
@@ -26,7 +27,7 @@ const Checkout = async ({
       amount,
       currency,
       description,
-      userId,
+      userId: user.user_sub,
       mealId,
       isNewPaymentIntent
     });
@@ -47,7 +48,7 @@ const Checkout = async ({
     );
   }
 
-  return <InitStripe clientSecret={data.clientSecret} price={amount} />;
+  return <InitStripe user={user} clientSecret={data.clientSecret} price={amount} />;
 };
 
 export default Checkout;

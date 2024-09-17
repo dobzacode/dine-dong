@@ -11,7 +11,7 @@ export default async function MealsPrefetch({
   max_price,
   lat,
   lng,
-  user_id
+  user_sub
 }: getMealsParams) {
   const fetchOptions = {
     name,
@@ -21,7 +21,7 @@ export default async function MealsPrefetch({
     max_price,
     lat: typeof lat === 'string' ? parseFloat(lat) : undefined,
     lng: typeof lng === 'string' ? parseFloat(lng) : undefined,
-    user_id
+    user_sub
   };
 
   let prefetchMeals: MealsPaginatedResponse | Error;

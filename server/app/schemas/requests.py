@@ -18,7 +18,7 @@ class CreateUserRequest(User):
 
 
 class modifyUserRequest(BaseRequest):
-    user_id: str
+    user_sub: str
     username: str | None = None
     email: str | None = None
     phone_number: str | None = None
@@ -42,7 +42,7 @@ class CreatePaymentIntentRequest(BaseModel):
     amount: int
     currency: str
     description: str
-    userId: str
+    userSub: str
     mealId: str
     isNewPaymentIntent: bool
 

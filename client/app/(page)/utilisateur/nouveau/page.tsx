@@ -1,6 +1,5 @@
 import UserForm from '@/components/user/user-form';
 import { getUserInformations } from '@/lib/user/user-fetch';
-import { getErrorMessage } from '@/lib/utils';
 
 import { type UserResponse } from '@/types/query';
 import { verify } from 'jsonwebtoken';
@@ -54,14 +53,11 @@ export default async function Page({
       { next: { tags: [`user-informations-${sub}`] } }
     );
   } catch (error) {
-    const message = getErrorMessage(error);
-    if (!message.includes('404')) {
-      throw new Error("Une erreur est survenue lors de la récupération de l'utilisateur");
-    }
+    console.log(error);
   }
 
-  if (user instanceof Error || user) {
-    redirect(`${auth0domain}/continue?state=${state}`);
+  if (user && user instanceof Error && !user.message.includes('404')) {
+    redirect(`/`);
   }
 
   return (

@@ -36,11 +36,9 @@ class Base(DeclarativeBase):
 class User(Base):
     __tablename__ = "user_account"
 
-    user_id: Mapped[str] = mapped_column(
-        Uuid(as_uuid=False), primary_key=True, default=lambda _: str(uuid.uuid4())
+    user_sub: Mapped[str] = mapped_column(
+        String(256), nullable=False, unique=True, primary_key=True
     )
-
-    open_id: Mapped[str] = mapped_column(String(256), nullable=False, unique=True)
 
     email: Mapped[str] = mapped_column(String(256), nullable=False, unique=True)
 
@@ -61,14 +59,14 @@ class User(Base):
     picture_key: Mapped[str] = mapped_column(String(256), nullable=True)
 
     addresses: Mapped[list["Address"]] = relationship(
-        back_populates="user", lazy="selectin", foreign_keys="[Address.user_id]"
+        back_populates="user", lazy="selectin", foreign_keys="[Address.user_sub]"
     )
 
     residency: Mapped["Address"] = relationship(
         back_populates="resident",
         lazy="selectin",
         cascade="all, delete",
-        foreign_keys="[Address.resident_id]",
+        foreign_keys="[Address.resident_sub]",
     )
 
     meals: Mapped[list["Meal"]] = relationship(
@@ -100,17 +98,17 @@ class Address(Base):
     )
 
     user: Mapped["User"] = relationship(
-        back_populates="addresses", lazy="selectin", foreign_keys="[Address.user_id]"
+        back_populates="addresses", lazy="selectin", foreign_keys="[Address.user_sub]"
     )
-    user_id: Mapped[str] = mapped_column(ForeignKey("user_account.user_id"))
+    user_sub: Mapped[str] = mapped_column(ForeignKey("user_account.user_sub"))
 
     resident: Mapped["User"] = relationship(
         back_populates="residency",
         lazy="selectin",
-        foreign_keys="[Address.resident_id]",
+        foreign_keys="[Address.resident_sub]",
     )
-    resident_id: Mapped[str] = mapped_column(
-        ForeignKey("user_account.user_id"), nullable=True
+    resident_sub: Mapped[str] = mapped_column(
+        ForeignKey("user_account.user_sub"), nullable=True
     )
 
     meals: Mapped[list["Meal"]] = relationship(
@@ -244,8 +242,8 @@ class Meal(Base):
     )
 
     user: Mapped["User"] = relationship(back_populates="meals", lazy="selectin")
-    user_id: Mapped[str] = mapped_column(
-        ForeignKey("user_account.user_id"), nullable=False
+    user_sub: Mapped[str] = mapped_column(
+        ForeignKey("user_account.user_sub"), nullable=False
     )
 
     order: Mapped["Order"] = relationship(
@@ -261,8 +259,8 @@ class Order(Base):
     )
 
     user: Mapped["User"] = relationship(back_populates="orders", lazy="selectin")
-    user_id: Mapped[str] = mapped_column(
-        ForeignKey("user_account.user_id"), nullable=False
+    user_sub: Mapped[str] = mapped_column(
+        ForeignKey("user_account.user_sub"), nullable=False
     )
 
     meal: Mapped["Meal"] = relationship(back_populates="order", lazy="selectin")

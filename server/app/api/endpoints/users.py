@@ -20,20 +20,17 @@ auth = VerifyToken()
 )
 async def get_user_informations(
     session: AsyncSession = Depends(deps.get_session),
-    id: str = Query(None, description="ID de l'utilisateur à récupérer"),
     sub: str = Query(None, description="Sub de l'utilisateur à récupérer"),
     username: str = Query(None, description="Pseudo de l'utilisateur à récupérer"),
 ):
-    if not id and not sub and not username:
+    if not sub and not username:
         raise HTTPException(status_code=422, detail="ID, sub ou username requis")
 
     try:
         user_query = (
             select(User)
             .join(Address, User.residency)
-            .where(
-                or_(User.user_id == id, User.username == username, User.open_id == sub)
-            )
+            .where(or_(User.username == username, User.user_sub == sub))
         )
         user = await session.scalar(user_query)
 
@@ -72,7 +69,7 @@ async def is_user_registered(
     session: AsyncSession = Depends(deps.get_session),
     user: dict = Security(auth.verify),
 ):
-    user = await session.scalar(select(User).where(User.open_id == token.get("sub")))
+    user = await session.scalar(select(User).where(User.user_sub == token.get("sub")))
 
     if not user:
         return False
@@ -147,21 +144,21 @@ async def get_user_params(
 
 
 @router.get(
-    "/{id}/meals",
+    "/{sub}/meals",
     response_model=list[MealResponse],
     description="Obtenir tous les repas de l'utilisateur",
     status_code=200,
 )
 async def get_user_meals(
-    id: str = Path(
+    sub: str = Path(
         ..., description="ID de l'utilisateur dont les repas seront récupérés"
     ),
     session: AsyncSession = Depends(deps.get_session),
 ):
-    if not id:
+    if not sub:
         raise HTTPException(status_code=422, detail="ID de l'utilisateur est requis")
     try:
-        result = await session.execute(select(Meal).where(Meal.user_id == id))
+        result = await session.execute(select(Meal).where(Meal.user_sub == sub))
         meals = result.all()
     except Exception as e:
         print(e)
@@ -186,7 +183,7 @@ async def create_user(
 ):
     try:
         new_user = User(
-            open_id=user_data.sub,
+            user_sub=user_data.sub,
             username=user_data.username,
             email=user_data.email,
             first_name=user_data.first_name,
@@ -233,15 +230,15 @@ async def modify_user(
     token: dict[str, str] = Depends(deps.extract_sub_email_from_jwt),
     auth: dict = Security(auth.verify),
 ):
-    if not user_data.user_id:
+    if not user_data.user_sub:
         raise HTTPException(status_code=422, detail="ID de l'utilisateur est requis")
 
-    user = await session.scalar(select(User).where(User.user_id == user_data.user_id))
+    user = await session.scalar(select(User).where(User.user_sub == user_data.user_sub))
 
     if not user:
         raise HTTPException(status_code=404, detail="Utilisateur non trouvé")
 
-    if user.open_id != token.get("sub"):
+    if user.user_sub != token.get("sub"):
         raise HTTPException(
             status_code=401,
             detail="Vous n'êtes pas autorisé à modifier cet utilisateur",

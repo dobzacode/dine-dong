@@ -6,6 +6,8 @@ import { getSession } from '@auth0/nextjs-auth0';
 import { kv } from '@vercel/kv';
 import { notFound, redirect } from 'next/navigation';
 
+export const dynamic = 'force-dynamic';
+
 export default async function Page({ params }: { params: { id: string } }) {
   const session = await getSession();
 
@@ -27,7 +29,7 @@ export default async function Page({ params }: { params: { id: string } }) {
 
   const paymentIntentUserId = await kv.get(params.id);
 
-  if (paymentIntentUserId && paymentIntentUserId !== user.user_id) {
+  if (paymentIntentUserId && paymentIntentUserId !== user.user_sub) {
     redirect(`/repas/${params.id}`);
   }
 
@@ -50,10 +52,10 @@ export default async function Page({ params }: { params: { id: string } }) {
     <section className="section-px shadow-primary-40 section-py container flex flex-col justify-center gap-sm tablet:flex-row">
       <aside className="w-1/3 min-w-fit">
         <Checkout
+          user={user}
           isNewPaymentIntent={paymentIntentUserId === null}
           mealId={meal.meal_id}
           amount={meal.price}
-          userId={user.user_id}
           description={`${meal.name}:${meal.meal_id} par ${user.username}`}
         />
       </aside>

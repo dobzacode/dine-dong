@@ -13,19 +13,19 @@ import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
 import { FormProvider, useForm, useFormState } from 'react-hook-form';
 import fr from 'react-phone-number-input/locale/fr';
-import { type AccountSchema, createAccountSchema } from './account-schema';
+import { createAccountSchema, type AccountSchema } from './account-schema';
 
 const modifyProfileMutation = async ({
   data,
-  user_id
+  user_sub
 }: {
   data: AccountSchema;
-  user_id: string;
+  user_sub: string;
 }) => {
   const response = await fetch('http://localhost:3000/api/protected/users', {
     method: 'PUT',
     body: JSON.stringify({
-      user_id: user_id,
+      user_sub: user_sub,
       email: data.email,
       username: data.username,
       phone_number: data.phoneNumber
@@ -45,7 +45,7 @@ const modifyProfileMutation = async ({
 };
 
 export default function AccountForm({ user, sub }: { user: UserResponse; sub: string }) {
-  const { username, email, phone_number, user_id } = user;
+  const { username, email, phone_number, user_sub } = user;
 
   const { toast } = useToast();
   const [oldValues, setOldValues] = useState({ email, username });
@@ -82,7 +82,7 @@ export default function AccountForm({ user, sub }: { user: UserResponse; sub: st
   });
 
   const onSubmit = async (data: AccountSchema) => {
-    await mutateAsync({ data, user_id });
+    await mutateAsync({ data, user_sub });
     setOldValues({ email: data.email, username: data.username });
   };
 

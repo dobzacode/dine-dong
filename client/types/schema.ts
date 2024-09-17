@@ -3,7 +3,7 @@ interface BaseModel {
   update_time: Date;
 }
 export interface User extends BaseModel {
-  open_id: string;
+  user_sub: string;
   email: string;
   username: string;
   about_me: string | null;

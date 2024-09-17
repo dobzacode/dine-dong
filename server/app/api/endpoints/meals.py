@@ -42,7 +42,7 @@ async def get_meals(
     sort: Literal["distance", "price"] = Query(
         None, description="Trier par distance ou prix"
     ),
-    user_id: str = Query(None, description="ID de l'utilisateur"),
+    user_sub: str = Query(None, description="ID de l'utilisateur"),
 ):
     try:
         user_location = ST_GeogFromText(f"POINT({lng} {lat})")
@@ -60,7 +60,7 @@ async def get_meals(
             .where(func.lower(Meal.name).startswith(f"{name.lower()}"))
             .where((Meal.weight <= weight_max) & (Meal.weight >= weight_min))
             .where(Meal.price <= max_price)
-            .where(user_id is None or Meal.user_id == user_id)
+            .where(user_sub is None or Meal.user_sub == user_sub)
             .limit(limit)
             .offset(offset)
             .add_columns(
@@ -94,7 +94,7 @@ async def get_meals(
             .where(func.lower(Meal.name).like(f"%{name.lower()}%"))
             .where((Meal.weight <= weight_max) & (Meal.weight >= weight_min))
             .where(Meal.price <= max_price)
-            .where(user_id is None or Meal.user_id == user_id)
+            .where(user_sub is None or Meal.user_sub == user_sub)
         )
 
         total_result = await session.execute(total_query)
@@ -273,7 +273,7 @@ async def create_meal(
     token: dict[str, str] = Depends(deps.extract_sub_email_from_jwt),
     user: dict = Security(auth.verify),
 ):
-    user = await session.scalar(select(User).where(User.open_id == token.get("sub")))
+    user = await session.scalar(select(User).where(User.user_sub == token.get("sub")))
 
     if not user:
         raise HTTPException(status_code=401, detail="Vous n'êtes pas connecté")

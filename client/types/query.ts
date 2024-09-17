@@ -11,12 +11,12 @@ import type {
 export interface AddressResponse extends Address {}
 
 export interface UserResponse extends User {
-  user_id: string;
+  user_sub: string;
 }
 
 export interface MealResponse extends Meal {
   meal_id: string;
-  user_id: string;
+  user_sub: string;
 }
 
 export interface MealWithAddressResponse
@@ -42,11 +42,11 @@ export interface MealSummaryResponse {
 
 export interface MealDetailsResponse extends MealWithAddressResponse {
   ingredients: IngredientDetailsResponse[];
-  user_id: string;
+  user_sub: string;
 }
 
 export interface UserResponse extends User {
-  user_id: string;
+  user_sub: string;
   residency: Address;
 }
 

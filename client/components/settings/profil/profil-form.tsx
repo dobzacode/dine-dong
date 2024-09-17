@@ -23,7 +23,7 @@ import { profileSchema, type ProfileSchema } from './profil-schema';
 const modifyProfileMutation = async ({
   data,
   uploadToS3,
-  user_id,
+  user_sub,
   sub
 }: {
   data: ProfileSchema;
@@ -38,7 +38,7 @@ const modifyProfileMutation = async ({
     url: string;
     key: string;
   }>;
-  user_id: string;
+  user_sub: string;
   sub: string;
 }) => {
   let picturekey: string | null = null;
@@ -57,7 +57,7 @@ const modifyProfileMutation = async ({
   const response = await fetch('http://localhost:3000/api/protected/users', {
     method: 'PUT',
     body: JSON.stringify({
-      user_id: user_id,
+      user_sub: user_sub,
       first_name: data.firstName,
       last_name: data.lastName,
       about_me: data.aboutMe,
@@ -84,7 +84,7 @@ const modifyProfileMutation = async ({
 };
 
 export default function ProfilForm({ user, sub }: { user: UserResponse; sub: string }) {
-  const { last_name, first_name, picture_key, residency, about_me, user_id } = user;
+  const { last_name, first_name, picture_key, residency, about_me, user_sub } = user;
 
   const { toast } = useToast();
   const { uploadToS3 } = useS3Upload();
@@ -308,7 +308,7 @@ export default function ProfilForm({ user, sub }: { user: UserResponse; sub: str
             if (!isValid) {
               return setAddressMessage('Une adresse est requise');
             }
-            await mutateAsync({ data: form.getValues(), uploadToS3, user_id, sub });
+            await mutateAsync({ data: form.getValues(), uploadToS3, user_sub, sub });
           }}
           disabled={!isDirty}
         >

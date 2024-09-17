@@ -63,7 +63,7 @@ export default async function Home({
       <div className="flex w-full justify-between">
         <InformationsSection user={user} />
         <Suspense fallback={<Skeleton className="h-10 w-48" />}>
-          <ActionsWrapper sub={user.open_id} />
+          <ActionsWrapper sub={user.user_sub} />
         </Suspense>
       </div>
       <Tabs defaultValue="plats" className="w-full">
@@ -83,7 +83,7 @@ export default async function Home({
         </TabsList>
         <TabsContent value="plats" className="flex flex-col gap-sm px-sm pt-md">
           <FilterSortMenu />
-          <MealsPrefetch user_id={user.user_id} {...searchParams} />
+          <MealsPrefetch user_sub={user.user_sub} {...searchParams} />
         </TabsContent>
         <TabsContent value="evaluations"></TabsContent>
       </Tabs>

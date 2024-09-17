@@ -1,7 +1,8 @@
 'use client';
 
+import { UserResponse } from '@/types/query';
 import { Elements } from '@stripe/react-stripe-js';
-import { type BaseStripeElementsOptions, loadStripe } from '@stripe/stripe-js';
+import { loadStripe, type BaseStripeElementsOptions } from '@stripe/stripe-js';
 import CheckoutForm from './checkout-form';
 
 const appearance: BaseStripeElementsOptions['appearance'] = {
@@ -57,7 +58,15 @@ const appearance: BaseStripeElementsOptions['appearance'] = {
   }
 };
 
-const InitStripe = ({ price, clientSecret }: { price: number; clientSecret: string }) => {
+const InitStripe = ({
+  price,
+  clientSecret,
+  user
+}: {
+  price: number;
+  clientSecret: string;
+  user: UserResponse;
+}) => {
   const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
   return (
@@ -68,6 +77,7 @@ const InitStripe = ({ price, clientSecret }: { price: number; clientSecret: stri
         clientSecret,
         appearance,
         loader: 'never',
+
         fonts: [
           {
             cssSrc:
@@ -78,6 +88,7 @@ const InitStripe = ({ price, clientSecret }: { price: number; clientSecret: stri
       }}
     >
       <CheckoutForm
+        user={user}
         mealSummaryDetails={{
           price
         }}

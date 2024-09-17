@@ -27,11 +27,11 @@ export default async function MealBuyButton({ mealId }: { mealId: string }) {
       className={cn(
         buttonVariants({ variant: 'default' }),
         'w-full',
-        paymentIntentUserId && paymentIntentUserId !== user?.user_id
+        paymentIntentUserId && paymentIntentUserId !== user?.user_sub
           ? 'pointer-events-none opacity-50'
           : ''
       )}
-      href={user?.user_id ? `/repas/${mealId}/achat` : '/api/auth/login'}
+      href={user?.user_sub ? `/repas/${mealId}/achat` : '/api/auth/login'}
     >
       Acheter
     </Link>

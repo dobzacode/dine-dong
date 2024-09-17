@@ -80,7 +80,7 @@ async def generate_mock_data(num_entries=10):
 
     for _ in range(num_entries):
         try:
-            open_id = fake.email()
+            user_sub = fake.email()
             email = fake.email()
             username = fake.user_name()
             last_name = fake.last_name()
@@ -103,7 +103,7 @@ async def generate_mock_data(num_entries=10):
             payment_method = fake.random_element(elements=["ONLINE", "IN_PERSON"])
 
             user = User(
-                open_id=open_id,
+                user_sub=user_sub,
                 email=email,
                 username=username,
                 last_name=last_name,
@@ -114,8 +114,8 @@ async def generate_mock_data(num_entries=10):
             await session.flush()
             await session.refresh(user)
             address_model = Address(
-                user_id=user.user_id,
-                resident_id=user.user_id,
+                user_sub=user.user_sub,
+                resident_sub=user.user_sub,
                 address1=address["address1"],
                 formatted_address=address["formatted_address"],
                 city=address["city"],
@@ -130,7 +130,7 @@ async def generate_mock_data(num_entries=10):
             await session.flush()
             await session.refresh(address_model)
             meal = Meal(
-                user_id=user.user_id,
+                user_sub=user.user_sub,
                 address_id=address_model.address_id,
                 price=price,
                 name=meal_name,
@@ -145,7 +145,7 @@ async def generate_mock_data(num_entries=10):
             session.add(meal)
             await generate_random_ingredients(fake, session, meal)
 
-            print(f"Generated meal with ID: {meal.meal_id} for user: {user.open_id}")
+            print(f"Generated meal with ID: {meal.meal_id} for user: {user.user_sub}")
         except Exception as e:
             print(f"Error generating meal data: {e}")
 
@@ -156,4 +156,4 @@ async def generate_mock_data(num_entries=10):
 
 
 if __name__ == "__main__":
-    asyncio.run(generate_mock_data(40))
+    asyncio.run(generate_mock_data(50))
