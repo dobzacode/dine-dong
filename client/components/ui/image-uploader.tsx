@@ -54,7 +54,7 @@ export default function ImageUploader({
       <FormControl>
         <div
           {...getRootProps()}
-          className="mx-auto flex w-full cursor-pointer flex-col items-center justify-center gap-md rounded-xs border border-input bg-background p-8"
+          className="card mx-auto flex w-full cursor-pointer flex-col items-center justify-center gap-md p-8"
         >
           {preview && (
             <Image

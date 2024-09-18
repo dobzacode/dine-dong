@@ -1,4 +1,5 @@
-import Checkout from '@/components/stripe/checkout';
+import MealResume from '@/components/meal/achat/meal-resume';
+import Checkout from '@/components/meal/achat/stripe/checkout';
 import { getMealDetails } from '@/lib/meal/meal-fetch';
 import { getUserInformations } from '@/lib/user/user-fetch';
 import { getErrorMessage } from '@/lib/utils';
@@ -49,7 +50,8 @@ export default async function Page({ params }: { params: { id: string } }) {
   }
 
   return (
-    <section className="section-px shadow-primary-40 section-py container flex flex-col justify-center gap-sm tablet:flex-row">
+    <section className="section-px shadow-primary-40 section-py container flex flex-col justify-center gap-sm tablet:flex-row laptop-sm:max-w-[1000px]">
+      <MealResume meal={meal} />
       <aside className="w-1/3 min-w-fit">
         <Checkout
           user={user}

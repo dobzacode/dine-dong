@@ -13,7 +13,7 @@ export default function WizardFinalStep({ className }: { className?: string }) {
   return (
     <section className={cn('flex flex-col gap-md', className)}>
       <div className="flex w-full justify-center gap-md">
-        <div className="flex h-fit w-1/2 shrink-0 grow flex-col gap-md rounded-xs border bg-background p-md text-primary-container-fg">
+        <div className="card flex h-fit w-1/2 shrink-0 grow flex-col gap-md p-md text-primary-container-fg">
           <div className="flex flex-col gap-xs">
             <p className="body-sm font-medium text-primary-900/70">Nom d&apos;utilisateur</p>
             <p className="body-sm">{username}</p>

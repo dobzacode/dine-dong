@@ -18,7 +18,7 @@ export async function UserInformations({ id }: { id: string }) {
   }
 
   return (
-    <section className="flex h-fit items-center gap-md rounded-xs border bg-background p-md">
+    <section className="card flex h-fit items-center gap-md p-md">
       <Link
         href={`/utilisateur/${user.username}`}
         className="relative h-3xl w-3xl overflow-hidden rounded-xs"

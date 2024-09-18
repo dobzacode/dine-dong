@@ -8,7 +8,7 @@ export default function Loading() {
         <Skeleton className="absolute h-full w-full rounded-xs object-cover object-center" />
       </div>
       <div className="flex flex-col gap-sm">
-        <section className="flex h-fit items-center gap-md rounded-xs border bg-background p-md">
+        <section className="card flex h-fit items-center gap-md p-md">
           <div className="relative h-3xl w-3xl overflow-hidden rounded-xs">
             <Skeleton className="absolute h-full w-full rounded-xs object-cover object-center" />
           </div>
@@ -17,7 +17,7 @@ export default function Loading() {
             <Skeleton className="h-3 w-28" />
           </div>
         </section>
-        <section className="flex h-fit flex-col gap-md rounded-xs border bg-background p-md">
+        <section className="card flex h-fit flex-col gap-md p-md">
           <div className="flex flex-col gap-xs">
             <Skeleton className="h-6 w-20" />
             <Skeleton className="w-30 h-4 rounded-full" />

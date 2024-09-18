@@ -19,7 +19,7 @@ export function MealInformations(props: MealDetailsResponse) {
   } = props;
 
   return (
-    <section className="flex h-fit flex-col gap-md rounded-xs border bg-background p-md">
+    <section className="card flex h-fit flex-col gap-md p-md">
       <div className="flex flex-col">
         <h2 className="heading-h1 font-bold text-primary-container-fg">{name}</h2>
         {dietArr.length > 0 && (

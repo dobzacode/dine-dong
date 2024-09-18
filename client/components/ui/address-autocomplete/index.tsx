@@ -225,7 +225,7 @@ function AddressAutoCompleteInput(props: CommonProps) {
           onFocus={open}
           placeholder={'Ajouter une adresse'}
           className={cn(
-            'body file:body flex h-10 w-full rounded-xs border border-input bg-background px-3 py-2 ring-offset-background file:border-0 file:bg-transparent file:font-medium placeholder:text-primary-900/[0.4] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50',
+            'body file:body card flex h-10 w-full px-3 py-2 ring-offset-background file:border-0 file:bg-transparent file:font-medium placeholder:text-primary-900/[0.4] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50',
             props.className
           )}
         />

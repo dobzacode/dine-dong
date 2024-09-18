@@ -55,6 +55,10 @@
     @apply bg-neutral-50 dark:bg-neutral-950;
   }
 
+  .card {
+    @apply rounded-xs border border-input bg-background;
+  }
+
   .card-neutral {
     @apply rounded-sm bg-neutral-1 shadow-sm shadow-black dark:border dark:border-neutral-400/[0.2] dark:bg-neutral-900;
   }

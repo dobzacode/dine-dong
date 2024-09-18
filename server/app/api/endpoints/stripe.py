@@ -52,7 +52,6 @@ async def create_payment_intent(
         )
         if request.isNewPaymentIntent:
             kv.set(request.mealId, request.userSub)
-            print(request.mealId)
             background_tasks.add_task(
                 remove_payment_intent_and_kv_entry, request.mealId, payment_intent.id
             )

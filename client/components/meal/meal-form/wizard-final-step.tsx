@@ -11,7 +11,7 @@ export default function WizardFinalStep({ className }: { className?: string }) {
   return (
     <div className={cn('flex flex-col gap-lg', className)}>
       <section className="flex w-full gap-lg max-mobile-lg:flex-col">
-        <div className="flex h-fit w-full shrink-0 grow flex-col gap-md rounded-xs border bg-background p-md text-primary-container-fg mobile-lg:w-fit">
+        <div className="card flex h-fit w-full shrink-0 grow flex-col gap-md p-md text-primary-container-fg mobile-lg:w-fit">
           <h3 className="heading-h3 font-semibold text-primary-container-fg">
             Informations générales
           </h3>
@@ -53,7 +53,7 @@ export default function WizardFinalStep({ className }: { className?: string }) {
           />
         </div>
       </section>
-      <section className="flex flex-col gap-md rounded-xs border bg-background p-md text-primary-container-fg">
+      <section className="card flex flex-col gap-md p-md text-primary-container-fg">
         <h3 className="heading-h3 font-semibold text-primary-container-fg">Ingrédients</h3>
         <div className="flex flex-wrap gap-lg">
           <div className="flex flex-col gap-xs">
@@ -96,7 +96,7 @@ export default function WizardFinalStep({ className }: { className?: string }) {
           )}
         </div>
       </section>
-      <section className="flex flex-col gap-md rounded-xs border bg-background p-md text-primary-container-fg">
+      <section className="card flex flex-col gap-md p-md text-primary-container-fg">
         <h3 className="heading-h3 font-semibold text-primary-container-fg">Retrait et paiement</h3>
         <div className="flex flex-wrap gap-lg">
           <div className="flex flex-col gap-xs">

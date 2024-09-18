@@ -180,7 +180,7 @@ export default function ProfilForm({ user, sub }: { user: UserResponse; sub: str
           isPending && 'pointer-events-none animate-pulse'
         )}
       >
-        <fieldset className="flex w-full flex-col justify-between gap-lg rounded-xs border border-input bg-background p-lg">
+        <fieldset className="card flex w-full flex-col justify-between gap-lg p-lg">
           <div className="flex w-full gap-lg">
             <div className="flex w-full flex-col gap-lg">
               <FormField
@@ -277,7 +277,7 @@ export default function ProfilForm({ user, sub }: { user: UserResponse; sub: str
             )}
           />
         </fieldset>
-        <fieldset className="flex w-full shrink-0 flex-col justify-between gap-lg rounded-xs border border-input bg-background p-lg">
+        <fieldset className="card flex w-full shrink-0 flex-col justify-between gap-lg p-lg">
           <FormField
             control={form.control}
             name="stepTwo.address"

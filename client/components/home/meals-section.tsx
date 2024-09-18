@@ -4,7 +4,7 @@ import { useEffect, useMemo } from 'react';
 
 import { useGeoLocation } from '@/hooks/use-geolocation';
 import { getMeals, type getMealsParams } from '@/lib/meal/meal-fetch';
-import type { MealsPaginatedResponse, MealWithAddressResponse } from '@/types/query';
+import type { MealWithAddressResponse, MealsPaginatedResponse } from '@/types/query';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import { delayFadeInVariant } from '../framer/div-variants';

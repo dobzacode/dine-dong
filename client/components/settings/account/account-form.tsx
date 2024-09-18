@@ -98,7 +98,7 @@ export default function AccountForm({ user, sub }: { user: UserResponse; sub: st
           isPending && 'pointer-events-none animate-pulse'
         )}
       >
-        <fieldset className="flex w-full flex-col justify-between gap-lg rounded-xs border border-input bg-background p-lg">
+        <fieldset className="card flex w-full flex-col justify-between gap-lg p-lg">
           <div className="flex gap-md max-tablet:flex-wrap max-tablet:gap-lg">
             <FormField
               control={form.control}

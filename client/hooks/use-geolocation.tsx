@@ -9,7 +9,6 @@ export function useGeoLocation() {
     if ('geolocation' in navigator) {
       navigator.geolocation.getCurrentPosition(({ coords }) => {
         const { latitude, longitude } = coords;
-        console.log(coords);
         setLocation({ lat: latitude, lng: longitude });
       });
     }

@@ -4,7 +4,7 @@ import { UserResponse } from '@/types/query';
 import { PaymentElement, useElements, useStripe } from '@stripe/react-stripe-js';
 import { ShieldCheck } from 'lucide-react';
 import React from 'react';
-import { Button } from '../ui/button';
+import { Button } from '../../../ui/button';
 
 const CheckoutForm = ({
   mealSummaryDetails,
@@ -38,25 +38,25 @@ const CheckoutForm = ({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-lg">
-      <fieldset className="flex w-full flex-col justify-between gap-lg rounded-xs border border-input bg-background p-lg">
+    <form onSubmit={handleSubmit} className="flex flex-col gap-sm">
+      <fieldset className="card flex w-full flex-col justify-between gap-lg p-lg">
         <PaymentElement />
       </fieldset>
-      <div className="flex w-full flex-col justify-between gap-lg rounded-xs border border-input bg-background p-lg">
+      <section className="card flex w-full flex-col justify-between gap-lg p-lg">
         <div className="flex flex-col gap-lg">
-          <h2 className="body-sm text-grayed">Résumé de la commande</h2>
+          <h2 className="body text-grayed">Résumé de la commande</h2>
           <div className="flex flex-col gap-xs">
             <span className="flex items-center justify-between">
-              <p className="body">Prix de la commande</p>
+              <p className="body-sm font-medium">Prix de la commande</p>
               <p className="body">{mealSummaryDetails.price} €</p>
             </span>
             <span className="flex items-center justify-between">
-              <p className="body">Frais</p>
+              <p className="body-sm font-medium">Frais</p>
               <p className="body">{process.env.NEXT_PUBLIC_MEAL_FEE} €</p>
             </span>
           </div>
           <span className="flex items-center justify-between">
-            <p className="body">Total</p>
+            <p className="body-sm font-medium">Total</p>
             <p className="body">
               {mealSummaryDetails.price + parseInt(process.env.NEXT_PUBLIC_MEAL_FEE!)} €
             </p>
@@ -68,7 +68,7 @@ const CheckoutForm = ({
           <ShieldCheck className="fill-primary-900/[.40] text-white" />
           Ce paiement est crypté et sécurisé
         </p>
-      </div>
+      </section>
     </form>
   );
 };

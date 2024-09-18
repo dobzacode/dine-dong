@@ -27,7 +27,7 @@ const Checkout = async ({
       amount,
       currency,
       description,
-      userId: user.user_sub,
+      userSub: user.user_sub,
       mealId,
       isNewPaymentIntent
     });

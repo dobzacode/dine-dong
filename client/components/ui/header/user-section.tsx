@@ -25,8 +25,6 @@ export default async function UserSection() {
     console.error(error);
   }
 
-  console.log(user);
-
   if (!user || user instanceof Error) {
     return (
       <Button variant={'outline'} disabled={true}>

@@ -5,9 +5,9 @@ type props = {
   amount: number;
   currency: string;
   description: string;
-  userId: string;
+  userSub: string;
 };
-const SubscribeComponent = ({ amount, currency, description, userId }: props) => {
+const SubscribeComponent = ({ amount, currency, description, userSub }: props) => {
   const handleSubmit = async () => {
     const stripe = await loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
     if (!stripe) {
@@ -20,7 +20,7 @@ const SubscribeComponent = ({ amount, currency, description, userId }: props) =>
           amount,
           currency,
           description,
-          userId
+          userSub
         }),
         headers: {
           'Content-Type': 'application/json'

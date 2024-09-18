@@ -4,14 +4,14 @@ export async function CreatePaymentIntent({
   amount,
   currency,
   description,
-  userId,
+  userSub,
   mealId,
   isNewPaymentIntent
 }: {
   amount: number;
   currency?: string;
   description: string;
-  userId: string;
+  userSub: string;
   mealId: string;
   isNewPaymentIntent: boolean;
 }) {
@@ -27,7 +27,7 @@ export async function CreatePaymentIntent({
       amount: amount + parseInt(process.env.NEXT_PUBLIC_MEAL_FEE!),
       currency,
       description,
-      userId,
+      userSub,
       mealId: mealId,
       isNewPaymentIntent
     }),

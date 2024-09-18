@@ -24,7 +24,7 @@ async def get_user_informations(
     username: str = Query(None, description="Pseudo de l'utilisateur à récupérer"),
 ):
     if not sub and not username:
-        raise HTTPException(status_code=422, detail="ID, sub ou username requis")
+        raise HTTPException(status_code=422, detail="sub ou username requis")
 
     try:
         user_query = (
