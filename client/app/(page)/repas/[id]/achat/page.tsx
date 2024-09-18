@@ -52,7 +52,7 @@ export default async function Page({ params }: { params: { id: string } }) {
   return (
     <section className="section-px shadow-primary-40 section-py container flex flex-col justify-center gap-sm tablet:flex-row laptop-sm:max-w-[1000px]">
       <MealResume meal={meal} />
-      <aside className="w-1/3 min-w-fit">
+      <aside className="min-w-fit tablet:w-1/3">
         <Checkout
           user={user}
           isNewPaymentIntent={paymentIntentUserSub === null}

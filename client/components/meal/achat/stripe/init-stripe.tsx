@@ -78,7 +78,7 @@ const InitStripe = ({
         locale: 'fr-FR',
         clientSecret,
         appearance,
-        loader: 'never',
+        loader: 'always',
 
         fonts: [
           {
