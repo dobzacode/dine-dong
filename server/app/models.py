@@ -12,7 +12,6 @@
 # # apply all migrations
 # alembic upgrade head
 
-
 import uuid
 from datetime import datetime
 from typing import Literal, get_args
@@ -246,9 +245,11 @@ class Meal(Base):
         ForeignKey("user_account.user_sub"), nullable=False
     )
 
-    order: Mapped["Order"] = relationship(
-        back_populates="meal", uselist=False, cascade="all, delete"
-    )
+    orders: Mapped[list["Order"]] = relationship(back_populates="meal", lazy="selectin")
+    is_ordered: Mapped[bool] = mapped_column(default=False)
+
+
+StatusEnum = Literal["COMPLETED", "CANCELLED"]
 
 
 class Order(Base):
@@ -263,5 +264,15 @@ class Order(Base):
         ForeignKey("user_account.user_sub"), nullable=False
     )
 
-    meal: Mapped["Meal"] = relationship(back_populates="order", lazy="selectin")
+    meal: Mapped["Meal"] = relationship(back_populates="orders", lazy="selectin")
     meal_id: Mapped[str] = mapped_column(ForeignKey("meal.meal_id"), nullable=False)
+
+    status: Mapped[StatusEnum] = mapped_column(
+        SqlEnum(
+            *get_args(StatusEnum),
+            name="statussenum",
+            create_constraint=True,
+            validate_strings=True,
+        ),
+        nullable=False,
+    )

@@ -48,7 +48,7 @@ const Checkout = async ({
     );
   }
 
-  return <InitStripe user={user} clientSecret={data.clientSecret} price={amount} />;
+  return <InitStripe mealId={mealId} user={user} clientSecret={data.clientSecret} price={amount} />;
 };
 
 export default Checkout;

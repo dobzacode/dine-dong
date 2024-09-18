@@ -43,12 +43,14 @@ async def get_meals(
         None, description="Trier par distance ou prix"
     ),
     user_sub: str = Query(None, description="ID de l'utilisateur"),
+    is_ordered: bool = Query(None, description="Filtre les repas non commandés"),
 ):
     try:
         user_location = ST_GeogFromText(f"POINT({lng} {lat})")
         query = (
             select(Meal, Address)
             .join(Address)
+            .where(is_ordered is None or Meal.is_ordered == is_ordered)
             .where(
                 ST_DWithin(
                     user_location,
@@ -83,6 +85,7 @@ async def get_meals(
             select(func.count())
             .select_from(Meal)
             .join(Address)
+            .where(is_ordered is None or Meal.is_ordered == is_ordered)
             .where(
                 ST_DWithin(
                     user_location,

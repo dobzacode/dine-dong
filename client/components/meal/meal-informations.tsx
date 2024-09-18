@@ -15,7 +15,8 @@ export function MealInformations(props: MealDetailsResponse) {
     payment_method,
     price,
     weight,
-    meal_id
+    meal_id,
+    is_ordered
   } = props;
 
   return (
@@ -63,7 +64,7 @@ export function MealInformations(props: MealDetailsResponse) {
           <span className="font-semibold">{weight} grammes</span>
         </p>
       </div>
-      <MealBuyButton mealId={meal_id} />
+      {!is_ordered && <MealBuyButton mealId={meal_id} />}
       <Separator />
       <div className="flex flex-col">
         <h2 className="heading-h4 font-bold text-primary-container-fg">Livraison</h2>

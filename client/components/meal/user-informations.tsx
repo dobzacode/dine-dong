@@ -4,10 +4,13 @@ import Link from 'next/link';
 import ImagePulsing from '../ui/image-pulsing';
 import Rating from '../ui/rating';
 
-export async function UserInformations({ id }: { id: string }) {
+export async function UserInformations({ userSub }: { userSub: string }) {
   let user = null;
   try {
-    user = await getUserInformations({ id }, { next: { tags: [`user-informations-${id}`] } });
+    user = await getUserInformations(
+      { sub: userSub },
+      { next: { tags: [`user-informations-${userSub}`] } }
+    );
   } catch (error) {
     const message = getErrorMessage(error);
     console.log(message);

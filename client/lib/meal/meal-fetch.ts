@@ -14,6 +14,7 @@ export interface getMealsParams {
   weight_min?: number;
   sort?: 'distance' | 'price';
   user_sub?: string;
+  is_ordered?: boolean;
 }
 
 export async function getMeals(
@@ -29,7 +30,11 @@ export async function getMeals(
       });
       continue;
     }
-    if ((value !== undefined && typeof value === 'number') || typeof value === 'string') {
+    if (
+      (value !== undefined && typeof value === 'number') ||
+      typeof value === 'string' ||
+      typeof value === 'boolean'
+    ) {
       url.searchParams.set(key, value.toString());
     }
   }

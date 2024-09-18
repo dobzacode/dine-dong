@@ -9,6 +9,7 @@ from fastapi import (
     Request,
     Security,
 )
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from stripe import stripe  # type: ignore
 
@@ -16,7 +17,7 @@ from app.api import deps
 from app.core.config import get_settings
 from app.core.kv import KV
 from app.core.security.authenticate import VerifyToken
-from app.models import Order
+from app.models import Meal, Order
 from app.schemas.requests import CreatePaymentIntentRequest
 
 kv = KV()
@@ -30,9 +31,11 @@ webhook_secret = get_settings().webhook_secret
 
 async def remove_payment_intent_and_kv_entry(meal_id: str, payment_intent_id: str):
     await asyncio.sleep(180)
+    payment_intent = stripe.PaymentIntent.retrieve(payment_intent_id)
     try:
+        if payment_intent.status != "succeeded":
+            stripe.PaymentIntent.cancel(payment_intent_id)
         kv.delete(meal_id)
-        stripe.PaymentIntent.cancel(payment_intent_id)
     except Exception as e:
         print(f"Error removing payment intent or KV entry: {e}")
 
@@ -71,21 +74,32 @@ async def webhook_received(
     stripe_signature: str = Header(None),
     session: AsyncSession = Depends(deps.get_session),
 ):
+    print(request)
     data = await request.body()
     try:
         event = stripe.Webhook.construct_event(
             payload=data, sig_header=stripe_signature, secret=webhook_secret
         )
-        metadata = event["data"]["object"]["metadata"]
-        kv.delete(metadata["mealId"])
     except Exception as e:
         print(e)
-        return {"error": str(e)}
+        raise HTTPException(status_code=400, detail=f"Webhook Error: {str(e)}")
 
+    metadata = event["data"]["object"]["metadata"]
+
+    kv.delete(metadata["mealId"])
     event_type = event["type"]
 
+    meal = await session.scalar(select(Meal).where(Meal.meal_id == metadata["mealId"]))
+
+    if meal is None:
+        raise HTTPException(status_code=404, detail="Repas non trouvé")
+
     if event_type == "payment_intent.succeeded":
-        new_order = Order(meal_id=metadata["mealId"], user_sub=metadata["userSub"])
+        new_order = Order(
+            meal_id=metadata["mealId"], user_sub=metadata["userSub"], status="COMPLETED"
+        )
+        meal.is_ordered = True
+        session.add(meal)
         session.add(new_order)
         await session.commit()
         await session.refresh(new_order)

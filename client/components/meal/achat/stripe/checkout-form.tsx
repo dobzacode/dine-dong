@@ -1,5 +1,6 @@
 'use client';
 
+import { customRevalidateTag } from '@/lib/actions';
 import { UserResponse } from '@/types/query';
 import { PaymentElement, useElements, useStripe } from '@stripe/react-stripe-js';
 import { ShieldCheck } from 'lucide-react';
@@ -11,6 +12,7 @@ const CheckoutForm = ({
   user
 }: {
   mealSummaryDetails: {
+    mealId: string;
     price: number;
   };
   user: UserResponse;
@@ -25,10 +27,13 @@ const CheckoutForm = ({
       return;
     }
 
+    customRevalidateTag(['search-meals', `meal-details-${mealSummaryDetails.mealId}`]);
+
     const { error } = await stripe.confirmPayment({
       elements,
       confirmParams: {
-        return_url: 'http://localhost:3000'
+        return_url: 'http://localhost:3000',
+        receipt_email: user.email
       }
     });
 

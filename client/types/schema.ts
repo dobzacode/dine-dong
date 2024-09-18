@@ -65,6 +65,7 @@ export interface Meal extends BaseModel {
   diet: DietsEnum[];
   additional_information: string | null;
   payment_method: PaymentMethodsEnum;
+  is_ordered: boolean;
 }
 
 export interface Ingredient {

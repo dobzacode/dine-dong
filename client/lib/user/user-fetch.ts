@@ -1,7 +1,7 @@
 import { type MealResponse, type UserResponse } from '@/types/query';
 
 export async function getUserInformations(
-  params: { id?: string; sub?: string; username?: string },
+  params: { sub?: string; username?: string },
   request: RequestInit = {}
 ) {
   const url = new URL('http://localhost:3000/api/users');

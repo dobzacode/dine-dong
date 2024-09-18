@@ -70,7 +70,7 @@ export default async function Home({ params }: Props) {
         />
       </div>
       <div className="flex flex-col gap-sm">
-        <UserInformations id={meal.user_sub} />
+        <UserInformations userSub={meal.user_sub} />
         <MealInformations {...meal} />
       </div>
     </section>

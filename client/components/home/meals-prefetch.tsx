@@ -21,7 +21,8 @@ export default async function MealsPrefetch({
     max_price,
     lat: typeof lat === 'string' ? parseFloat(lat) : undefined,
     lng: typeof lng === 'string' ? parseFloat(lng) : undefined,
-    user_sub
+    user_sub,
+    is_ordered: false
   };
 
   let prefetchMeals: MealsPaginatedResponse | Error;

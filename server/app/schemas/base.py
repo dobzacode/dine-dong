@@ -66,6 +66,7 @@ class Meal(BaseModel):
     diet: list[DietsEnum] | None = []
     additional_information: str | None = None
     payment_method: PaymentMethodsEnum
+    is_ordered: bool = False
 
 
 class Ingredient(BaseModel):

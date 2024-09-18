@@ -28,9 +28,9 @@ export default async function Page({ params }: { params: { id: string } }) {
     redirect(`/repas/${params.id}`);
   }
 
-  const paymentIntentUserId = await kv.get(params.id);
+  const paymentIntentUserSub = await kv.get(params.id);
 
-  if (paymentIntentUserId && paymentIntentUserId !== user.user_sub) {
+  if (paymentIntentUserSub && paymentIntentUserSub !== user.user_sub) {
     redirect(`/repas/${params.id}`);
   }
 
@@ -55,7 +55,7 @@ export default async function Page({ params }: { params: { id: string } }) {
       <aside className="w-1/3 min-w-fit">
         <Checkout
           user={user}
-          isNewPaymentIntent={paymentIntentUserId === null}
+          isNewPaymentIntent={paymentIntentUserSub === null}
           mealId={meal.meal_id}
           amount={meal.price}
           description={`${meal.name}:${meal.meal_id} par ${user.username}`}

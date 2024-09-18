@@ -60,10 +60,12 @@ const appearance: BaseStripeElementsOptions['appearance'] = {
 
 const InitStripe = ({
   price,
+  mealId,
   clientSecret,
   user
 }: {
   price: number;
+  mealId: string;
   clientSecret: string;
   user: UserResponse;
 }) => {
@@ -90,6 +92,7 @@ const InitStripe = ({
       <CheckoutForm
         user={user}
         mealSummaryDetails={{
+          mealId,
           price
         }}
       />
