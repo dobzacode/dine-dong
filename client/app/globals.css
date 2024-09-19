@@ -56,7 +56,7 @@
   }
 
   .card {
-    @apply rounded-xs border border-input bg-background;
+    @apply rounded-md border border-input bg-background p-md;
   }
 
   .card-neutral {

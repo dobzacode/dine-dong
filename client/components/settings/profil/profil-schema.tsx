@@ -23,7 +23,7 @@ export const profileSchema = z.object({
   aboutMe: z.string().max(256, 'Le texte ne doit pas dépasser 256 caractères'),
   image: z
     .union([
-      z.string().url("URL de l'image invalide"),
+      z.string(),
       z
         .instanceof(File, { message: 'Une photo est requise' })
         .refine(

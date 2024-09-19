@@ -1,6 +1,7 @@
 'use-client';
 import { FormControl, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { constructURLWithFileOrKey } from '@/lib/utils';
 import { ImagePlus } from 'lucide-react';
 import Image from 'next/image';
 import React from 'react';
@@ -18,7 +19,7 @@ export default function ImageUploader({
   label?: string;
 }) {
   const [preview, setPreview] = React.useState<string | ArrayBuffer | null>(
-    form.getValues().stepOne.image ? URL.createObjectURL(form.getValues().stepOne.image) : ''
+    form.getValues().stepOne.image ? constructURLWithFileOrKey(form.getValues().stepOne.image) : ''
   );
 
   const onDrop = React.useCallback(
@@ -63,7 +64,7 @@ export default function ImageUploader({
               sizes={''}
               width={400}
               height={400}
-              className="max-h-[400px] w-auto rounded-xs"
+              className="max-h-[400px] w-auto rounded-sm"
             />
           )}
           <ImagePlus

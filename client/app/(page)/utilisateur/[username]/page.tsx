@@ -6,9 +6,11 @@ import ActionsWrapper from '@/components/user/user-page/actions-wrapper';
 import InformationsSection from '@/components/user/user-page/informations-section';
 import { type getMealsParams } from '@/lib/meal/meal-fetch';
 import { getUserInformations } from '@/lib/user/user-fetch';
+import { getErrorMessage } from '@/lib/utils';
+import { getSession } from '@auth0/nextjs-auth0';
 
 import { type Metadata } from 'next';
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import { Suspense } from 'react';
 
 export async function generateStaticParams() {
@@ -27,10 +29,15 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: { params: { username: string } }) {
-  const user = await getUserInformations(
-    { username: params.username },
-    { next: { tags: [`user-informations-${params.username}`] } }
-  );
+  let user;
+  try {
+    user = await getUserInformations(
+      { username: params.username },
+      { next: { tags: [`user-informations-${params.username}`] } }
+    );
+  } catch (error) {
+    console.log(error);
+  }
 
   if (!user || user instanceof Error) {
     return undefined;
@@ -49,12 +56,24 @@ export default async function Home({
   params: { username: string };
   searchParams: getMealsParams;
 }) {
-  const user = await getUserInformations(
-    { username: params.username },
-    { next: { tags: [`user-informations-${params.username}`] } }
-  );
+  const session = await getSession();
 
-  if (!user || user instanceof Error) {
+  let user;
+  try {
+    user = await getUserInformations(
+      { username: params.username },
+      { next: { tags: [`user-informations-${params.username}`] } }
+    );
+  } catch (error) {
+    const message = getErrorMessage(error);
+    console.log(message);
+    if (message.includes('404')) {
+      return notFound();
+    }
+    redirect('/');
+  }
+
+  if (!user) {
     return notFound();
   }
 
@@ -83,7 +102,11 @@ export default async function Home({
         </TabsList>
         <TabsContent value="plats" className="flex flex-col gap-sm px-sm pt-md">
           <FilterSortMenu />
-          <MealsPrefetch user_sub={user.user_sub} {...searchParams} />
+          <MealsPrefetch
+            isUserPage={session?.user?.sub === user.user_sub}
+            user_sub={user.user_sub}
+            {...searchParams}
+          />
         </TabsContent>
         <TabsContent value="evaluations"></TabsContent>
       </Tabs>

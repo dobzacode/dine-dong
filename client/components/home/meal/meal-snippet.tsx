@@ -12,7 +12,7 @@ interface MealSnippetProps extends MealWithAddressResponse {}
 export function MealSnippetSkeleton() {
   return (
     <div className="flex w-full flex-col gap-sm">
-      <div className="relative aspect-[5/2] w-full overflow-hidden rounded-xs mobile-lg:aspect-square">
+      <div className="relative aspect-[5/2] w-full overflow-hidden rounded-md mobile-lg:aspect-square">
         <Skeleton className="absolute h-full w-full object-cover" />
       </div>
       <div className="grid gap-xs">
@@ -31,7 +31,7 @@ export default function MealSnippet(props: MealSnippetProps) {
     <Link href={`/repas/${meal_id}`} className="flex w-full flex-col gap-sm">
       <div
         key={`${picture_key}-${name}-parent`}
-        className="relative aspect-[5/2] w-full overflow-hidden rounded-xs mobile-lg:aspect-square"
+        className="relative aspect-[5/2] w-full overflow-hidden rounded-md mobile-lg:aspect-square"
       >
         <ImagePulsing
           skeletoncss={'h-full w-full object-cover absolute object-center'}

@@ -36,7 +36,7 @@ export default function UserMenu({ user }: { user: UserResponse }) {
           )}
         </div>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-fit rounded-xs [&>a]:cursor-pointer">
+      <DropdownMenuContent className="w-fit rounded-md [&>a]:cursor-pointer">
         <DropdownMenuItem asChild>
           <Link href={`/utilisateur/${user.username}`}>Mon profil</Link>
         </DropdownMenuItem>

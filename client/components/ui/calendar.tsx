@@ -29,17 +29,17 @@ function Calendar({ className, classNames, showOutsideDays = true, ...props }: C
         nav_button_next: 'absolute -right-1',
         table: 'w-full border-collapse space-y-1',
         head_row: 'flex ',
-        head_cell: 'text-black rounded-none w-9 font-normal caption ',
+        head_cell: 'text-black  w-9 font-normal caption ',
         row: 'flex w-full mt-2',
-        cell: 'h-9 w-9 text-center rounded-none body-sm p-0 relative  [&:has([aria-selected].day-range-end)]:rounded-none [&:has([aria-selected].day-outside)]:bg-primary/50 [&:has([aria-selected])]:bg-primary [&:has([aria-selected])]:text-primary-foreground first:[&:has([aria-selected])]:rounded-none last:[&:has([aria-selected])]:rounded-none focus-within:relative focus-within:z-20',
+        cell: 'h-9 w-9 text-center  body-sm p-0 relative rounded-xs  [&:has([aria-selected].day-range-end)]: [&:has([aria-selected].day-outside)]:bg-primary/50 [&:has([aria-selected])]:bg-primary [&:has([aria-selected])]:text-primary-foreground first:[&:has([aria-selected])]: last:[&:has([aria-selected])]: focus-within:relative focus-within:z-20',
         day: cn(
           buttonVariants({ variant: 'ghost' }),
-          'h-9 w-9 p-0 font-normal aria-selected:opacity-100 rounded-none body-sm hover:bg-transparent hover:text-black hover:opacity-70 '
+          'h-9 w-9 p-0 font-normal aria-selected:opacity-100 rounded-xs body-sm hover:bg-transparent hover:text-black hover:opacity-70 '
         ),
         day_range_end: 'day-range-end',
 
         day_selected:
-          'bg-primary  hover:bg-primary hover:text-primary-foreground focus:bg-primary  focus:text-primary-foreground rounded-none',
+          'bg-primary  hover:bg-primary hover:text-primary-foreground focus:bg-primary  focus:text-primary-foreground ',
 
         day_outside:
           'day-outside text-primary-900/[0.4] opacity-50 aria-selected:bg-primary/50 aria-selected:text-primary-900/[0.4] aria-selected:opacity-30',

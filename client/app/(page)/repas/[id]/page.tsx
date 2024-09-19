@@ -5,7 +5,7 @@ import { getMealDetails, getMealsSummaries } from '@/lib/meal/meal-fetch';
 import { constructS3Url, getErrorMessage } from '@/lib/utils';
 import { type MealSummaryResponse } from '@/types/query';
 import { type Metadata } from 'next';
-import { notFound, redirect } from 'next/navigation';
+import { notFound } from 'next/navigation';
 
 type Props = {
   params: { id: string };
@@ -24,11 +24,16 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata | undefined> {
-  const meal = await getMealDetails(params, {
-    next: {
-      tags: [`meal-details-${params.id}`]
-    }
-  });
+  let meal;
+  try {
+    meal = await getMealDetails(params, {
+      next: {
+        tags: [`meal-details-${params.id}`]
+      }
+    });
+  } catch (error) {
+    console.log(error);
+  }
 
   if (!meal || meal instanceof Error) {
     return undefined;
@@ -50,23 +55,21 @@ export default async function Home({ params }: Props) {
     });
   } catch (error) {
     const message = getErrorMessage(error);
-    if (message.includes('404')) {
-      return notFound();
-    }
-    redirect(`/`);
+    console.log(message);
+    return notFound();
   }
 
   return (
     <section className="section-px shadow-primary-40 section-py container flex flex-col justify-center gap-sm tablet:flex-row">
-      <div className="relative aspect-square w-full rounded-xs tablet:w-2/3">
+      <div className="relative aspect-square w-full rounded-md tablet:w-2/3">
         <ImagePulsing
-          skeletoncss={'h-full w-full object-cover absolute object-center rounded-xs'}
+          skeletoncss={'h-full w-full object-cover absolute object-center rounded-md'}
           priority
           fill
           src={constructS3Url(meal.picture_key)}
           alt={meal.name}
           sizes={'(max-width: 768px) 100vw, 80vw'}
-          className="rounded-xs object-cover object-center"
+          className="rounded-md object-cover object-center"
         />
       </div>
       <div className="flex flex-col gap-sm">

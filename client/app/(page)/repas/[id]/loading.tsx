@@ -4,8 +4,8 @@ import { Skeleton } from '@/components/ui/skeleton';
 export default function Loading() {
   return (
     <section className="section-px shadow-primary-40 section-py container flex flex-col justify-center gap-sm tablet:flex-row">
-      <div className="relative aspect-square w-full rounded-xs tablet:w-2/3">
-        <Skeleton className="absolute h-full w-full rounded-xs object-cover object-center" />
+      <div className="relative aspect-square w-full rounded-md tablet:w-2/3">
+        <Skeleton className="absolute h-full w-full rounded-md object-cover object-center" />
       </div>
       <div className="flex flex-col gap-sm">
         <section className="card flex h-fit items-center gap-md p-md">

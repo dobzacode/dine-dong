@@ -4,19 +4,24 @@ import { useEffect, useMemo } from 'react';
 
 import { useGeoLocation } from '@/hooks/use-geolocation';
 import { getMeals, type getMealsParams } from '@/lib/meal/meal-fetch';
+import { cn } from '@/lib/utils';
 import type { MealWithAddressResponse, MealsPaginatedResponse } from '@/types/query';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
+import Link from 'next/link';
 import { delayFadeInVariant } from '../framer/div-variants';
+import { buttonVariants } from '../ui/button';
 import MealSnippet, { MealSnippetSkeleton } from './meal/meal-snippet';
 import MealsSectionSkeleton from './meals-section-skeleton';
 
 const MealsSection = ({
   prefetchMeals,
-  fetchOptions: passedOptions
+  fetchOptions: passedOptions,
+  isUserPage
 }: {
   prefetchMeals: MealsPaginatedResponse;
   fetchOptions: getMealsParams;
+  isUserPage?: boolean;
 }) => {
   const location = useGeoLocation();
 
@@ -69,8 +74,13 @@ const MealsSection = ({
     console.log(error instanceof Error ? error : 'Unknown error');
     if (error.message.includes('404')) {
       return (
-        <div className="flex w-full flex-col items-center justify-center">
+        <div className="flex w-full flex-col items-center justify-center gap-md">
           <h3 className="heading-h1">Aucun repas trouvé</h3>
+          {typeof isUserPage === 'boolean' && isUserPage && (
+            <Link className={cn(buttonVariants({ variant: 'default' }))} href="/nouveau/repas">
+              Ajouter un repas
+            </Link>
+          )}
         </div>
       );
     }

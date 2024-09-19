@@ -217,7 +217,7 @@ function AddressAutoCompleteInput(props: CommonProps) {
       <Label htmlFor="address1" className="pb-2">
         {label} *
       </Label>
-      <div className="body flex w-full items-center justify-between rounded-lg">
+      <div className="body flex w-full items-center justify-between rounded-md">
         <CommandPrimitive.Input
           value={searchInput}
           onValueChange={setSearchInput}
@@ -225,7 +225,7 @@ function AddressAutoCompleteInput(props: CommonProps) {
           onFocus={open}
           placeholder={'Ajouter une adresse'}
           className={cn(
-            'body file:body card flex h-10 w-full px-3 py-2 ring-offset-background file:border-0 file:bg-transparent file:font-medium placeholder:text-primary-900/[0.4] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50',
+            'body file:body card flex h-10 w-full rounded-md px-3 py-2 ring-offset-background file:border-0 file:bg-transparent file:font-medium placeholder:text-primary-900/[0.4] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50',
             props.className
           )}
         />
@@ -241,8 +241,8 @@ function AddressAutoCompleteInput(props: CommonProps) {
       {isOpen && searchInput !== '' ? (
         <div className="relative h-auto animate-in fade-in-0 zoom-in-95">
           <CommandList>
-            <div className="absolute top-1.5 z-50 w-full">
-              <CommandGroup className="relative z-50 h-auto min-w-[8rem] overflow-hidden rounded-xs border bg-white shadow-md shadow-black/10">
+            <div className="absolute top-1.5 z-50 w-full rounded-md">
+              <CommandGroup className="relative z-50 h-auto min-w-[8rem] overflow-hidden rounded-md border bg-white shadow-md shadow-black/10">
                 {isLoading ? (
                   <div className="flex h-28 items-center justify-center">
                     <Loader2 className="size-6 animate-spin" />
@@ -264,7 +264,7 @@ function AddressAutoCompleteInput(props: CommonProps) {
                             setSelectedPlaceId(prediction.placePrediction.place);
                             setIsOpenDialog(true);
                           }}
-                          className="flex h-max cursor-pointer select-text flex-col items-start gap-0.5 p-2 px-3 first:rounded-t-xs last:rounded-b-xs hover:bg-primary-50 aria-selected:bg-primary-50"
+                          className="flex h-max cursor-pointer select-text flex-col items-start gap-0.5 rounded-xs p-2 px-3 first:rounded-t-md last:rounded-b-md hover:bg-primary-50 aria-selected:bg-primary-50"
                           key={prediction.placePrediction.placeId}
                           onMouseDown={(e) => e.preventDefault()}
                         >

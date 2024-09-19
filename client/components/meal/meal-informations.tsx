@@ -16,12 +16,13 @@ export function MealInformations(props: MealDetailsResponse) {
     price,
     weight,
     meal_id,
-    is_ordered
+    is_ordered,
+    user_sub
   } = props;
 
   return (
     <section className="card flex h-fit flex-col gap-md p-md">
-      <div className="flex flex-col">
+      <div className="flex flex-col gap-sm">
         <h2 className="heading-h1 font-bold text-primary-container-fg">{name}</h2>
         {dietArr.length > 0 && (
           <div className="body-sm text-grayed flex items-center gap-xs opacity-90">
@@ -36,7 +37,7 @@ export function MealInformations(props: MealDetailsResponse) {
           </div>
         )}
         {additional_information && (
-          <p className="body-sm text-grayed w-[30ch] pt-sm opacity-90">{additional_information}</p>
+          <p className="body-sm text-grayed w-[30ch] opacity-90">{additional_information}</p>
         )}
       </div>
       <Separator />
@@ -64,7 +65,7 @@ export function MealInformations(props: MealDetailsResponse) {
           <span className="font-semibold">{weight} grammes</span>
         </p>
       </div>
-      {!is_ordered && <MealBuyButton mealId={meal_id} />}
+      {!is_ordered && <MealBuyButton mealId={meal_id} ownerSub={user_sub} />}
       <Separator />
       <div className="flex flex-col">
         <h2 className="heading-h4 font-bold text-primary-container-fg">Livraison</h2>

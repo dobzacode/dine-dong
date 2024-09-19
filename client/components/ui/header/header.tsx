@@ -14,10 +14,10 @@ export default function Header() {
       </Link>
       <SearchBar className="hidden tablet:block" />
       <nav className="flex gap-lg">
-        <Suspense fallback={<Skeleton className="h-button w-[140px] rounded-xs" />}>
+        <Suspense fallback={<Skeleton className="h-button w-[140px] rounded-md" />}>
           <UserSection />
         </Suspense>
-        <Link className={cn(buttonVariants({ variant: 'default' }))} href="/repas/ajout">
+        <Link className={cn(buttonVariants({ variant: 'default' }))} href="/nouveau/repas">
           Vendre un repas
         </Link>
       </nav>

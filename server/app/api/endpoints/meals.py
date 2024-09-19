@@ -14,12 +14,18 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.api import deps
 from app.core.security.authenticate import VerifyToken
 from app.models import Address, DietsEnum, Ingredient, IngredientMeal, Meal, User
-from app.schemas.requests import CreateMealRequest
+from app.schemas.requests import CreateMealRequest, ModifyMealRequest
 from app.schemas.responses import (
     MealDetailsResponse,
     MealResponse,
     MealsResponse,
     MealSummary,
+)
+from app.utils.utils import (
+    process_meal_ingredients,
+    remove_old_ingredients,
+    update_meal_address,
+    update_meal_data,
 )
 
 router = APIRouter()
@@ -33,7 +39,7 @@ async def get_meals(
     offset: int = Query(0, description="Nombre de repas à ignorer"),
     lat: float = Query(45.767572, description="Latitude de l'utilisateur"),
     lng: float = Query(4.833102, description="Longitude de l'utilisateur"),
-    radius: int = Query(10, description="Rayon de recherche en km"),
+    radius: int = Query(10000, description="Rayon de recherche en km"),
     diet: list[DietsEnum] = Query(None, description="Régime des repas"),
     name: str = Query("", description="Nom des repas"),
     max_price: int = Query(1000, ge=0, le=1000, description="Prix maximum des repas"),
@@ -341,4 +347,62 @@ async def create_meal(
         raise HTTPException(
             status_code=500,
             detail="Une erreur est survenue lors de la création du repas",
+        )
+
+
+@router.put(
+    "",
+    description="Modifie un repas",
+    response_model=MealResponse,
+    status_code=200,
+)
+async def modify_user(
+    meal_data: ModifyMealRequest,
+    session: AsyncSession = Depends(deps.get_session),
+    token: dict[str, str] = Depends(deps.extract_sub_email_from_jwt),
+    auth: dict = Security(auth.verify),
+):
+    if not meal_data.meal_id:
+        raise HTTPException(status_code=422, detail="ID du repas requis")
+
+    meal = await session.scalar(select(Meal).where(Meal.meal_id == meal_data.meal_id))
+
+    if not meal:
+        raise HTTPException(status_code=404, detail="Repas non trouvé")
+
+    if meal.user_sub != token.get("sub"):
+        raise HTTPException(
+            status_code=401,
+            detail="Vous n'êtes pas autorisé à modifier ce repas",
+        )
+
+    try:
+        update_meal_data(meal, meal_data)
+
+        if meal_data.address:
+            update_meal_address(meal, meal_data)
+
+        existing_ingredient_meals = await session.scalars(
+            select(IngredientMeal).where(IngredientMeal.meal_id == meal.meal_id)
+        )
+
+        updated_ingredient_ids = set()
+
+        if meal_data.ingredients:
+            updated_ingredient_ids = await process_meal_ingredients(
+                meal, meal_data, session
+            )
+
+        await remove_old_ingredients(
+            existing_ingredient_meals, updated_ingredient_ids, session
+        )
+
+        await session.commit()
+        await session.refresh(meal)
+        return meal
+    except Exception as e:
+        print(e)
+        raise HTTPException(
+            status_code=500,
+            detail="Une erreur est survenue lors de la modification du repas",
         )

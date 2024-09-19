@@ -19,6 +19,7 @@ import { Input, type InputProps } from '@/components/ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 
 import { cn } from '@/lib/utils';
+import { E164Number } from 'libphonenumber-js';
 import { ScrollArea } from './scroll-area';
 
 type PhoneInputProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'value'> &
@@ -54,7 +55,7 @@ const PhoneInput: React.ForwardRefExoticComponent<PhoneInputProps> = React.forwa
        * @param {E164Number | undefined} value - The entered value
        */
       //eslint-disable-next-line
-      onChange={(value) => onChange?.(value || '')}
+      onChange={(value) => onChange?.((value as E164Number) || ('' as E164Number))}
       {...props}
     />
   );
@@ -63,7 +64,7 @@ PhoneInput.displayName = 'PhoneInput';
 
 const InputComponent = React.forwardRef<HTMLInputElement, InputProps>(
   ({ className, ...props }, ref) => (
-    <Input className={cn('rounded-e-xs rounded-s-none', className)} {...props} ref={ref} />
+    <Input className={cn('rounded-e-md rounded-s-none', className)} {...props} ref={ref} />
   )
 );
 InputComponent.displayName = 'InputComponent';
@@ -91,7 +92,7 @@ const CountrySelect = ({ disabled, value, onChange, options }: CountrySelectProp
         <Button
           type="button"
           variant={'outline'}
-          className={cn('flex gap-1 rounded-e-none rounded-s-xs px-3')}
+          className={cn('flex gap-1 rounded-e-none rounded-s-md px-3')}
           disabled={disabled}
         >
           <FlagComponent country={value} countryName={value} />
@@ -114,7 +115,7 @@ const CountrySelect = ({ disabled, value, onChange, options }: CountrySelectProp
                   .filter((x) => x.value)
                   .map((option) => (
                     <CommandItem
-                      className="cursor-pointer gap-2 rounded-xs"
+                      className="cursor-pointer gap-2 rounded-sm"
                       key={option.value}
                       data-value={option.value}
                       disabled={false}
@@ -153,7 +154,7 @@ const FlagComponent = ({ country, countryName }: RPNInput.FlagProps) => {
   const Flag = flags[country];
 
   return (
-    <span className="flex h-4 w-6 overflow-hidden rounded-xs bg-foreground/20">
+    <span className="flex h-4 w-6 overflow-hidden rounded-md bg-foreground/20">
       {Flag && <Flag title={countryName} />}
     </span>
   );

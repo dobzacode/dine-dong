@@ -36,7 +36,9 @@ const config = {
         lora: ['Lora']
       },
       borderRadius: {
+        lg: '32px',
         md: '16px',
+        smd: '12px',
         sm: '8px',
         xs: '4px'
       },

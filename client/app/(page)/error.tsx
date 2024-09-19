@@ -1,6 +1,7 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
+import { buttonVariants } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { useEffect } from 'react';
 
@@ -18,9 +19,9 @@ export default function Error({ error }: { error: Error & { digest?: string } })
           Oops, une erreur est survenue. Veuillez vérifier l&apos;URL ou revenir à la page
           d&apos;accueil.
         </p>
-        <Button asChild>
-          <Link href="/">Retour à la page d&apos;accueil</Link>
-        </Button>
+        <Link className={cn(buttonVariants({ variant: 'default' }))} href="/">
+          Retour à la page d&apos;accueil
+        </Link>
       </section>
     </main>
   );

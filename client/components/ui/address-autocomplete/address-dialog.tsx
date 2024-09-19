@@ -174,7 +174,7 @@ export default function AddressDialog(props: React.PropsWithChildren<AddressDial
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="rounded-xs">
+      <DialogContent className="rounded-md">
         <DialogHeader>
           <DialogTitle>{dialogTitle}</DialogTitle>
         </DialogHeader>

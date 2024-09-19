@@ -1,6 +1,6 @@
 'use client';
 
-import { cn } from '@/lib/utils';
+import { cn, constructURLWithFileOrKey } from '@/lib/utils';
 import Image from 'next/image';
 import { useFormContext } from 'react-hook-form';
 import { dietEnum, paymentMethodEnum, type MealSchema } from './meal-schema';
@@ -43,11 +43,11 @@ export default function WizardFinalStep({ className }: { className?: string }) {
             </div>
           </div>
         </div>
-        <div className="relative overflow-hidden rounded-xs max-mobile-lg:aspect-square mobile-lg:w-8xl">
+        <div className="relative overflow-hidden rounded-md max-mobile-lg:aspect-square mobile-lg:w-8xl">
           <Image
-            className="grow-0 rounded-xs object-cover"
+            className="grow-0 rounded-md object-cover"
             sizes={`(max-width: 768px) 100vw, 800px`}
-            src={URL.createObjectURL(getValues('stepOne.image'))}
+            src={constructURLWithFileOrKey(getValues('stepOne.image'))}
             alt="photo"
             fill
           />

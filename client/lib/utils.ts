@@ -8,6 +8,14 @@ export function cn(...inputs: ClassValue[]) {
 
 export const fetcher = (url: string) => fetch(url).then((r) => r.json());
 
+export const constructURLWithFileOrKey = (file: File | string | undefined) => {
+  if (!file) return '';
+  if (typeof file === 'string') {
+    return constructS3Url(file);
+  }
+  return URL.createObjectURL(file);
+};
+
 export const getFileExtension = (filename: string) => {
   const index = filename.lastIndexOf('.');
   if (index === -1) {

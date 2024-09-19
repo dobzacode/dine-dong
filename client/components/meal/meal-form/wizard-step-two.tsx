@@ -144,7 +144,7 @@ export default function WizardStepTwo({ className }: { className?: string }) {
           </Popover>
         </span>
         <div className="flex w-full flex-col gap-sm">
-          <ul className="flex w-full grow flex-col gap-xs">
+          <ul className="flex w-full grow flex-col gap-md mobile:gap-xs">
             {fields.map((field, index) => (
               <li
                 className={cn(
@@ -156,7 +156,7 @@ export default function WizardStepTwo({ className }: { className?: string }) {
                   control={form.control}
                   name={`stepTwo.ingredients.${index}.name`}
                   render={({ field }) => (
-                    <FormItem className="grow max-mobile:col-span-5 max-mobile:col-start-1 max-mobile:row-start-1">
+                    <FormItem className="grow max-mobile:col-span-5 max-mobile:col-start-1 max-mobile:row-start-1 mobile:w-1/3">
                       <FormControl>
                         <Input
                           className="rounded-r-none"
@@ -176,10 +176,13 @@ export default function WizardStepTwo({ className }: { className?: string }) {
                   control={form.control}
                   name={`stepTwo.ingredients.${index}.quantity`}
                   render={({ field }) => (
-                    <FormItem className="max-mobile:col-span-1 max-mobile:col-start-1 max-mobile:row-start-2">
+                    <FormItem className="max-mobile:col-span-1 max-mobile:col-start-1 max-mobile:row-start-2 mobile:w-1/5">
                       <FormControl>
                         <Input
-                          className={cn('rounded-none', !field.value && 'text-primary-900/[0.4]')}
+                          className={cn(
+                            'rounded-l-md rounded-r-none mobile:rounded-none',
+                            !field.value && 'text-primary-900/[0.4]'
+                          )}
                           type="number"
                           min={1}
                           max={100}
@@ -206,10 +209,10 @@ export default function WizardStepTwo({ className }: { className?: string }) {
                   control={form.control}
                   name={`stepTwo.ingredients.${index}.unit`}
                   render={({ field }) => (
-                    <FormItem className="grow max-mobile:col-span-4 max-mobile:col-start-2 max-mobile:row-start-2">
+                    <FormItem className="grow max-mobile:col-span-4 max-mobile:col-start-2 max-mobile:row-start-2 mobile:w-1/5">
                       <Select defaultValue={field.value} onValueChange={field.onChange}>
                         <FormControl>
-                          <SelectTrigger className="rounded-none">
+                          <SelectTrigger className="rounded-l-none rounded-r-md mobile:rounded-none">
                             <SelectValue placeholder="gramme" />
                           </SelectTrigger>
                         </FormControl>
@@ -253,7 +256,7 @@ export default function WizardStepTwo({ className }: { className?: string }) {
             type="button"
             onClick={() => append({ name: '', quantity: undefined, unit: undefined })}
             className={cn(
-              'flex w-fit gap-sm border bg-background',
+              'flex w-fit gap-sm border bg-background max-mobile:mt-md',
               form.getValues().stepTwo.ingredients.length > 19 && 'pointer-events-none opacity-50'
             )}
             variant={'outline'}

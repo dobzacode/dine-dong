@@ -5,7 +5,13 @@ import { kv } from '@vercel/kv';
 import Link from 'next/link';
 import { buttonVariants } from '../ui/button';
 
-export default async function MealBuyButton({ mealId }: { mealId: string }) {
+export default async function MealBuyButton({
+  mealId,
+  ownerSub
+}: {
+  mealId: string;
+  ownerSub: string;
+}) {
   const session = await getSession();
 
   let user;
@@ -22,11 +28,22 @@ export default async function MealBuyButton({ mealId }: { mealId: string }) {
 
   const paymentIntentUserId = await kv.get(mealId);
 
+  if (user?.user_sub === ownerSub) {
+    return (
+      <Link
+        className={cn(buttonVariants({ variant: 'default' }), 'w-full rounded-sm')}
+        href={`/repas/${mealId}/modifier`}
+      >
+        Modifier le repas
+      </Link>
+    );
+  }
+
   return (
     <Link
       className={cn(
         buttonVariants({ variant: 'default' }),
-        'w-full',
+        'w-full rounded-sm',
         paymentIntentUserId && paymentIntentUserId !== user?.user_sub
           ? 'pointer-events-none opacity-50'
           : ''

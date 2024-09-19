@@ -36,9 +36,9 @@ export default function WizardFinalStep({ className }: { className?: string }) {
           </div>
         </div>
 
-        <div className="relative aspect-square h-fit w-1/3 overflow-hidden rounded-xs">
+        <div className="relative aspect-square h-fit w-1/3 overflow-hidden rounded-md">
           <Image
-            className="grow-0 rounded-xs object-cover"
+            className="grow-0 rounded-md object-cover"
             sizes={`(max-width: 768px) 100vw, 800px`}
             src={image ? URL.createObjectURL(image) : constructS3Url('static/default-avatar.png')}
             alt="photo"
@@ -46,7 +46,7 @@ export default function WizardFinalStep({ className }: { className?: string }) {
           />
         </div>
       </div>
-      <div className="flex flex-col gap-xs border bg-background p-md">
+      <div className="card flex flex-col">
         <p className="body-sm font-medium text-primary-900/70">Adresse de résidence</p>
         <p className="body-sm">{getValues('stepTwo.address.formattedAddress')}</p>
       </div>

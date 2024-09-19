@@ -72,7 +72,7 @@ export default function WizardStepOne({ className }: { className?: string }) {
                       <Button
                         variant={'outline'}
                         className={cn(
-                          'pl-3 text-left font-normal hover:bg-background hover:text-opacity-80',
+                          'rounded-md pl-3 text-left font-normal hover:bg-background hover:text-opacity-80',
                           !field.value && 'text-muted-foreground'
                         )}
                       >
@@ -122,7 +122,7 @@ export default function WizardStepOne({ className }: { className?: string }) {
                       <Button
                         variant={'outline'}
                         className={cn(
-                          'pl-3 text-left font-normal hover:bg-background hover:text-opacity-80',
+                          'rounded-md pl-3 text-left font-normal hover:bg-background hover:text-opacity-80',
                           !field.value && 'text-muted-foreground'
                         )}
                       >

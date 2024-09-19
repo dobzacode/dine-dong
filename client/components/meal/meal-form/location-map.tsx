@@ -27,7 +27,7 @@ export default function LocationMap({ lat = 48.8738, lng = 2.295 }: { lat: numbe
   }, [lat, lng]);
 
   if (!isLoaded) {
-    return <Skeleton className="aspect-square w-full rounded-xs" />;
+    return <Skeleton className="aspect-square w-full rounded-sm" />;
   }
 
   return (
@@ -36,7 +36,7 @@ export default function LocationMap({ lat = 48.8738, lng = 2.295 }: { lat: numbe
       zoom={14}
       center={mapCenter}
       mapTypeId={google.maps.MapTypeId.ROADMAP}
-      mapContainerStyle={{ width: 'full', height: 'auto', aspectRatio: 1, borderRadius: '4px' }}
+      mapContainerStyle={{ width: 'full', height: 'auto', aspectRatio: 1, borderRadius: '8px' }}
       onLoad={() => console.log('Map Component Loaded...')}
     >
       <MarkerF position={mapCenter} onLoad={() => console.log('Marker Loaded')} />

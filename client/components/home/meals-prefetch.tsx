@@ -1,6 +1,8 @@
 import { getMeals, type getMealsParams } from '@/lib/meal/meal-fetch';
-import { getErrorMessage } from '@/lib/utils';
+import { cn, getErrorMessage } from '@/lib/utils';
 import { type MealsPaginatedResponse } from '@/types/query';
+import Link from 'next/link';
+import { buttonVariants } from '../ui/button';
 import MealsSection from './meals-section';
 
 export default async function MealsPrefetch({
@@ -11,8 +13,9 @@ export default async function MealsPrefetch({
   max_price,
   lat,
   lng,
-  user_sub
-}: getMealsParams) {
+  user_sub,
+  isUserPage
+}: getMealsParams & { isUserPage?: boolean }) {
   const fetchOptions = {
     name,
     diet,
@@ -33,8 +36,13 @@ export default async function MealsPrefetch({
     const message = getErrorMessage(error);
     if (message.includes('404')) {
       return (
-        <div className="flex w-full flex-col items-center justify-center">
+        <div className="flex w-full flex-col items-center justify-center gap-md">
           <h3 className="heading-h1">Aucun repas trouvé</h3>
+          {typeof isUserPage === 'boolean' && isUserPage && (
+            <Link className={cn(buttonVariants({ variant: 'default' }))} href="/nouveau/repas">
+              Ajouter un repas
+            </Link>
+          )}
         </div>
       );
     }
@@ -45,6 +53,7 @@ export default async function MealsPrefetch({
 
   return (
     <MealsSection
+      isUserPage={isUserPage}
       fetchOptions={fetchOptions}
       prefetchMeals={
         prefetchMeals instanceof Error ? { meals: [], total: 200, hasMore: true } : prefetchMeals

@@ -5,9 +5,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.api import deps
 from app.core.security.authenticate import VerifyToken
 from app.models import Address, Meal, User
-from app.schemas.requests import CreateUserRequest, modifyUserRequest
+from app.schemas.requests import CreateUserRequest, ModifyUserRequest
 from app.schemas.responses import MealResponse, UserResponse
-from app.utils.utils import update_if_not_none
+from app.utils.utils import update_user_address, update_user_data
 
 router = APIRouter()
 auth = VerifyToken()
@@ -225,7 +225,7 @@ async def create_user(
     status_code=200,
 )
 async def modify_user(
-    user_data: modifyUserRequest,
+    user_data: ModifyUserRequest,
     session: AsyncSession = Depends(deps.get_session),
     token: dict[str, str] = Depends(deps.extract_sub_email_from_jwt),
     auth: dict = Security(auth.verify),
@@ -245,29 +245,9 @@ async def modify_user(
         )
 
     try:
-        update_if_not_none(user, "username", user_data.username)
-        update_if_not_none(user, "email", user_data.email)
-        update_if_not_none(user, "phone_number", user_data.phone_number)
-        update_if_not_none(user, "first_name", user_data.first_name)
-        update_if_not_none(user, "last_name", user_data.last_name)
-        update_if_not_none(user, "about_me", user_data.about_me)
-        update_if_not_none(user, "picture_key", user_data.picture_key)
+        update_user_data(user, user_data)
 
-        if user_data.residency:
-            for field in [
-                "address1",
-                "address2",
-                "formatted_address",
-                "city",
-                "department",
-                "postal_code",
-                "country",
-                "lat",
-                "lng",
-            ]:
-                update_if_not_none(
-                    user.residency, field, getattr(user_data.residency, field)
-                )
+        update_user_address(user, user_data)
 
         await session.commit()
         await session.refresh(user)
