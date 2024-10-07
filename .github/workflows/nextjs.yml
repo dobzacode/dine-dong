@@ -32,8 +32,8 @@ jobs:
       - name: Build and push FE
         uses: docker/build-push-action@v2
         with:
-          context: ./dine-dong-fe
-          file: ./dine-dong-fe/Dockerfile
+          context: ./client
+          file: ./client/Dockerfile
           push: true
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/dine-dong-fe:latest
 
