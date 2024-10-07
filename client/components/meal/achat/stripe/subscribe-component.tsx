@@ -14,7 +14,7 @@ const SubscribeComponent = ({ amount, currency, description, userSub }: props) =
       return;
     }
     try {
-      const response = await fetch('http://172.19.27.170:3000/api/protected/orders/checkout', {
+      const response = await fetch('http://localhost:3000/api/protected/orders/checkout', {
         method: 'POST',
         body: JSON.stringify({
           amount,
