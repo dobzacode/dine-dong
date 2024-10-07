@@ -12,7 +12,9 @@ export default function Header() {
       <Link href="/">
         <p className="heading-h1 font-bold">Dine Dong</p>
       </Link>
-      <SearchBar className="hidden tablet:block" />
+      <Suspense>
+        <SearchBar className="hidden tablet:block" />
+      </Suspense>
       <nav className="flex gap-lg">
         <Suspense fallback={<Skeleton className="h-button w-[140px] rounded-md" />}>
           <UserSection />

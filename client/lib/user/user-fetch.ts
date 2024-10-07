@@ -4,7 +4,7 @@ export async function getUserInformations(
   params: { sub?: string; username?: string },
   request: RequestInit = {}
 ) {
-  const url = new URL('http://localhost:3000/api/users');
+  const url = new URL('http://172.19.27.170:3000/api/users');
 
   for (const [key, value] of Object.entries(params)) {
     if ((value !== undefined && typeof value === 'number') || typeof value === 'string') {
@@ -29,7 +29,7 @@ export async function getUserInformations(
 }
 
 export async function checkUsernameAvailability(username: string) {
-  const url = new URL('http://localhost:3000/api/users/check-username-availability');
+  const url = new URL('http://172.19.27.170:3000/api/users/check-username-availability');
   url.searchParams.set('username', username);
 
   const response = await fetch(url.toString(), {
@@ -51,7 +51,7 @@ export async function checkUsernameAvailability(username: string) {
 }
 
 export async function checkEmailAvailability(email: string) {
-  const url = new URL('http://localhost:3000/api/users/check-email-availability');
+  const url = new URL('http://172.19.27.170:3000/api/users/check-email-availability');
   url.searchParams.set('email', email);
 
   const response = await fetch(url.toString(), {
@@ -73,7 +73,7 @@ export async function checkEmailAvailability(email: string) {
 }
 
 export async function getAuth0Information(token: string) {
-  const response = await fetch('http://localhost:3000/api/users/get-auth0-information', {
+  const response = await fetch('http://172.19.27.170:3000/api/users/get-auth0-information', {
     headers: {
       Authorization: `Bearer ${token}`
     }
@@ -96,7 +96,7 @@ export async function getAuth0Information(token: string) {
 }
 
 export async function isUserRegistered(token: string) {
-  const response = await fetch('http://localhost:3000/api/users/is-user-registered', {
+  const response = await fetch('http://172.19.27.170:3000/api/users/is-user-registered', {
     headers: {
       Authorization: `Bearer ${token}`
     }
@@ -117,7 +117,7 @@ export async function isUserRegistered(token: string) {
 }
 
 export async function getUserMeals(sub: string, request: RequestInit = {}) {
-  const url = new URL(`http://localhost:3000/api/users/${sub}/meals`);
+  const url = new URL(`http://172.19.27.170:3000/api/users/${sub}/meals`);
 
   const response = await fetch(url.toString(), request);
 
@@ -133,4 +133,15 @@ export async function getUserMeals(sub: string, request: RequestInit = {}) {
     default:
       throw new Error('Erreur inconnue');
   }
+}
+
+export async function getUsersParams() {
+  const response = await fetch('http://172.19.27.170:3000/api/users/get-user-params', {
+    cache: 'no-cache',
+    next: {
+      tags: ['get-user-params']
+    }
+  });
+
+  return (await response.json()) as { username: string }[];
 }

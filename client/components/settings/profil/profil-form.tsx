@@ -47,14 +47,14 @@ const modifyProfileMutation = async ({
     const { key } = await uploadToS3(data.image, {
       endpoint: {
         request: {
-          url: `http://localhost:3000/api/s3-upload/?folder=dynamic/${sub}/user`
+          url: `http://172.19.27.170:3000/api/s3-upload/?folder=dynamic/${sub}/user`
         }
       }
     });
     picturekey = key;
   }
 
-  const response = await fetch('http://localhost:3000/api/protected/users', {
+  const response = await fetch('http://172.19.27.170:3000/api/protected/users', {
     method: 'PUT',
     body: JSON.stringify({
       user_sub: user_sub,
@@ -221,7 +221,7 @@ export default function ProfilForm({ user, sub }: { user: UserResponse; sub: str
             <FormField
               control={form.control}
               name="image"
-              render={({ field }) => (
+              render={() => (
                 <FormItem className="flex h-full w-fit shrink-0 flex-col">
                   <FormLabel className="w-fit">Photo de profil</FormLabel>
 

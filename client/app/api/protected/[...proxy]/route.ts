@@ -13,7 +13,7 @@ async function apiProxy(request: NextRequest, proxyPath: string): Promise<Respon
 
   try {
     const accessTokenResult = await getAccessToken(request, new NextResponse(), {
-      authorizationParams: { audience: 'http://localhost:8080/api/' }
+      authorizationParams: { audience: 'https://dine-dong/api/' }
     });
 
     accessToken = accessTokenResult.accessToken;
@@ -31,7 +31,7 @@ async function apiProxy(request: NextRequest, proxyPath: string): Promise<Respon
   }
 
   return fetch(
-    `http://localhost:8080/api${request.nextUrl.pathname.replace(proxyPath, '')}${request.nextUrl.search}`,
+    `https://dine-dong.fr/api${request.nextUrl.pathname.replace(proxyPath, '')}${request.nextUrl.search}`,
     {
       ...request,
       body: request.body && (await request.blob()),

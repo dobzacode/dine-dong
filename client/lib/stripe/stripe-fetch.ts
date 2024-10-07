@@ -20,7 +20,7 @@ export async function CreatePaymentIntent({
     throw new Error("403 Vous n'êtes pas connecté");
   }
 
-  const response = await fetch('http://localhost:3000/api/stripe/payment-intent', {
+  const response = await fetch('http://172.19.27.170:3000/api/stripe/payment-intent', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token.accessToken}` },
     body: JSON.stringify({

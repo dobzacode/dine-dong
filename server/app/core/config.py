@@ -25,7 +25,12 @@ PROJECT_DIR = Path(__file__).parent.parent.parent
 
 
 class Security(BaseModel):
-    allowed_hosts: list[str] = ["localhost", "127.0.0.1"]
+    allowed_hosts: list[str] = [
+        "localhost",
+        "127.0.0.1",
+        "dine-dong.fr",
+        "9w5bah46td.execute-api.eu-west-3.amazonaws.com",
+    ]
     backend_cors_origins: list[AnyHttpUrl] = []
 
 

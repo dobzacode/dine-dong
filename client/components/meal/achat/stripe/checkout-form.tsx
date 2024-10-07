@@ -32,7 +32,7 @@ const CheckoutForm = ({
     const { error } = await stripe.confirmPayment({
       elements,
       confirmParams: {
-        return_url: 'http://localhost:3000',
+        return_url: 'http://172.19.27.170:3000',
         receipt_email: user.email
       }
     });

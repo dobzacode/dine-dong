@@ -6,16 +6,15 @@ from app.api.api_router import api_router
 from app.core.config import get_settings
 
 app = FastAPI(
-    title="minimal fastapi postgres template",
-    version="6.0.0",
-    description="https://github.com/rafsaf/minimal-fastapi-postgres-template",
+    title="dine dong",
+    version="1.0.0",
     openapi_url="/openapi.json",
-    docs_url="/",
+    docs_url="/docs",
+    root_path="/api",
 )
 
 app.include_router(api_router)
 
-# Sets all CORS enabled origins
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
@@ -27,7 +26,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Guards against HTTP Host Header attacks
 app.add_middleware(
     TrustedHostMiddleware,
     allowed_hosts=get_settings().security.allowed_hosts,

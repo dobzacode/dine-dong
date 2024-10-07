@@ -21,7 +21,7 @@ export async function getMeals(
   params: getMealsParams,
   request: RequestInit = {}
 ): Promise<MealsPaginatedResponse | Error> {
-  const url = new URL('http://localhost:3000/api/meals');
+  const url = new URL('http://172.19.27.170:3000/api/meals');
 
   for (const [key, value] of Object.entries(params)) {
     if (key === 'diet' && Array.isArray(value)) {
@@ -56,7 +56,7 @@ export async function getMeals(
 }
 
 export async function getMealsSummaries<T>(params?: { id?: string }, request: RequestInit = {}) {
-  const url = new URL('http://localhost:3000/api/meals/summaries');
+  const url = new URL('http://172.19.27.170:3000/api/meals/summaries');
   if (params?.id) {
     url.searchParams.set('id', params.id);
   }
@@ -80,7 +80,7 @@ export async function getMealDetails(
   params: { id: string; lat?: number; lng?: number },
   request: RequestInit = {}
 ) {
-  const url = new URL('http://localhost:3000/api/meals/details');
+  const url = new URL('http://172.19.27.170:3000/api/meals/details');
 
   for (const [key, value] of Object.entries(params)) {
     if ((value !== undefined && typeof value === 'number') || typeof value === 'string') {

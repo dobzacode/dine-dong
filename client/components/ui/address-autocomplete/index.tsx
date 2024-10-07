@@ -182,7 +182,7 @@ function AddressAutoCompleteInput(props: CommonProps) {
     showInlineError,
     searchInput,
     setSearchInput,
-    placeholder,
+
     label
   } = props;
 

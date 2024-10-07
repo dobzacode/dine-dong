@@ -53,14 +53,14 @@ const createMealMutation = async ({
     const { key } = await uploadToS3(data.stepOne.image, {
       endpoint: {
         request: {
-          url: `http://localhost:3000/api/s3-upload/?folder=dynamic/${sub}/user`
+          url: `http://172.19.27.170:3000/api/s3-upload/?folder=dynamic/${sub}/user`
         }
       }
     });
     picturekey = key;
   }
 
-  const response = await fetch('http://localhost:3000/api/protected/meals', {
+  const response = await fetch('http://172.19.27.170:3000/api/protected/meals', {
     method: mealId ? 'PUT' : 'POST',
     body: JSON.stringify({
       meal_id: mealId,

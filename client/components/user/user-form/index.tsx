@@ -50,14 +50,14 @@ const createUserMutation = async ({
     const { key } = await uploadToS3(data.stepOne.image, {
       endpoint: {
         request: {
-          url: `http://localhost:3000/api/s3-upload/?folder=dynamic/${sub}/user`
+          url: `http://172.19.27.170:3000/api/s3-upload/?folder=dynamic/${sub}/user`
         }
       }
     });
     picturekey = key;
   }
 
-  const response = await fetch('http://localhost:3000/api/users', {
+  const response = await fetch('http://172.19.27.170:3000/api/users', {
     method: 'POST',
     body: JSON.stringify({
       email: data.stepOne.email,

@@ -9,8 +9,6 @@ export default function MealResume({ meal }: { meal: MealDetailsResponse }) {
   const {
     name,
     diet,
-    ingredients,
-    additional_information,
     picture_key,
     address: { lat, lng, formatted_address },
     price,

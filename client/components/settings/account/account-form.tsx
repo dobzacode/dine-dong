@@ -22,7 +22,7 @@ const modifyProfileMutation = async ({
   data: AccountSchema;
   user_sub: string;
 }) => {
-  const response = await fetch('http://localhost:3000/api/protected/users', {
+  const response = await fetch('http://172.19.27.170:3000/api/protected/users', {
     method: 'PUT',
     body: JSON.stringify({
       user_sub: user_sub,

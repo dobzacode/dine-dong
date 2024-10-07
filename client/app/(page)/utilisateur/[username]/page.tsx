@@ -5,7 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import ActionsWrapper from '@/components/user/user-page/actions-wrapper';
 import InformationsSection from '@/components/user/user-page/informations-section';
 import { type getMealsParams } from '@/lib/meal/meal-fetch';
-import { getUserInformations } from '@/lib/user/user-fetch';
+import { getUserInformations, getUsersParams } from '@/lib/user/user-fetch';
 import { getErrorMessage } from '@/lib/utils';
 import { getSession } from '@auth0/nextjs-auth0';
 
@@ -14,14 +14,7 @@ import { notFound, redirect } from 'next/navigation';
 import { Suspense } from 'react';
 
 export async function generateStaticParams() {
-  const response = await fetch('http://localhost:3000/api/users/get-user-params', {
-    cache: 'no-cache',
-    next: {
-      tags: ['get-user-params']
-    }
-  });
-
-  const data = (await response.json()) as { username: string }[];
+  const data = await getUsersParams();
 
   return data.map((user) => ({
     username: user.username
