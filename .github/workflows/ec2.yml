@@ -2,14 +2,10 @@ name: AWS-EC2 Instance CD
 
 on:
   workflow_dispatch: 
-  workflow_run:
-    workflows: ["NextJS CI"]
-    types: [completed]
 
 jobs:
   on-success:
     runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - name: AWS SSM Send-Command
         uses: peterkimzz/aws-ssm-send-command@v1.1.1

@@ -1,0 +1,39 @@
+name: Deploy Backend to AWS Lambda
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'backend/**'  
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@v3
+       
+      - name: Initialize Terraform
+        run: terraform init
+
+      - name: Configure AWS credentials
+        run: |
+          export AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
+          export AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} 
+          export AWS_DEFAULT_REGION=${{ secrets.AWS_REGION }}
+     
+
+      - name: Plan Terraform changes
+        run: terraform plan
+
+      - name: Apply Terraform changes (optional, requires confirmation)
+        run: |
+          if [[ $(git diff --cached --name-only | grep -qE '^\.terraform/') ]]; then
+            terraform apply -auto-approve
+          else
+            echo "No changes detected in Terraform configuration. Skipping apply."
+          fi
+
