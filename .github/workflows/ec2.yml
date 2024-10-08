@@ -19,5 +19,5 @@ jobs:
             sudo docker stop nextjs-app
             sudo docker rm nextjs-app
             sudo docker pull ${{secrets.DOCKER_HUB_USERNAME}}/dine-dong-fe:latest
-            sudo docker run -d --name nextjs-app --publish 80:80 ${{secrets.DOCKER_HUB_USERNAME}}/dine-dong-fe:latest
+            sudo docker run -d --name nextjs-app --publish 3000:3000 ${{secrets.DOCKER_HUB_USERNAME}}/dine-dong-fe:latest
           comment: Pulls the latest dine-dong-fe image and runs it on the instance.
