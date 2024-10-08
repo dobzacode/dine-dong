@@ -19,6 +19,10 @@ export const getBasePath = () => {
   return 'http://localhost:3000';
 };
 
+export const getProxyBasePath = () => {
+  return process.env.NODE_ENV === 'production' ? 'https://dine-dong.fr' : 'http://localhost:8000';
+};
+
 export const constructURLWithFileOrKey = (file: File | string | undefined) => {
   if (!file) return '';
   if (typeof file === 'string') {

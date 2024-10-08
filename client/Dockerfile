@@ -1,12 +1,12 @@
 ARG BUN_VERSION=1.1.1
-FROM oven/bun:${BUN_VERSION}-slim as base
+FROM oven/bun:${BUN_VERSION}-slim AS base
 
 WORKDIR /app
 
 ENV NEXT_TELEMETRY_DISABLED="1" \
     NODE_ENV="production"
 
-FROM base as build
+FROM base AS build
 
 RUN --mount=type=cache,id=cache,target=/var/cache/apt \
     --mount=type=cache,id=lib,target=/var/lib/apt \
@@ -31,5 +31,5 @@ COPY --from=build /app/.next/standalone ./
 COPY --from=build /app/.next/static ./.next/static
 
 EXPOSE 3000
-ENV HOSTNAME '0.0.0.0'
+ENV HOSTNAME='0.0.0.0'
 CMD ["bun", "run", "server.js"]

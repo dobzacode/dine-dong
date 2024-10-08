@@ -1,15 +1,15 @@
-env:
-  CI: false
-
 name: NextJS CI
 
 on:
-  workflow_dispatch: 
+  workflow_dispatch:
   push:
-    branches:
-      - 'main'
+    branches: [ 'main' ]
+    paths:
+      - 'client/**'
   pull_request:
     branches: [ 'main' ]
+    paths:
+      - 'client/**'
 
 jobs:
   build:
@@ -36,4 +36,3 @@ jobs:
           file: ./client/Dockerfile
           push: true
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/dine-dong-fe:latest
-

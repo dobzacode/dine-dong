@@ -1,3 +1,4 @@
+import { getProxyBasePath } from '@/lib/utils';
 import { AccessTokenError, getAccessToken, withApiAuthRequired } from '@auth0/nextjs-auth0';
 import { NextResponse, type NextRequest } from 'next/server';
 
@@ -31,7 +32,7 @@ async function apiProxy(request: NextRequest, proxyPath: string): Promise<Respon
   }
 
   return fetch(
-    `https://dine-dong.fr/api${request.nextUrl.pathname.replace(proxyPath, '')}${request.nextUrl.search}`,
+    `${getProxyBasePath()}/api${request.nextUrl.pathname.replace(proxyPath, '')}${request.nextUrl.search}`,
     {
       ...request,
       body: request.body && (await request.blob()),

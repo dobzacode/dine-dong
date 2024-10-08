@@ -1,13 +1,13 @@
 name: AWS-EC2 Instance CD
 
 on:
+  workflow_dispatch: 
   workflow_run:
-    workflows: ["Node.js CI"]
+    workflows: ["NextJS CI"]
     types: [completed]
 
 jobs:
   on-success:
-
     runs-on: ubuntu-latest
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
@@ -20,10 +20,8 @@ jobs:
           instance-ids: ${{ secrets.AWS_INSTANCE_ID }}
           working-directory: /home/ubuntu
           command: |
-            sudo docker-compose stop
-            sudo docker-compose rm -f
-            sudo docker-compose pull
-            sudo docker-compose up -d
-            sudo docker image prune -af
-          comment: docker-compose.yml file re-pulls newer versions of book-portal images and runs them on the instance.
-
+            sudo docker stop nextjs-app
+            sudo docker rm nextjs-app
+            sudo docker pull ${{secrets.DOCKER_HUB_USERNAME}}/dine-dong-fe:latest
+            sudo docker run -d --name nextjs-app --publish 3000:3000 ${{secrets.DOCKER_HUB_USERNAME}}/dine-dong-fe:latest
+          comment: Pulls the latest dine-dong-fe image from ${{secrets.DOCKER_HUB_USERNAME}} and runs it on the instance, using port 3000.
