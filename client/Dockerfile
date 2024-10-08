@@ -30,7 +30,6 @@ FROM base AS run
 COPY --from=build /app/.next/standalone ./
 COPY --from=build /app/.next/static ./.next/static
 
-ENV PORT=80
-EXPOSE 80
+EXPOSE 3000
 
 CMD ["bun", "run", "server.js"]
