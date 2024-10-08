@@ -8,6 +8,17 @@ export function cn(...inputs: ClassValue[]) {
 
 export const fetcher = (url: string) => fetch(url).then((r) => r.json());
 
+export const getBasePath = () => {
+  const env = process.env.NODE_ENV;
+  if (typeof window !== 'undefined') {
+    return env === 'production' ? 'https://dine-dong.fr' : 'http://localhost:3000';
+  }
+  if (env === 'production') {
+    return 'https://dine-dong.fr';
+  }
+  return 'http://localhost:3000';
+};
+
 export const constructURLWithFileOrKey = (file: File | string | undefined) => {
   if (!file) return '';
   if (typeof file === 'string') {

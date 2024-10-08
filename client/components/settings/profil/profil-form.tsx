@@ -1,6 +1,6 @@
 'use client';
 
-import { cn, constructS3Url } from '@/lib/utils';
+import { cn, constructS3Url, getBasePath } from '@/lib/utils';
 import type { UserResponse } from '@/types/query';
 
 import AddressAutoComplete from '@/components/ui/address-autocomplete';
@@ -47,14 +47,14 @@ const modifyProfileMutation = async ({
     const { key } = await uploadToS3(data.image, {
       endpoint: {
         request: {
-          url: `http://localhost:3000/api/s3-upload/?folder=dynamic/${sub}/user`
+          url: `${getBasePath()}/api/s3-upload/?folder=dynamic/${sub}/user`
         }
       }
     });
     picturekey = key;
   }
 
-  const response = await fetch('http://localhost:3000/api/protected/users', {
+  const response = await fetch(`${getBasePath()}/api/protected/users`, {
     method: 'PUT',
     body: JSON.stringify({
       user_sub: user_sub,

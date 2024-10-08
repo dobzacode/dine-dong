@@ -1,6 +1,7 @@
 'use client';
 
 import { customRevalidateTag } from '@/lib/actions';
+import { getBasePath } from '@/lib/utils';
 import { UserResponse } from '@/types/query';
 import { PaymentElement, useElements, useStripe } from '@stripe/react-stripe-js';
 import { ShieldCheck } from 'lucide-react';
@@ -32,7 +33,7 @@ const CheckoutForm = ({
     const { error } = await stripe.confirmPayment({
       elements,
       confirmParams: {
-        return_url: 'http://localhost:3000',
+        return_url: getBasePath(),
         receipt_email: user.email
       }
     });

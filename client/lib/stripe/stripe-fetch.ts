@@ -1,4 +1,5 @@
 import { getAccessToken } from '@auth0/nextjs-auth0';
+import { getBasePath } from '../utils';
 
 export async function CreatePaymentIntent({
   amount,
@@ -20,7 +21,7 @@ export async function CreatePaymentIntent({
     throw new Error("403 Vous n'êtes pas connecté");
   }
 
-  const response = await fetch('http://localhost:3000/api/stripe/payment-intent', {
+  const response = await fetch(`${getBasePath()}/api/stripe/payment-intent`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token.accessToken}` },
     body: JSON.stringify({

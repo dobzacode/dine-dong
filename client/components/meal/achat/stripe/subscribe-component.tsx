@@ -1,4 +1,5 @@
 'use client';
+import { getBasePath } from '@/lib/utils';
 import { loadStripe } from '@stripe/stripe-js';
 
 type props = {
@@ -14,7 +15,7 @@ const SubscribeComponent = ({ amount, currency, description, userSub }: props) =
       return;
     }
     try {
-      const response = await fetch('http://localhost:3000/api/protected/orders/checkout', {
+      const response = await fetch(`${getBasePath()}/api/protected/orders/checkout`, {
         method: 'POST',
         body: JSON.stringify({
           amount,

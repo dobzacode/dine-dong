@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { PhoneInput } from '@/components/ui/phone-input';
 import { useToast } from '@/components/ui/use-toast';
 import { customRevalidateTag } from '@/lib/actions';
-import { cn } from '@/lib/utils';
+import { cn, getBasePath } from '@/lib/utils';
 import type { UserResponse } from '@/types/query';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
@@ -22,7 +22,7 @@ const modifyProfileMutation = async ({
   data: AccountSchema;
   user_sub: string;
 }) => {
-  const response = await fetch('http://localhost:3000/api/protected/users', {
+  const response = await fetch(`${getBasePath()}/api/protected/users`, {
     method: 'PUT',
     body: JSON.stringify({
       user_sub: user_sub,

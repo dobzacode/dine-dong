@@ -46,6 +46,7 @@ export default async function MealsPrefetch({
         </div>
       );
     }
+    console.log(error);
     return (
       <h3 className="heading-h1">Une erreur est survenue lors de la récupération des repas.</h3>
     );

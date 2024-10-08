@@ -6,7 +6,7 @@ import {
 } from '@/components/framer/div-variants';
 import DivWrapper from '@/components/framer/div-wrapper';
 import { customRevalidateTag } from '@/lib/actions';
-import { cn } from '@/lib/utils';
+import { cn, getBasePath } from '@/lib/utils';
 import type { MealDetailsResponse, MealResponse } from '@/types/query';
 
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -53,14 +53,14 @@ const createMealMutation = async ({
     const { key } = await uploadToS3(data.stepOne.image, {
       endpoint: {
         request: {
-          url: `http://localhost:3000/api/s3-upload/?folder=dynamic/${sub}/user`
+          url: `${getBasePath()}/api/s3-upload/?folder=dynamic/${sub}/user`
         }
       }
     });
     picturekey = key;
   }
 
-  const response = await fetch('http://localhost:3000/api/protected/meals', {
+  const response = await fetch(`${getBasePath()}/api/protected/meals`, {
     method: mealId ? 'PUT' : 'POST',
     body: JSON.stringify({
       meal_id: mealId,
