@@ -33,7 +33,7 @@ module "lambda_layer_poetry" {
   ]
 
   timeout = 30
-  
+
   build_in_docker = true
   runtime         = "python3.10"
   docker_image    = "build-python3.10-poetry"
@@ -49,6 +49,7 @@ module "lambda_function" {
   function_name = "fastapi-prod-eu-central-1-lambda"
   description   = "Dine Dong API"
   handler       = "app.handler.handler"
+  timeout       = 30
   runtime       = "python3.10"
   publish       = true
   create_lambda_function_url = true
@@ -93,15 +94,35 @@ module "api_gateway" {
   }
 
   integrations = {
+
+   
+    
+    
+    "ANY /{proxy+}" = {
+        integration_type = "HTTP_PROXY"
+        integration_uri  = "http://52.29.3.156"
+    }
+
+    "ANY /api/auth/{proxy+}" = {
+        integration_type = "HTTP_PROXY"
+        integration_uri  = "http://52.29.3.156"
+    }
+    
+    "ANY /api/address/{proxy+}" = {
+        integration_type = "HTTP_PROXY"
+        integration_uri  = "http://52.29.3.156"
+    }
+
+    "ANY /api/s3-upload/{proxy+}" = {
+        integration_type = "HTTP_PROXY"
+        integration_uri  = "http://52.29.3.156"
+    }
+
     "ANY /api/{proxy+}" = {
       payload_format_version = "2.0"
       lambda_arn       = module.lambda_function.lambda_function_arn
     }
     
-  "ANY /{proxy+}" = {
-      integration_type = "HTTP_PROXY"
-      integration_uri  = "http://52.29.3.156"
-  }
   
   }
 }
