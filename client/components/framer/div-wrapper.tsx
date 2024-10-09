@@ -1,6 +1,6 @@
 'use client';
 
-import { type Variants, motion } from 'framer-motion';
+import { motion, type MotionStyle, type Variants } from 'framer-motion';
 import React from 'react';
 
 export default function DivWrapper({
@@ -18,7 +18,7 @@ export default function DivWrapper({
   inverseOnExit?: boolean;
   className?: string;
   tag?: string;
-  style?: React.CSSProperties;
+  style?: MotionStyle | undefined;
   noExit?: boolean;
   custom?: number;
 }) {

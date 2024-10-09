@@ -20,24 +20,26 @@ jobs:
             sudo docker rm nextjs-app
             sudo docker pull ${{secrets.DOCKER_HUB_USERNAME}}/dine-dong-fe:latest
             sudo docker run -d \
-              -e AUTH0_SECRET="$(aws ssm get-parameter --name "/prod/dine-dong/AUTH0_SECRET" --with-decryption --query "Parameter.Value" --output text)" \
-              -e AUTH0_BASE_URL="$(aws ssm get-parameter --name "/prod/dine-dong/AUTH0_BASE_URL" --with-decryption --query "Parameter.Value" --output text)" \
-              -e AUTH0_ISSUER_BASE_URL="$(aws ssm get-parameter --name "/prod/dine-dong/AUTH0_ISSUER_BASE_URL" --with-decryption --query "Parameter.Value" --output text)" \
-              -e AUTH0_CLIENT_ID="$(aws ssm get-parameter --name "/prod/dine-dong/AUTH0_CLIENT_ID" --with-decryption --query "Parameter.Value" --output text)" \
-              -e AUTH0_CLIENT_SECRET="$(aws ssm get-parameter --name "/prod/dine-dong/AUTH0_CLIENT_SECRET" --with-decryption --query "Parameter.Value" --output text)" \
-              -e AUTH0_SESSION_AUTO_SAVE="$(aws ssm get-parameter --name "/prod/dine-dong/AUTH0_SESSION_AUTO_SAVE" --with-decryption --query "Parameter.Value" --output text)" \
-              -e GOOGLE_PLACES_API_KEY="$(aws ssm get-parameter --name "/prod/dine-dong/GOOGLE_PLACES_API_KEY" --with-decryption --query "Parameter.Value" --output text)" \
-              -e GITHUB_APP_CLIENT_ID="$(aws ssm get-parameter --name "/prod/dine-dong/GITHUB_APP_CLIENT_ID" --with-decryption --query "Parameter.Value" --output text)" \
-              -e GITHUB_APP_CLIENT_SECRET="$(aws ssm get-parameter --name "/prod/dine-dong/GITHUB_APP_CLIENT_SECRET" --with-decryption --query "Parameter.Value" --output text)" \
-              -e S3_UPLOAD_KEY="$(aws ssm get-parameter --name "/prod/dine-dong/S3_UPLOAD_KEY" --with-decryption --query "Parameter.Value" --output text)" \
-              -e S3_UPLOAD_SECRET="$(aws ssm get-parameter --name "/prod/dine-dong/S3_UPLOAD_SECRET" --with-decryption --query "Parameter.Value" --output text)" \
-              -e S3_UPLOAD_BUCKET="$(aws ssm get-parameter --name "/prod/dine-dong/S3_UPLOAD_BUCKET" --with-decryption --query "Parameter.Value" --output text)" \
-              -e S3_UPLOAD_REGION="$(aws ssm get-parameter --name "/prod/dine-dong/S3_UPLOAD_REGION" --with-decryption --query "Parameter.Value" --output text)" \
-              -e MY_REDIRECT_SECRET="$(aws ssm get-parameter --name "/prod/dine-dong/MY_REDIRECT_SECRET" --with-decryption --query "Parameter.Value" --output text)" \
-              -e STRIPE_SECRET_KEY="$(aws ssm get-parameter --name "/prod/dine-dong/STRIPE_SECRET_KEY" --with-decryption --query "Parameter.Value" --output text)" \
-              -e KV_REST_API_URL="$(aws ssm get-parameter --name "/prod/dine-dong/KV_REST_API_URL" --with-decryption --query "Parameter.Value" --output text)" \
-              -e KV_REST_API_TOKEN="$(aws ssm get-parameter --name "/prod/dine-dong/KV_REST_API_TOKEN" --with-decryption --query "Parameter.Value" --output text)" \
+              -e AUTH0_SECRET="$(aws ssm get-parameter --name "/prod/dinedong/AUTH0_SECRET" --with-decryption --query "Parameter.Value" --output text)" \
+              -e AUTH0_BASE_URL="$(aws ssm get-parameter --name "/prod/dinedong/AUTH0_BASE_URL" --with-decryption --query "Parameter.Value" --output text)" \
+              -e AUTH0_ISSUER_BASE_URL="$(aws ssm get-parameter --name "/prod/dinedong/AUTH0_ISSUER_BASE_URL" --with-decryption --query "Parameter.Value" --output text)" \
+              -e AUTH0_CLIENT_ID="$(aws ssm get-parameter --name "/prod/dinedong/AUTH0_CLIENT_ID" --with-decryption --query "Parameter.Value" --output text)" \
+              -e AUTH0_CLIENT_SECRET="$(aws ssm get-parameter --name "/prod/dinedong/AUTH0_CLIENT_SECRET" --with-decryption --query "Parameter.Value" --output text)" \
+              -e AUTH0_SESSION_AUTO_SAVE="$(aws ssm get-parameter --name "/prod/dinedong/AUTH0_SESSION_AUTO_SAVE" --with-decryption --query "Parameter.Value" --output text)" \
+              -e GOOGLE_PLACES_API_KEY="$(aws ssm get-parameter --name "/prod/dinedong/GOOGLE_PLACES_API_KEY" --with-decryption --query "Parameter.Value" --output text)" \
+              -e GITHUB_APP_CLIENT_ID="$(aws ssm get-parameter --name "/prod/dinedong/GITHUB_APP_CLIENT_ID" --with-decryption --query "Parameter.Value" --output text)" \
+              -e GITHUB_APP_CLIENT_SECRET="$(aws ssm get-parameter --name "/prod/dinedong/GITHUB_APP_CLIENT_SECRET" --with-decryption --query "Parameter.Value" --output text)" \
+              -e S3_UPLOAD_KEY="$(aws ssm get-parameter --name "/prod/dinedong/S3_UPLOAD_KEY" --with-decryption --query "Parameter.Value" --output text)" \
+              -e S3_UPLOAD_SECRET="$(aws ssm get-parameter --name "/prod/dinedong/S3_UPLOAD_SECRET" --with-decryption --query "Parameter.Value" --output text)" \
+              -e S3_UPLOAD_BUCKET="$(aws ssm get-parameter --name "/prod/dinedong/S3_UPLOAD_BUCKET" --with-decryption --query "Parameter.Value" --output text)" \
+              -e S3_UPLOAD_REGION="$(aws ssm get-parameter --name "/prod/dinedong/S3_UPLOAD_REGION" --with-decryption --query "Parameter.Value" --output text)" \
+              -e MY_REDIRECT_SECRET="$(aws ssm get-parameter --name "/prod/dinedong/MY_REDIRECT_SECRET" --with-decryption --query "Parameter.Value" --output text)" \
+              -e STRIPE_SECRET_KEY="$(aws ssm get-parameter --name "/prod/dinedong/STRIPE_SECRET_KEY" --with-decryption --query "Parameter.Value" --output text)" \
+              -e KV_REST_API_URL="$(aws ssm get-parameter --name "/prod/dinedong/KV_REST_API_URL" --with-decryption --query "Parameter.Value" --output text)" \
+              -e KV_REST_API_TOKEN="$(aws ssm get-parameter --name "/prod/dinedong/KV_REST_API_TOKEN" --with-decryption --query "Parameter.Value" --output text)" \
               --name nextjs-app \
               --publish 3000:3000 ${{secrets.DOCKER_HUB_USERNAME}}/dine-dong-fe:latest 
           comment: Pulls the latest dine-dong-fe image and runs it on the instance.
+
+
 

@@ -32,8 +32,8 @@ const config = {
     },
     extend: {
       fontFamily: {
-        poppins: ['Poppins'],
-        lora: ['Lora']
+        poppins: ['var(--font-poppins)'],
+        lora: ['var(--font-lora)']
       },
       borderRadius: {
         lg: '32px',

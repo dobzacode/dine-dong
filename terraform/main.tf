@@ -14,7 +14,7 @@ provider "aws" {
 variable "REGION" {
   description = "Region AWS"
   type        = string
-  default     = "eu-west-3"
+  default     = "eu-central-1"
 }
 
 module "lambda_layer_poetry" {
@@ -32,6 +32,8 @@ module "lambda_layer_poetry" {
     }
   ]
 
+  timeout = 30
+  
   build_in_docker = true
   runtime         = "python3.10"
   docker_image    = "build-python3.10-poetry"
@@ -44,7 +46,7 @@ module "lambda_function" {
   source  = "terraform-aws-modules/lambda/aws"
   version = "~> 4.0"
 
-  function_name = "fastapi-prod-eu-west-3-lambda"
+  function_name = "fastapi-prod-eu-central-1-lambda"
   description   = "Dine Dong API"
   handler       = "app.handler.handler"
   runtime       = "python3.10"
@@ -82,7 +84,7 @@ module "api_gateway" {
 
   create_api_domain_name = true
   domain_name = "dine-dong.fr"
-  domain_name_certificate_arn = "arn:aws:acm:eu-west-3:556234189812:certificate/9178bbc1-99a3-44ea-b2f4-16e7c14dbe9c"
+  domain_name_certificate_arn = "arn:aws:acm:eu-central-1:182399718556:certificate/889f76c3-b488-4c62-a243-10308b6e1466"
   
   cors_configuration = {
     allow_headers = ["*"]
@@ -98,7 +100,7 @@ module "api_gateway" {
     
   "ANY /{proxy+}" = {
       integration_type = "HTTP_PROXY"
-      integration_uri  = "http://13.39.15.59"
+      integration_uri  = "http://52.29.3.156"
   }
   
   }

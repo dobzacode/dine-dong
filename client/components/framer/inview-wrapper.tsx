@@ -39,7 +39,8 @@ export default function InviewWrapper({
   noExit?: boolean;
   whileHover?: VariantLabels | TargetAndTransition;
 }) {
-  const MotionComponent = motion[tag as keyof typeof motion];
+  //@ts-expect-error  framer-motion types are incorrect
+  const MotionComponent = motion[tag || 'div'] as unknown as typeof motion.div;
 
   const determineExitVariant = () => {
     if (noExit) return;

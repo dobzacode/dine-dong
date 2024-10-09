@@ -1,7 +1,18 @@
 import Scroll from '@/components/scroll-fixture';
 import Providers from '@/components/wrapper/providers';
 import type { Metadata } from 'next';
+import { Lora, Poppins } from 'next/font/google';
 import './globals.css';
+
+const poppins = Poppins({
+  style: ['italic', 'normal'],
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700', '800', '900'],
+  variable: '--font-poppins',
+  display: 'swap'
+});
+
+const lora = Lora({ subsets: ['latin'], display: 'swap', variable: '--font-lora' });
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -16,7 +27,7 @@ export default async function RootLayout({
   return (
     <html suppressHydrationWarning lang="en">
       <head />
-      <body className="background">
+      <body className={`background ${poppins.variable} ${lora.variable}`}>
         <Providers>{children}</Providers>
       </body>
       <Scroll />
