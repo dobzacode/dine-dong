@@ -14,7 +14,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
           instance-ids: ${{ secrets.AWS_INSTANCE_ID }}
-          working-directory: /home/ubuntu
+          working-directory: /home/ec2-user
           command: |
             sudo docker stop nextjs-app
             sudo docker rm nextjs-app
