@@ -140,3 +140,5 @@ async function placeDetails(req: NextRequest) {
 }
 
 export const GET = placeDetails;
+
+export const dynamic = 'force-dynamic';

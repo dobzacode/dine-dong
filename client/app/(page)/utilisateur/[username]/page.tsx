@@ -16,6 +16,10 @@ import { Suspense } from 'react';
 export async function generateStaticParams() {
   const data = await getUsersParams();
 
+  if (!data || data instanceof Error) {
+    return [];
+  }
+
   return data.map((user) => ({
     username: user.username
   }));

@@ -70,3 +70,5 @@ async function autocomplete(req: NextRequest) {
 }
 
 export const GET = autocomplete;
+
+export const dynamic = 'force-dynamic';
