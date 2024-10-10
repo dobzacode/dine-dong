@@ -85,7 +85,7 @@ module "api_gateway" {
 
   create_api_domain_name = true
   domain_name = "dine-dong.fr"
-  domain_name_certificate_arn = "arn:aws:acm:eu-central-1:182399718556:certificate/889f76c3-b488-4c62-a243-10308b6e1466"
+  domain_name_certificate_arn = "arn:aws:acm:eu-central-1:182399718556:certificate/dff5751d-1c3b-45ce-ab03-2621cd1f8acc"
   
   cors_configuration = {
     allow_headers = ["*"]
@@ -95,28 +95,6 @@ module "api_gateway" {
 
   integrations = {
 
-   
-    
-    
-    "ANY /{proxy+}" = {
-        integration_type = "HTTP_PROXY"
-        integration_uri  = "http://52.29.3.156"
-    }
-
-    "ANY /api/auth/{proxy+}" = {
-        integration_type = "HTTP_PROXY"
-        integration_uri  = "http://52.29.3.156"
-    }
-    
-    "ANY /api/address/{proxy+}" = {
-        integration_type = "HTTP_PROXY"
-        integration_uri  = "http://52.29.3.156"
-    }
-
-    "ANY /api/s3-upload/{proxy+}" = {
-        integration_type = "HTTP_PROXY"
-        integration_uri  = "http://52.29.3.156"
-    }
 
     "ANY /api/{proxy+}" = {
       payload_format_version = "2.0"

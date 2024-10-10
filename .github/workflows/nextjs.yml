@@ -36,3 +36,11 @@ jobs:
           file: ./client/Dockerfile
           push: true
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/dine-dong-fe:latest
+          build-args: |
+            NEXT_PUBLIC_CLOUDFRONT_BUCKET_URL=${{ secrets.NEXT_PUBLIC_CLOUDFRONT_BUCKET_URL }}
+            NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=${{ secrets.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY }}
+            NEXT_PUBLIC_GOOGLE_MAPS_KEY=${{ secrets.NEXT_PUBLIC_GOOGLE_MAPS_KEY }}
+
+
+
+    

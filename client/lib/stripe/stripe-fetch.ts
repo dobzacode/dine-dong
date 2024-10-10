@@ -25,7 +25,7 @@ export async function CreatePaymentIntent({
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token.accessToken}` },
     body: JSON.stringify({
-      amount: amount + parseInt(process.env.NEXT_PUBLIC_MEAL_FEE!),
+      amount: 2,
       currency,
       description,
       userSub,

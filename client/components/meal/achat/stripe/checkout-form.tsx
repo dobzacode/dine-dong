@@ -58,14 +58,12 @@ const CheckoutForm = ({
             </span>
             <span className="flex items-center justify-between">
               <p className="body-sm font-medium">Frais</p>
-              <p className="body">{process.env.NEXT_PUBLIC_MEAL_FEE} €</p>
+              <p className="body">2 €</p>
             </span>
           </div>
           <span className="flex items-center justify-between">
             <p className="body-sm font-medium">Total</p>
-            <p className="body">
-              {mealSummaryDetails.price + parseInt(process.env.NEXT_PUBLIC_MEAL_FEE!)} €
-            </p>
+            <p className="body">{mealSummaryDetails.price + 2} €</p>
           </span>
         </div>
 
