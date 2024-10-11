@@ -6,7 +6,6 @@ import { constructS3Url, getErrorMessage } from '@/lib/utils';
 import { type MealSummaryResponse } from '@/types/query';
 import { type Metadata } from 'next';
 import { Logger } from 'next-axiom';
-import Error from 'next/error';
 import { notFound } from 'next/navigation';
 
 type Props = {
