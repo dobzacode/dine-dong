@@ -66,8 +66,8 @@ export default function AccountForm({ user, sub }: { user: UserResponse; sub: st
       });
     },
     onError: (error: unknown) => {
-      console.error('Account creating user:', error);
-      error instanceof Error && log.error(`Error creating account`, { error, user_sub });
+      console.error('Account modifying user:', error);
+      error instanceof Error && log.error(`Error modifying account`, { error, user_sub });
       toast({
         title: 'Une erreur est survenue lors de la modification de votre compte',
         description: 'Veuillez réessayer ultérieurement',
