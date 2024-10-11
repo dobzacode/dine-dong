@@ -14,8 +14,6 @@ export const POST = withApiProxy;
 const apiProxy = withAxiom(async (req: AxiomRequest, proxyPath: string): Promise<Response> => {
   let accessToken;
 
-  req.log.info(`Protected API request: ${req.nextUrl.pathname}`);
-
   try {
     const accessTokenResult = await getAccessToken(req, new NextResponse(), {
       authorizationParams: { audience: 'https://dine-dong/api/' }

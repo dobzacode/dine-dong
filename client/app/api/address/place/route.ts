@@ -1,5 +1,6 @@
 import { type AddressType } from '@/components/ui/address-autocomplete';
-import { NextResponse, type NextRequest } from 'next/server';
+import { AxiomRequest, withAxiom } from 'next-axiom';
+import { NextResponse } from 'next/server';
 
 interface PlusCode {
   compound_code: string;
@@ -65,10 +66,11 @@ function getDepartment(data: GooglePlacesApiResponse) {
   return null;
 }
 
-async function placeDetails(req: NextRequest) {
+const placeDetails = withAxiom(async (req: AxiomRequest) => {
   const apiKey = process.env.GOOGLE_PLACES_API_KEY!;
 
   if (!apiKey) {
+    req.log.error('Missing API Key');
     return NextResponse.json({ error: 'Missing API Key', data: null });
   }
 
@@ -86,6 +88,7 @@ async function placeDetails(req: NextRequest) {
     });
 
     if (!response.ok) {
+      req.log.error(`HTTP error! status: ${response.status}`);
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
@@ -134,10 +137,11 @@ async function placeDetails(req: NextRequest) {
       error: null
     });
   } catch (err) {
+    err instanceof Error && req.log.error(`Error fetching place details`, { error: err });
     console.error('Error fetching place details:', err);
     return NextResponse.json({ error: err, data: null });
   }
-}
+});
 
 export const GET = placeDetails;
 

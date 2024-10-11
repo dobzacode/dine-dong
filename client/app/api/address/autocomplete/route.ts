@@ -1,6 +1,7 @@
 import { getGeolocation } from '@/lib/server-only-utils';
+import { AxiomRequest, withAxiom } from 'next-axiom';
 
-import { NextResponse, type NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
 
 interface Place {
   placePrediction: {
@@ -27,9 +28,10 @@ interface Response {
   suggestions: Place[];
 }
 
-async function autocomplete(req: NextRequest) {
+const autocomplete = withAxiom(async (req: AxiomRequest) => {
   const apiKey = process.env.GOOGLE_PLACES_API_KEY!;
   if (!apiKey) {
+    req.log.error('Missing API Key');
     return NextResponse.json({ error: 'Missing API Key', data: null });
   }
 
@@ -59,15 +61,17 @@ async function autocomplete(req: NextRequest) {
     const data = (await response.json()) as Response;
 
     if (!response.ok) {
+      req.log.error(`HTTP error! status: ${response.status}`);
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
     return NextResponse.json({ data: data.suggestions, error: null });
   } catch (error) {
+    error instanceof Error && req.log.error(`Error fetching autocomplete suggestions`, { error });
     console.error('Error fetching autocomplete suggestions:', error);
     return NextResponse.json({ error: error, data: null });
   }
-}
+});
 
 export const GET = autocomplete;
 
