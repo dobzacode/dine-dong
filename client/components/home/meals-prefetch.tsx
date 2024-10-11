@@ -1,6 +1,7 @@
 import { getMeals, type getMealsParams } from '@/lib/meal/meal-fetch';
 import { cn, getErrorMessage } from '@/lib/utils';
 import { type MealsPaginatedResponse } from '@/types/query';
+import { getSession } from '@auth0/nextjs-auth0';
 import { Logger } from 'next-axiom';
 import Link from 'next/link';
 import { buttonVariants } from '../ui/button';
@@ -14,9 +15,10 @@ export default async function MealsPrefetch({
   max_price,
   lat,
   lng,
-  user_sub,
-  isUserPage
-}: getMealsParams & { isUserPage?: boolean }) {
+  user_sub
+}: getMealsParams) {
+  const session = await getSession();
+  const isUserPage = user_sub === session?.user?.sub;
   const fetchOptions = {
     name,
     diet,

@@ -7,7 +7,6 @@ import InformationsSection from '@/components/user/user-page/informations-sectio
 import { type getMealsParams } from '@/lib/meal/meal-fetch';
 import { getUserInformations, getUsersParams } from '@/lib/user/user-fetch';
 import { getErrorMessage } from '@/lib/utils';
-import { getSession } from '@auth0/nextjs-auth0';
 
 import { type Metadata } from 'next';
 import { Logger } from 'next-axiom';
@@ -19,6 +18,7 @@ export async function generateStaticParams() {
   const data = await getUsersParams();
 
   if (!data || data instanceof Error) {
+    console.log(data);
     log.error(`Error fetching users params: ${getErrorMessage(data)}`);
     await log.flush();
     return [];
@@ -61,7 +61,6 @@ export default async function Home({
   searchParams: getMealsParams;
 }) {
   const log = new Logger();
-  const session = await getSession();
 
   let user;
   try {
@@ -111,11 +110,7 @@ export default async function Home({
         </TabsList>
         <TabsContent value="plats" className="flex flex-col gap-sm px-sm pt-md">
           <FilterSortMenu />
-          <MealsPrefetch
-            isUserPage={session?.user?.sub === user.user_sub}
-            user_sub={user.user_sub}
-            {...searchParams}
-          />
+          <MealsPrefetch user_sub={user.user_sub} {...searchParams} />
         </TabsContent>
         <TabsContent value="evaluations"></TabsContent>
       </Tabs>
