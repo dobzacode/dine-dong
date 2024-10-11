@@ -28,13 +28,18 @@ export default async function Home({ params }: { params: { id: string } }) {
 
   const session = await getSession();
 
-  if (!session?.user?.sub || session.user.sub !== meal.user_sub) {
+  if (!session?.user?.sub || session.user.sub !== meal.user_sub || !session.accessToken) {
     redirect('/');
   }
 
   return (
     <section className="section-py container mx-auto flex h-full max-w-[1200px] flex-col justify-center">
-      <MealForm mealId={params.id} meal={meal} sub={session.user.sub as string} />
+      <MealForm
+        mealId={params.id}
+        meal={meal}
+        sub={session.user.sub as string}
+        token={session.accessToken}
+      />
     </section>
   );
 }
