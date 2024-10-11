@@ -14,9 +14,12 @@ type Props = {
 };
 
 export async function generateStaticParams() {
+  const log = new Logger();
   const meals = await getMealsSummaries<MealSummaryResponse[]>();
 
   if (!meals || meals instanceof Error) {
+    log.error(`Error fetching meals: ${getErrorMessage(meals)}`);
+    await log.flush();
     return [];
   }
 
