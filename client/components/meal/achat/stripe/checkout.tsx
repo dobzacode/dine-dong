@@ -1,6 +1,7 @@
 import { CreatePaymentIntent } from '@/lib/stripe/stripe-fetch';
 import { getErrorMessage } from '@/lib/utils';
 import { UserResponse } from '@/types/query';
+import { Logger } from 'next-axiom';
 import InitStripe from './init-stripe';
 
 interface CheckoutProps {
@@ -20,6 +21,7 @@ const Checkout = async ({
   mealId,
   isNewPaymentIntent
 }: CheckoutProps) => {
+  const log = new Logger();
   let data: { clientSecret: string; id: string };
 
   try {
@@ -34,13 +36,16 @@ const Checkout = async ({
   } catch (error) {
     const message = getErrorMessage(error);
     if (message.includes('403')) {
-      console.log(error);
+      log.error(`User not connected: ${message}`);
+      await log.flush();
       return (
         <div className="text-danger mt-2">
           Vous n&apos;êtes pas connecté. Veuillez vous connecter.
         </div>
       );
     }
+    error instanceof Error && log.error(`Error creating payment intent: ${message}`);
+    await log.flush();
     return (
       <div className="text-danger mt-2">
         Une erreur est survenue lors de la création du paiement. Veuillez réessayer.

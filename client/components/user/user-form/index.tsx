@@ -19,6 +19,7 @@ import NextPrev from '../../ui/next-prev';
 import StepsIndicator from '../../ui/steps-indicator';
 
 import { useToast } from '@/components/ui/use-toast';
+import { useLogger } from 'next-axiom';
 import { useRouter } from 'next/navigation';
 import { userSchema, type UserSchema } from './user-schema';
 import WizardFinalStep from './wizard-final-step';
@@ -103,6 +104,8 @@ export default function UserForm(props: UserFormProps) {
   const [activeStep, setActiveStep] = useState<number>(1);
   const [addressMessage, setAddressMessage] = useState<string>('');
 
+  const log = useLogger();
+
   const router = useRouter();
 
   const { toast } = useToast();
@@ -111,6 +114,7 @@ export default function UserForm(props: UserFormProps) {
     mutationFn: createUserMutation,
     onSuccess: (data: UserResponse) => {
       console.log('User created successfully:', data);
+      log.info('User created successfully:', { email, username });
       toast({
         title: `Votre compte a été créé avec succès !`,
         description: 'Vous pouvez le consulter dans votre tableau de bord',
@@ -121,6 +125,7 @@ export default function UserForm(props: UserFormProps) {
     },
     onError: (error: unknown) => {
       console.error('Error creating user:', error);
+      error instanceof Error && log.error('Error creating user', { error, email });
       toast({
         title: 'Une erreur est survenue lors de la création de votre compte',
         description: 'Veuillez réessayer ultérieurement',

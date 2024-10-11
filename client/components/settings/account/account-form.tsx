@@ -10,6 +10,7 @@ import { cn, getBasePath } from '@/lib/utils';
 import type { UserResponse } from '@/types/query';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
+import { useLogger } from 'next-axiom';
 import { useState } from 'react';
 import { FormProvider, useForm, useFormState } from 'react-hook-form';
 import fr from 'react-phone-number-input/locale/fr';
@@ -45,6 +46,7 @@ const modifyProfileMutation = async ({
 };
 
 export default function AccountForm({ user, sub }: { user: UserResponse; sub: string }) {
+  const log = useLogger();
   const { username, email, phone_number, user_sub } = user;
 
   const { toast } = useToast();
@@ -53,7 +55,8 @@ export default function AccountForm({ user, sub }: { user: UserResponse; sub: st
   const { isPending, mutateAsync } = useMutation({
     mutationFn: modifyProfileMutation,
     onSuccess: (data: string) => {
-      console.log('User modified successfully:', data);
+      console.log('Account modified successfully:', data);
+      log.info(`Account modified successfully`, { user_sub, data });
       customRevalidateTag(`user-informations-${sub}`);
       toast({
         title: `Votre profile a été modifié avec succès !`,
@@ -63,7 +66,8 @@ export default function AccountForm({ user, sub }: { user: UserResponse; sub: st
       });
     },
     onError: (error: unknown) => {
-      console.error('Error creating user:', error);
+      console.error('Account creating user:', error);
+      error instanceof Error && log.error(`Error creating account`, { error, user_sub });
       toast({
         title: 'Une erreur est survenue lors de la modification de votre compte',
         description: 'Veuillez réessayer ultérieurement',

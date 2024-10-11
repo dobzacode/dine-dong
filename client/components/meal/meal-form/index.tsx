@@ -20,6 +20,7 @@ import NextPrev from '../../ui/next-prev';
 import StepsIndicator from '../../ui/steps-indicator';
 
 import { useToast } from '@/components/ui/use-toast';
+import { useLogger } from 'next-axiom';
 import { mealSchema, type MealSchema } from './meal-schema';
 import WizardFinalStep from './wizard-final-step';
 import WizardStepOne from './wizard-step-one';
@@ -53,7 +54,7 @@ const createMealMutation = async ({
     const { key } = await uploadToS3(data.stepOne.image, {
       endpoint: {
         request: {
-          url: `${getBasePath()}/api/s3-upload/?folder=dynamic/${sub}/user`
+          url: `${getBasePath()}/api/s3-upload/?folder=dynamic/${sub}/meal`
         }
       }
     });
@@ -106,6 +107,8 @@ export default function MealForm({
   mealId?: string;
   meal?: MealDetailsResponse;
 }) {
+  const log = useLogger();
+
   const [activeStep, setActiveStep] = useState<number>(1);
   const [addressMessage, setAddressMessage] = useState<string>('');
 
@@ -114,6 +117,8 @@ export default function MealForm({
   const { isPending, mutateAsync } = useMutation({
     mutationFn: createMealMutation,
     onSuccess: (data: MealResponse) => {
+      console.log('Meal created successfully:', data);
+      log.info('Meal created successfully:', { data });
       toast({
         title: `Votre repas ${data.name} a bien été ${mealId ? 'modifié' : 'créé'}`,
         description: 'Vous pouvez le consulter dans votre tableau de bord',
@@ -123,6 +128,7 @@ export default function MealForm({
     },
     onError: (error: unknown) => {
       console.error('Error creating meal:', error);
+      log.error('Error creating meal:', { error, sub, mealId });
       toast({
         title: `Une erreur est survenue lors de la ${mealId ? 'modification' : 'création'} du repas`,
         description: 'Veuillez réessayer ultérieurement',

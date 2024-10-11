@@ -10,13 +10,17 @@ import { getErrorMessage } from '@/lib/utils';
 import { getSession } from '@auth0/nextjs-auth0';
 
 import { type Metadata } from 'next';
+import { Logger } from 'next-axiom';
 import { notFound, redirect } from 'next/navigation';
 import { Suspense } from 'react';
 
 export async function generateStaticParams() {
+  const log = new Logger();
   const data = await getUsersParams();
 
   if (!data || data instanceof Error) {
+    log.error(`Error fetching users params: ${getErrorMessage(data)}`);
+    await log.flush();
     return [];
   }
 
@@ -26,6 +30,7 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: { params: { username: string } }) {
+  const log = new Logger();
   let user;
   try {
     user = await getUserInformations(
@@ -37,6 +42,8 @@ export async function generateMetadata({ params }: { params: { username: string 
   }
 
   if (!user || user instanceof Error) {
+    log.error(`Error fetching user informations: ${getErrorMessage(user)}`);
+    await log.flush();
     return undefined;
   }
 
@@ -53,6 +60,7 @@ export default async function Home({
   params: { username: string };
   searchParams: getMealsParams;
 }) {
+  const log = new Logger();
   const session = await getSession();
 
   let user;
@@ -65,8 +73,12 @@ export default async function Home({
     const message = getErrorMessage(error);
     console.log(message);
     if (message.includes('404')) {
+      log.error(`User not found: ${message}`);
+      await log.flush();
       return notFound();
     }
+    log.error(`Error fetching user informations: ${message}`);
+    await log.flush();
     redirect('/');
   }
 

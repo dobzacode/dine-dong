@@ -14,6 +14,7 @@ import { customRevalidateTag } from '@/lib/actions';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { Settings } from 'lucide-react';
+import { useLogger } from 'next-axiom';
 import { useS3Upload } from 'next-s3-upload';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
@@ -84,6 +85,8 @@ const modifyProfileMutation = async ({
 };
 
 export default function ProfilForm({ user, sub }: { user: UserResponse; sub: string }) {
+  const log = useLogger();
+
   const { last_name, first_name, picture_key, residency, about_me, user_sub } = user;
 
   const { toast } = useToast();
@@ -92,7 +95,8 @@ export default function ProfilForm({ user, sub }: { user: UserResponse; sub: str
     mutationFn: modifyProfileMutation,
     onSuccess: (data: string) => {
       customRevalidateTag(`user-informations-${sub}`);
-      console.log('User modified successfully:', data);
+      console.log('Profile modified successfully:', data);
+      log.info('Profile modified successfully:', { last_name, first_name });
       toast({
         title: `Votre profile a été modifié avec succès !`,
         description: 'Vous pouvez le consulter dans votre tableau de bord',
@@ -101,7 +105,8 @@ export default function ProfilForm({ user, sub }: { user: UserResponse; sub: str
       });
     },
     onError: (error: unknown) => {
-      console.error('Error creating user:', error);
+      console.error('Error modifying profile:', error);
+      log.error('Error modifying profile:', { error, last_name, first_name });
       toast({
         title: 'Une erreur est survenue lors de la modification de votre compte',
         description: 'Veuillez réessayer ultérieurement',
@@ -139,8 +144,8 @@ export default function ProfilForm({ user, sub }: { user: UserResponse; sub: str
     constructS3Url(picture_key ?? 'static/default-avatar.png')
   );
 
+  //eslint-disable-line @typescript-eslint/no-unused-vars
   const [_, setMapCoord] = useState<{ lat: number; lng: number }>({
-    // eslint-disable-line @typescript-eslint/no-unused-vars
     lat: residency?.lat ?? 45.767572,
     lng: residency?.lng ?? 4.833102
   });

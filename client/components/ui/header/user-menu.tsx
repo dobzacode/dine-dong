@@ -50,7 +50,7 @@ export default function UserMenu({ user }: { user: UserResponse }) {
           <Link href={`/commandes`}>Mes commandes</Link>
         </DropdownMenuItem>
         <DropdownMenuItem className="focus:!bg-error-50">
-          <a href={`api/auth/logout`} className={'text-error hover:!bg-none'}>
+          <a href={`/api/auth/logout`} className={'text-error hover:!bg-none'}>
             Se déconnecter
           </a>
         </DropdownMenuItem>

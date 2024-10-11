@@ -1,43 +1,51 @@
 import { getProxyBasePath } from '@/lib/utils';
 import { AccessTokenError, getAccessToken, withApiAuthRequired } from '@auth0/nextjs-auth0';
-import { NextResponse, type NextRequest } from 'next/server';
+import { AxiomRequest, withAxiom } from 'next-axiom';
+import { NextResponse } from 'next/server';
 
 const withApiProxy = withApiAuthRequired(
-  async (request) => await apiProxy(request, '/api/protected')
+  //@ts-expect-error - AxiomRequest extends NextRequest
+  async (request: AxiomRequest) => await apiProxy(request, '/api/protected')
 );
 export const GET = withApiProxy;
 export const PUT = withApiProxy;
 export const POST = withApiProxy;
 
-async function apiProxy(request: NextRequest, proxyPath: string): Promise<Response> {
+const apiProxy = withAxiom(async (req: AxiomRequest, proxyPath: string): Promise<Response> => {
   let accessToken;
 
+  req.log.info(`Protected API request: ${req.nextUrl.pathname}`);
+
   try {
-    const accessTokenResult = await getAccessToken(request, new NextResponse(), {
+    const accessTokenResult = await getAccessToken(req, new NextResponse(), {
       authorizationParams: { audience: 'https://dine-dong/api/' }
     });
 
     accessToken = accessTokenResult.accessToken;
   } catch (e: unknown) {
+    req.log.error(`Error getting access token: ${e as string}`);
     if (e instanceof AccessTokenError) {
       return NextResponse.json({ code: e.code, message: e.message }, { status: e.status ?? 401 });
     }
     throw e;
   }
 
-  const headers = new Headers(request.headers);
+  const headers = new Headers(req.headers);
 
-  if (accessToken) {
-    headers.set('authorization', `Bearer ${accessToken}`);
+  if (!accessToken) {
+    req.log.error(`Access token is missing`);
+    return NextResponse.json({ code: '401', message: 'Access token is missing' }, { status: 401 });
   }
 
+  headers.set('authorization', `Bearer ${accessToken}`);
+
   return fetch(
-    `${getProxyBasePath()}/api${request.nextUrl.pathname.replace(proxyPath, '')}${request.nextUrl.search}`,
+    `${getProxyBasePath()}/api${req.nextUrl.pathname.replace(proxyPath, '')}${req.nextUrl.search}`,
     {
-      ...request,
-      body: request.body && (await request.blob()),
+      ...req,
+      body: req.body && (await req.blob()),
       headers,
-      method: request.method
+      method: req.method
     }
   );
-}
+});

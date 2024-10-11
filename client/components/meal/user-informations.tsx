@@ -1,10 +1,12 @@
 import { getUserInformations } from '@/lib/user/user-fetch';
 import { constructS3Url, getErrorMessage } from '@/lib/utils';
+import { Logger } from 'next-axiom';
 import Link from 'next/link';
 import ImagePulsing from '../ui/image-pulsing';
 import Rating from '../ui/rating';
 
 export async function UserInformations({ userSub }: { userSub: string }) {
+  const log = new Logger();
   let user = null;
   try {
     user = await getUserInformations(
@@ -17,6 +19,11 @@ export async function UserInformations({ userSub }: { userSub: string }) {
   }
 
   if (!user || user instanceof Error) {
+    log.error(`Error fetching user informations`, {
+      error: user,
+      userSub
+    });
+    await log.flush();
     return null;
   }
 

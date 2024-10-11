@@ -1,9 +1,11 @@
 import UserForm from '@/components/user/user-form';
 import { getUserInformations } from '@/lib/user/user-fetch';
+import { getErrorMessage } from '@/lib/utils';
 
 import { type UserResponse } from '@/types/query';
 import { verify } from 'jsonwebtoken';
 import { type Metadata } from 'next';
+import { Logger } from 'next-axiom';
 import { redirect } from 'next/navigation';
 
 export const metadata: Metadata = {
@@ -16,6 +18,7 @@ export default async function Page({
 }: {
   searchParams: { session_token: string; state: string };
 }) {
+  const log = new Logger();
   const token = searchParams.session_token;
   const state = searchParams.state;
   const secret = process.env.MY_REDIRECT_SECRET;
@@ -30,10 +33,12 @@ export default async function Page({
   try {
     decodedToken = verify(token, secret);
   } catch (error) {
+    error instanceof Error && log.error(`Error decoding token: ${error.message}`);
     throw new Error('Error decoding token');
   }
 
   if (!decodedToken) {
+    await log.flush();
     redirect('/');
   }
 
@@ -57,6 +62,8 @@ export default async function Page({
   }
 
   if (user && user instanceof Error && !user.message.includes('404')) {
+    log.error(`Error fetching user informations: ${getErrorMessage(user)}`);
+    await log.flush();
     redirect(`/`);
   }
 

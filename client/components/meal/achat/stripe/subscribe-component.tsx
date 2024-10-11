@@ -1,6 +1,7 @@
 'use client';
 import { getBasePath } from '@/lib/utils';
 import { loadStripe } from '@stripe/stripe-js';
+import { useLogger } from 'next-axiom';
 
 type props = {
   amount: number;
@@ -9,6 +10,7 @@ type props = {
   userSub: string;
 };
 const SubscribeComponent = ({ amount, currency, description, userSub }: props) => {
+  const log = useLogger();
   const handleSubmit = async () => {
     const stripe = await loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
     if (!stripe) {
@@ -29,10 +31,12 @@ const SubscribeComponent = ({ amount, currency, description, userSub }: props) =
       });
       const data = (await response.json()) as { status: 'success' | 'error'; session_id: string };
       if (!response.ok) throw new Error('Une erreur est survenue');
+      log.error(`Error subscribing to plan`, { userSub });
       await stripe.redirectToCheckout({
         sessionId: data.session_id
       });
     } catch (error) {
+      log.error(`Error subscribing to plan`, { error, userSub });
       console.log(error);
     }
   };

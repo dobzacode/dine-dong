@@ -80,8 +80,6 @@ export async function getAuth0Information(token: string) {
     }
   });
 
-  console.log(response);
-
   switch (response.status) {
     case 200:
       return (await response.json()) as { email: string };

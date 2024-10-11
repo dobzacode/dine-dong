@@ -5,6 +5,7 @@ import { getBasePath } from '@/lib/utils';
 import { UserResponse } from '@/types/query';
 import { PaymentElement, useElements, useStripe } from '@stripe/react-stripe-js';
 import { ShieldCheck } from 'lucide-react';
+import { useLogger } from 'next-axiom';
 import React from 'react';
 import { Button } from '../../../ui/button';
 
@@ -20,6 +21,7 @@ const CheckoutForm = ({
 }) => {
   const stripe = useStripe();
   const elements = useElements();
+  const log = useLogger();
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -40,6 +42,7 @@ const CheckoutForm = ({
 
     if (error) {
       console.log(error.message);
+      error instanceof Error && log.error(`Error confirming payment`, { error, user });
     }
   };
 

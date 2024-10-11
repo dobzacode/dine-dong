@@ -5,6 +5,8 @@ import { getMealDetails, getMealsSummaries } from '@/lib/meal/meal-fetch';
 import { constructS3Url, getErrorMessage } from '@/lib/utils';
 import { type MealSummaryResponse } from '@/types/query';
 import { type Metadata } from 'next';
+import { Logger } from 'next-axiom';
+import Error from 'next/error';
 import { notFound } from 'next/navigation';
 
 type Props = {
@@ -24,6 +26,7 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata | undefined> {
+  const log = new Logger();
   let meal;
   try {
     meal = await getMealDetails(params, {
@@ -36,6 +39,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata | un
   }
 
   if (!meal || meal instanceof Error) {
+    log.error(`Error fetching meal details: ${getErrorMessage(meal)}`);
+    await log.flush();
     return undefined;
   }
 
@@ -46,6 +51,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata | un
 }
 
 export default async function Home({ params }: Props) {
+  const log = new Logger();
   let meal;
   try {
     meal = await getMealDetails(params, {
@@ -56,6 +62,8 @@ export default async function Home({ params }: Props) {
   } catch (error) {
     const message = getErrorMessage(error);
     console.log(message);
+    log.error(`Error fetching meal details: ${message}`);
+    await log.flush();
     return notFound();
   }
 

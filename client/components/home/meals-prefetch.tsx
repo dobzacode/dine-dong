@@ -1,6 +1,7 @@
 import { getMeals, type getMealsParams } from '@/lib/meal/meal-fetch';
 import { cn, getErrorMessage } from '@/lib/utils';
 import { type MealsPaginatedResponse } from '@/types/query';
+import { Logger } from 'next-axiom';
 import Link from 'next/link';
 import { buttonVariants } from '../ui/button';
 import MealsSection from './meals-section';
@@ -27,7 +28,7 @@ export default async function MealsPrefetch({
     user_sub,
     is_ordered: false
   };
-
+  const log = new Logger();
   let prefetchMeals: MealsPaginatedResponse | Error;
 
   try {
@@ -35,6 +36,8 @@ export default async function MealsPrefetch({
   } catch (error) {
     const message = getErrorMessage(error);
     if (message.includes('404')) {
+      log.error(`Meals not found: ${message}`);
+      await log.flush();
       return (
         <div className="flex w-full flex-col items-center justify-center gap-md">
           <h3 className="heading-h1">Aucun repas trouvé</h3>
@@ -46,7 +49,8 @@ export default async function MealsPrefetch({
         </div>
       );
     }
-    console.log(error);
+    log.error(`Error fetching meals: ${message}`);
+    await log.flush();
     return (
       <h3 className="heading-h1">Une erreur est survenue lors de la récupération des repas.</h3>
     );

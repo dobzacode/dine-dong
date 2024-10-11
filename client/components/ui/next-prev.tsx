@@ -17,7 +17,6 @@ export default function NextPrev({
   maxStep?: number;
   isPending: boolean;
   finalLabel?: string;
-  
 }) {
   return (
     <div className={cn('flex w-full gap-xs', isPending && 'animate-pulse')}>

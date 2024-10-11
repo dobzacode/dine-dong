@@ -2,6 +2,8 @@
  * @type {import('next').NextConfig}
  */
 
+import { withAxiom } from 'next-axiom';
+
 const nextConfig = {
   output: 'standalone',
 
@@ -21,6 +23,7 @@ const nextConfig = {
   },
 
   experimental: {
+    instrumentationHook: true,
     taint: true,
     turbo: {
       rules: {
@@ -56,4 +59,4 @@ const nextConfig = {
   }
 };
 
-export default nextConfig;
+export default withAxiom(nextConfig);
