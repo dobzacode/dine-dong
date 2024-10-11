@@ -1,11 +1,11 @@
 import { getProxyBasePath } from '@/lib/utils';
 import { AccessTokenError, getAccessToken, withApiAuthRequired } from '@auth0/nextjs-auth0';
-import { AxiomRequest, withAxiom } from 'next-axiom';
-import { NextResponse } from 'next/server';
+import { withAxiom, type AxiomRequest } from 'next-axiom';
+import { NextResponse, type NextRequest } from 'next/server';
 
 const withApiProxy = withApiAuthRequired(
-  //@ts-expect-error - AxiomRequest extends NextRequest
-  async (request: AxiomRequest) => await apiProxy(request, '/api/protected')
+  //@ts-expect-error - AxiomNextRequest extends NextRequest
+  async (request: NextRequest) => await apiProxy(request, '/api/protected')
 );
 export const GET = withApiProxy;
 export const PUT = withApiProxy;
