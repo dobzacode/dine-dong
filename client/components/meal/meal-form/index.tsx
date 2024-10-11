@@ -32,7 +32,8 @@ const createMealMutation = async ({
   uploadToS3,
   sub,
   mealId,
-  log
+  log,
+  token
 }: {
   data: MealSchema;
   uploadToS3: (
@@ -49,6 +50,7 @@ const createMealMutation = async ({
   sub: string;
   mealId?: string;
   log: Logger;
+  token: string;
 }) => {
   let picturekey: string | null = null;
 
@@ -64,7 +66,7 @@ const createMealMutation = async ({
     picturekey = key;
   }
 
-  const response = await fetch(`${getBasePath()}/api/protected/meals`, {
+  const response = await fetch(`${getBasePath()}/api/meals`, {
     method: mealId ? 'PUT' : 'POST',
     body: JSON.stringify({
       meal_id: mealId,
@@ -85,7 +87,8 @@ const createMealMutation = async ({
       payment_method: data.stepThree.paymentMethod
     }),
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`
     }
   });
   if (!response.ok) {
@@ -104,11 +107,13 @@ const createMealMutation = async ({
 export default function MealForm({
   sub,
   mealId,
-  meal
+  meal,
+  token
 }: {
   sub: string;
   mealId?: string;
   meal?: MealDetailsResponse;
+  token: string;
 }) {
   const log = useLogger();
 
@@ -209,7 +214,7 @@ export default function MealForm({
   );
 
   const onSubmit = async (data: MealSchema) => {
-    await mutateAsync({ data, uploadToS3, sub, mealId, log });
+    await mutateAsync({ data, uploadToS3, sub, mealId, log, token });
   };
 
   const onNext = useCallback(() => {

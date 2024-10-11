@@ -12,7 +12,7 @@ export const metadata = {
 export default async function Page() {
   const session = await getSession();
 
-  if (!session?.user?.sub) {
+  if (!session?.user?.sub || !session.accessToken) {
     redirect('/');
   }
   let user;
@@ -29,5 +29,5 @@ export default async function Page() {
     redirect(`/`);
   }
 
-  return <AccountForm user={user} sub={session.user.sub as string} />;
+  return <AccountForm user={user} sub={session.user.sub as string} token={session.accessToken} />;
 }

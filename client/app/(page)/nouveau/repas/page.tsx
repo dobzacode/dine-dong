@@ -11,13 +11,13 @@ export const metadata: Metadata = {
 export default async function Home() {
   const session = await getSession();
 
-  if (!session?.user?.sub) {
+  if (!session?.user?.sub || !session.accessToken) {
     redirect('/');
   }
 
   return (
     <section className="section-py container mx-auto flex h-full max-w-[1200px] flex-col justify-center">
-      <MealForm sub={session.user.sub as string} />
+      <MealForm token={session.accessToken} sub={session.user.sub as string} />
     </section>
   );
 }

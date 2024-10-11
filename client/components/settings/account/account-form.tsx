@@ -18,12 +18,14 @@ import { createAccountSchema, type AccountSchema } from './account-schema';
 
 const modifyProfileMutation = async ({
   data,
-  user_sub
+  user_sub,
+  token
 }: {
   data: AccountSchema;
   user_sub: string;
+  token: string;
 }) => {
-  const response = await fetch(`${getBasePath()}/api/protected/users`, {
+  const response = await fetch(`${getBasePath()}/api/users`, {
     method: 'PUT',
     body: JSON.stringify({
       user_sub: user_sub,
@@ -32,7 +34,8 @@ const modifyProfileMutation = async ({
       phone_number: data.phoneNumber
     }),
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`
     }
   });
   if (!response.ok) {
@@ -45,7 +48,15 @@ const modifyProfileMutation = async ({
   return dataResponse;
 };
 
-export default function AccountForm({ user, sub }: { user: UserResponse; sub: string }) {
+export default function AccountForm({
+  user,
+  sub,
+  token
+}: {
+  user: UserResponse;
+  sub: string;
+  token: string;
+}) {
   const log = useLogger();
   const { username, email, phone_number, user_sub } = user;
 
@@ -86,7 +97,7 @@ export default function AccountForm({ user, sub }: { user: UserResponse; sub: st
   });
 
   const onSubmit = async (data: AccountSchema) => {
-    await mutateAsync({ data, user_sub });
+    await mutateAsync({ data, user_sub, token });
     setOldValues({ email: data.email, username: data.username });
   };
 

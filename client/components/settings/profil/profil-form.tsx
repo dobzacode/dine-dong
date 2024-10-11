@@ -25,7 +25,8 @@ const modifyProfileMutation = async ({
   data,
   uploadToS3,
   user_sub,
-  sub
+  sub,
+  token
 }: {
   data: ProfileSchema;
   uploadToS3: (
@@ -41,6 +42,7 @@ const modifyProfileMutation = async ({
   }>;
   user_sub: string;
   sub: string;
+  token: string;
 }) => {
   let picturekey: string | null = null;
 
@@ -55,7 +57,7 @@ const modifyProfileMutation = async ({
     picturekey = key;
   }
 
-  const response = await fetch(`${getBasePath()}/api/protected/users`, {
+  const response = await fetch(`${getBasePath()}/api/users`, {
     method: 'PUT',
     body: JSON.stringify({
       user_sub: user_sub,
@@ -70,7 +72,8 @@ const modifyProfileMutation = async ({
       }
     }),
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`
     }
   });
   if (!response.ok) {
@@ -83,7 +86,15 @@ const modifyProfileMutation = async ({
   return dataResponse;
 };
 
-export default function ProfilForm({ user, sub }: { user: UserResponse; sub: string }) {
+export default function ProfilForm({
+  user,
+  sub,
+  token
+}: {
+  user: UserResponse;
+  sub: string;
+  token: string;
+}) {
   const log = useLogger();
 
   const { last_name, first_name, picture_key, residency, about_me, user_sub } = user;
@@ -312,7 +323,7 @@ export default function ProfilForm({ user, sub }: { user: UserResponse; sub: str
             if (!isValid) {
               return setAddressMessage('Une adresse est requise');
             }
-            await mutateAsync({ data: form.getValues(), uploadToS3, user_sub, sub });
+            await mutateAsync({ data: form.getValues(), uploadToS3, user_sub, sub, token });
           }}
           disabled={!isDirty}
         >

@@ -12,7 +12,7 @@ export const metadata = {
 export default async function Page() {
   const session = await getSession();
 
-  if (!session?.user?.sub) {
+  if (!session?.user?.sub || !session.accessToken) {
     redirect('/');
   }
 
@@ -30,5 +30,5 @@ export default async function Page() {
     redirect('/');
   }
 
-  return <ProfilForm user={user} sub={session.user.sub as string} />;
+  return <ProfilForm user={user} sub={session.user.sub as string} token={session.accessToken} />;
 }
