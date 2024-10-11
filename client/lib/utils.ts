@@ -40,7 +40,7 @@ export const getFileExtension = (filename: string) => {
 };
 
 export const constructS3Url = (key: string) =>
-  `${process.env.NEXT_PUBLIC_CLOUDFRONT_BUCKET_URL}/${key}`;
+  `${process.env.NEXT_PUBLIC_CLOUDFRONT_BUCKET_URL}${key}`;
 
 export function getErrorMessage(error: unknown) {
   if (error instanceof Error) return error.message;

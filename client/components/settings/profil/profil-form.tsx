@@ -62,8 +62,7 @@ const modifyProfileMutation = async ({
       first_name: data.firstName,
       last_name: data.lastName,
       about_me: data.aboutMe,
-      picture_key:
-        picturekey ?? `${process.env.NEXT_PUBLIC_CLOUDFRONT_BUCKET_URL}/static/default-avatar.png`,
+      picture_key: picturekey ?? `/static/default-avatar.png`,
       residency: {
         ...data.stepTwo.address,
         formatted_address: data.stepTwo.address.formattedAddress,
@@ -141,7 +140,7 @@ export default function ProfilForm({ user, sub }: { user: UserResponse; sub: str
   const { isDirty } = useFormState({ control: form.control });
 
   const [imagePreview, setImagePreview] = useState<string | ArrayBuffer | null>(
-    constructS3Url(picture_key ?? 'static/default-avatar.png')
+    constructS3Url(picture_key ?? '/static/default-avatar.png')
   );
 
   //eslint-disable-line @typescript-eslint/no-unused-vars

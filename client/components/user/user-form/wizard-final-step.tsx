@@ -40,7 +40,7 @@ export default function WizardFinalStep({ className }: { className?: string }) {
           <Image
             className="grow-0 rounded-md object-cover"
             sizes={`(max-width: 768px) 100vw, 800px`}
-            src={image ? URL.createObjectURL(image) : constructS3Url('static/default-avatar.png')}
+            src={image ? URL.createObjectURL(image) : constructS3Url('/static/default-avatar.png')}
             alt="photo"
             fill
           />

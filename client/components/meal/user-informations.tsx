@@ -37,7 +37,7 @@ export async function UserInformations({ userSub }: { userSub: string }) {
           skeletoncss={'h-full w-full object-cover absolute object-center rounded-xs'}
           priority
           fill
-          src={constructS3Url(user.picture_key ?? 'static/default-avatar.png')}
+          src={constructS3Url(user.picture_key ?? '/static/default-avatar.png')}
           alt={'user.name'}
           sizes={'(max-width: 768px) 100vw, 200px'}
           className="rounded-xs object-contain"

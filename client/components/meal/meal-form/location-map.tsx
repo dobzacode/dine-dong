@@ -2,12 +2,19 @@
 
 import { Skeleton } from '@/components/ui/skeleton';
 import { GoogleMap, MarkerF, useLoadScript } from '@react-google-maps/api';
+import { useLogger } from 'next-axiom';
 import { useEffect, useMemo } from 'react';
 
 export default function LocationMap({ lat = 48.8738, lng = 2.295 }: { lat: number; lng: number }) {
+  const log = useLogger();
   const mapCenter = useMemo(() => ({ lat: lat || 48.8738, lng: lng || 2.295 }), [lat, lng]);
 
-  console.log(mapCenter);
+  const key = process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY!;
+
+  if (!key) {
+    log.info('Google Maps API key is missing');
+    console.log('Google Maps API key is missing');
+  }
 
   const mapOptions = useMemo<google.maps.MapOptions>(
     () => ({
@@ -19,7 +26,7 @@ export default function LocationMap({ lat = 48.8738, lng = 2.295 }: { lat: numbe
   );
 
   const { isLoaded } = useLoadScript({
-    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY!
+    googleMapsApiKey: key
   });
 
   useEffect(() => {

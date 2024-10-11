@@ -23,7 +23,7 @@ export default function UserMenu({ user }: { user: UserResponse }) {
           <div className="relative h-button w-button overflow-hidden rounded-full">
             <Image
               fill
-              src={constructS3Url(user.picture_key ?? 'static/default-avatar.png')}
+              src={constructS3Url(user.picture_key ?? '/static/default-avatar.png')}
               alt="user.name"
               sizes={'64px'}
               className="rounded-full object-cover object-center"
