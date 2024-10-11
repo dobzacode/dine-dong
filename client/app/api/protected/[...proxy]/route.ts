@@ -36,26 +36,19 @@ const apiProxy = withAxiom(async (req: AxiomRequest, proxyPath: string): Promise
   }
 
   headers.set('authorization', `Bearer ${accessToken}`);
-  console.log(
-    `${getProxyBasePath()}/api${req.nextUrl.pathname.replace(proxyPath, '')}${req.nextUrl.search}`,
-    {
-      ...req,
-      body: req.body && (await req.blob()),
-      headers,
-      method: req.method
-    }
-  );
+  const requestUrl = `${getProxyBasePath()}/api${req.nextUrl.pathname.replace(proxyPath, '')}${req.nextUrl.search}`;
+  const requestContent = {
+    ...req,
+    body: req.body && (await req.blob()),
+    headers,
+    method: req.method
+  };
   req.log.info(
-    `Proxying request to ${getProxyBasePath()}/api${req.nextUrl.pathname.replace(proxyPath, '')}${req.nextUrl.search}`
+    `Proxying request to ${getProxyBasePath()}/api${req.nextUrl.pathname.replace(proxyPath, '')}${req.nextUrl.search}`,
+    {
+      ...requestContent
+    }
   );
 
-  return fetch(
-    `${getProxyBasePath()}/api${req.nextUrl.pathname.replace(proxyPath, '')}${req.nextUrl.search}`,
-    {
-      ...req,
-      body: req.body && (await req.blob()),
-      headers,
-      method: req.method
-    }
-  );
+  return fetch(requestUrl, requestContent);
 });

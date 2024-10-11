@@ -45,6 +45,9 @@ const autocomplete = withAxiom(async (req: AxiomRequest) => {
 
   const country = await getGeolocation();
   const input = searchParams.get('input');
+  if (!input?.trim()) {
+    return NextResponse.json({ data: [], error: null });
+  }
   const url = 'https://places.googleapis.com/v1/places:autocomplete';
 
   const primaryTypes = ['street_address', 'subpremise', 'route', 'street_number', 'landmark'];

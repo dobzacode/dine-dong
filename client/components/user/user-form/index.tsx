@@ -19,7 +19,7 @@ import NextPrev from '../../ui/next-prev';
 import StepsIndicator from '../../ui/steps-indicator';
 
 import { useToast } from '@/components/ui/use-toast';
-import { useLogger } from 'next-axiom';
+import { Logger, useLogger } from 'next-axiom';
 import { useRouter } from 'next/navigation';
 import { userSchema, type UserSchema } from './user-schema';
 import WizardFinalStep from './wizard-final-step';
@@ -29,7 +29,8 @@ import WizardStepTwo from './wizard-step-two';
 const createUserMutation = async ({
   data,
   uploadToS3,
-  sub
+  sub,
+  log
 }: {
   data: UserSchema;
   uploadToS3: (
@@ -40,6 +41,7 @@ const createUserMutation = async ({
     key: string;
   }>;
   sub: string | null;
+  log: Logger;
 }) => {
   if (!sub) {
     throw new Error('Sub is required');
@@ -55,6 +57,7 @@ const createUserMutation = async ({
         }
       }
     });
+    log.info('Uploaded image to S3', { key, sub });
     picturekey = key;
   }
 
@@ -186,7 +189,7 @@ export default function UserForm(props: UserFormProps) {
   );
 
   const onSubmit = async (data: UserSchema) => {
-    await mutateAsync({ data, uploadToS3, sub });
+    await mutateAsync({ data, uploadToS3, sub, log });
   };
 
   const onNext = useCallback(() => {

@@ -20,7 +20,7 @@ import NextPrev from '../../ui/next-prev';
 import StepsIndicator from '../../ui/steps-indicator';
 
 import { useToast } from '@/components/ui/use-toast';
-import { useLogger } from 'next-axiom';
+import { Logger, useLogger } from 'next-axiom';
 import { mealSchema, type MealSchema } from './meal-schema';
 import WizardFinalStep from './wizard-final-step';
 import WizardStepOne from './wizard-step-one';
@@ -31,7 +31,8 @@ const createMealMutation = async ({
   data,
   uploadToS3,
   sub,
-  mealId
+  mealId,
+  log
 }: {
   data: MealSchema;
   uploadToS3: (
@@ -47,6 +48,7 @@ const createMealMutation = async ({
   }>;
   sub: string;
   mealId?: string;
+  log: Logger;
 }) => {
   let picturekey: string | null = null;
 
@@ -58,6 +60,7 @@ const createMealMutation = async ({
         }
       }
     });
+    log.info('Uploaded image to S3', { key, sub });
     picturekey = key;
   }
 
@@ -206,7 +209,7 @@ export default function MealForm({
   );
 
   const onSubmit = async (data: MealSchema) => {
-    await mutateAsync({ data, uploadToS3, sub, mealId });
+    await mutateAsync({ data, uploadToS3, sub, mealId, log });
   };
 
   const onNext = useCallback(() => {
