@@ -35,6 +35,12 @@ const autocomplete = withAxiom(async (req: AxiomRequest) => {
     return NextResponse.json({ error: 'Missing API Key', data: null });
   }
 
+  const referrer = req.headers.get('referer');
+  if (!referrer) {
+    req.log.error('Missing referrer');
+    return NextResponse.json({ error: 'Missing referrer', data: null });
+  }
+
   const { searchParams } = new URL(req.url, `http://${req.headers?.get('host')}`);
 
   const country = await getGeolocation();
@@ -47,6 +53,7 @@ const autocomplete = withAxiom(async (req: AxiomRequest) => {
     const response = await fetch(url, {
       method: 'POST',
       headers: {
+        Referer: referrer,
         'Content-Type': 'application/json',
         'X-Goog-Api-Key': apiKey
       },
@@ -61,7 +68,7 @@ const autocomplete = withAxiom(async (req: AxiomRequest) => {
     const data = (await response.json()) as Response;
 
     if (!response.ok) {
-      req.log.error(`HTTP error! status: ${response.status}`);
+      req.log.error(`HTTP error! status: ${response.status}`, data);
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 

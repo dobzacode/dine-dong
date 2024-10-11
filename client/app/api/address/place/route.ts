@@ -74,6 +74,13 @@ const placeDetails = withAxiom(async (req: AxiomRequest) => {
     return NextResponse.json({ error: 'Missing API Key', data: null });
   }
 
+  const referrer = req.headers.get('referer');
+
+  if (!referrer) {
+    req.log.error('Missing referrer');
+    return NextResponse.json({ error: 'Missing referrer', data: null });
+  }
+
   const { searchParams } = new URL(req.url, `http://${req.headers?.get('host')}`);
   const placeId = searchParams.get('placeId');
   const url = `https://places.googleapis.com/v1/${placeId}`;
@@ -83,7 +90,8 @@ const placeDetails = withAxiom(async (req: AxiomRequest) => {
       headers: {
         'X-Goog-Api-Key': apiKey,
         'X-Goog-FieldMask': 'adrFormatAddress,shortFormattedAddress,formattedAddress,location',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        Referer: referrer
       }
     });
 
