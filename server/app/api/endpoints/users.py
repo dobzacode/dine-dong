@@ -247,7 +247,8 @@ async def modify_user(
     try:
         update_user_data(user, user_data)
 
-        update_user_address(user, user_data)
+        if user_data.residency:
+            update_user_address(user, user_data.residency)
 
         await session.commit()
         await session.refresh(user)

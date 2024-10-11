@@ -30,7 +30,7 @@ def update_user_address(user, user_data):
         "lat",
         "lng",
     ]:
-        update_if_not_none(user.residency, field, getattr(user_data.address, field))
+        update_if_not_none(user.residency, field, getattr(user_data, field))
 
 
 def update_meal_data(meal, meal_data):
