@@ -1,7 +1,10 @@
 name: AWS-EC2 Instance CD
 
 on:
-  workflow_dispatch: 
+  workflow_run:
+    workflows: ["NextJS CI"]
+    types:
+      - completed
 
 jobs:
   on-success:

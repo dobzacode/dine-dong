@@ -20,11 +20,11 @@ export default async function MealsPrefetch({
   const fetchOptions = {
     name,
     diet,
-    radius: typeof radius === 'string' ? parseInt(radius) : undefined,
+    radius: typeof radius === 'string' ? parseInt(radius) : 10000,
     sort: sort,
     max_price,
-    lat: typeof lat === 'string' ? parseFloat(lat) : undefined,
-    lng: typeof lng === 'string' ? parseFloat(lng) : undefined,
+    lat: typeof lat === 'string' ? parseFloat(lat) : 45.767572,
+    lng: typeof lng === 'string' ? parseFloat(lng) : 4.833102,
     user_sub,
     is_ordered: false
   };
