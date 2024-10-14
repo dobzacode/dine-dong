@@ -28,6 +28,19 @@ class User(BaseModel):
     residency: Address | None = None
 
 
+class OrderEnum(str, Enum):
+    COMPLETED = "COMPLETED"
+    CANCELLED = "CANCELLED"
+    IN_PROGRESS = "IN_PROGRESS"
+
+
+class Order(BaseModel):
+    order_id: str
+    user_sub: str
+    meal_id: str
+    status: OrderEnum
+
+
 class DietsEnum(str, Enum):
     VEGETARIAN = "VEGETARIAN"
     VEGAN = "VEGAN"

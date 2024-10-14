@@ -32,7 +32,10 @@ export default async function MealsPrefetch({
   let prefetchMeals: MealsPaginatedResponse | Error;
 
   try {
-    prefetchMeals = await getMeals({ ...fetchOptions }, { next: { tags: ['search-meals'] } });
+    prefetchMeals = await getMeals(
+      { ...fetchOptions },
+      { next: { tags: ['search-meals', user_sub ? `user-${user_sub}-meals` : ''] } }
+    );
   } catch (error) {
     const message = getErrorMessage(error);
     if (message.includes('404')) {

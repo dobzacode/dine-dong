@@ -1,12 +1,14 @@
+from typing import Literal
+
 from fastapi import APIRouter, Depends, HTTPException, Path, Query, Security
 from sqlalchemy import or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api import deps
 from app.core.security.authenticate import VerifyToken
-from app.models import Address, Meal, User
+from app.models import Address, Meal, Order, User
 from app.schemas.requests import CreateUserRequest, ModifyUserRequest
-from app.schemas.responses import MealResponse, UserResponse
+from app.schemas.responses import OrderWithMealResponse, UserResponse
 from app.utils.utils import update_user_address, update_user_data
 
 router = APIRouter()
@@ -144,31 +146,81 @@ async def get_user_params(
 
 
 @router.get(
-    "/{sub}/meals",
-    response_model=list[MealResponse],
-    description="Obtenir tous les repas de l'utilisateur",
+    "/{sub}/purchases",
+    response_model=list[OrderWithMealResponse],
+    description="Obtenir tous les achats de l'utilisateur",
     status_code=200,
 )
-async def get_user_meals(
+async def get_user_purchase(
     sub: str = Path(
-        ..., description="ID de l'utilisateur dont les repas seront récupérés"
+        ..., description="ID de l'utilisateur dont les achats seront récupérés"
+    ),
+    status: Literal["FINALIZED", "IN_PROGRESS", "CANCELLED"] = Query(
+        None, description="Filtre les achats par statut"
     ),
     session: AsyncSession = Depends(deps.get_session),
 ):
     if not sub:
         raise HTTPException(status_code=422, detail="ID de l'utilisateur est requis")
     try:
-        result = await session.execute(select(Meal).where(Meal.user_sub == sub))
-        meals = result.all()
+        query = (
+            select(Order)
+            .where(Order.user_sub == sub)
+            .where(status is None or Order.status == status)
+            .order_by(Order.update_time.desc())
+        )
+        result = await session.execute(query)
+        orders = result.scalars().all()
+
     except Exception as e:
         print(e)
         raise HTTPException(
             status_code=500,
-            detail="Une erreur est survenue lors de la récupération des repas de l'utilisateur",
+            detail="Une erreur est survenue lors de la récupération des achats de l'utilisateur",
         )
-    if not meals:
-        raise HTTPException(status_code=404, detail="Aucun repas trouvé")
-    return meals[0]
+    if not orders:
+        raise HTTPException(status_code=404, detail="Aucun achat trouvé")
+    return orders
+
+
+@router.get(
+    "/{sub}/sales",
+    response_model=list[OrderWithMealResponse],
+    description="Obtenir toutes les ventes l'utilisateur",
+    status_code=200,
+)
+async def get_user_sales(
+    sub: str = Path(
+        ..., description="ID de l'utilisateur dont les ventes seront récupérés"
+    ),
+    status: Literal["FINALIZED", "IN_PROGRESS", "CANCELLED"] = Query(
+        None, description="Filtre les ventes par statut"
+    ),
+    session: AsyncSession = Depends(deps.get_session),
+):
+    if not sub:
+        raise HTTPException(status_code=422, detail="ID de l'utilisateur est requis")
+    try:
+        query = (
+            select(Order)
+            .join(Meal)
+            .where(Meal.user_sub == sub)
+            .where(status is None or Order.status == status)
+            .order_by(Order.update_time.desc())
+        )
+
+        result = await session.execute(query)
+        orders = result.scalars().all()
+
+    except Exception as e:
+        print(e)
+        raise HTTPException(
+            status_code=500,
+            detail="Une erreur est survenue lors de la récupération des ventes de l'utilisateur",
+        )
+    if not orders:
+        raise HTTPException(status_code=404, detail="Aucune vente trouvé")
+    return orders
 
 
 @router.post(

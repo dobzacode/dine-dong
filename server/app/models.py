@@ -249,7 +249,7 @@ class Meal(Base):
     is_ordered: Mapped[bool] = mapped_column(default=False)
 
 
-StatusEnum = Literal["COMPLETED", "CANCELLED"]
+StatusEnum = Literal["IN_PROGRESS", "CANCELLED", "FINALIZED"]
 
 
 class Order(Base):

@@ -9,6 +9,7 @@ interface CheckoutProps {
   currency?: string;
   description: string;
   mealId: string;
+  ownerSub: string;
   isNewPaymentIntent: boolean;
   user: UserResponse;
 }
@@ -19,6 +20,7 @@ const Checkout = async ({
   description,
   user,
   mealId,
+  ownerSub,
   isNewPaymentIntent
 }: CheckoutProps) => {
   const log = new Logger();
@@ -53,7 +55,15 @@ const Checkout = async ({
     );
   }
 
-  return <InitStripe mealId={mealId} user={user} clientSecret={data.clientSecret} price={amount} />;
+  return (
+    <InitStripe
+      ownerSub={ownerSub}
+      mealId={mealId}
+      user={user}
+      clientSecret={data.clientSecret}
+      price={amount}
+    />
+  );
 };
 
 export default Checkout;

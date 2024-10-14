@@ -43,11 +43,9 @@ export default function UserMenu({ user }: { user: UserResponse }) {
         <DropdownMenuItem asChild>
           <Link href={`/parametres/profil`}>Mes paramètres</Link>
         </DropdownMenuItem>
+
         <DropdownMenuItem asChild>
-          <Link href={`/repas`}>Mes repas</Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem asChild>
-          <Link href={`/commandes`}>Mes commandes</Link>
+          <Link href={`/commandes/ventes`}>Mes commandes</Link>
         </DropdownMenuItem>
         <DropdownMenuItem className="focus:!bg-error-50">
           <a href={`/api/auth/logout`} className={'text-error hover:!bg-none'}>

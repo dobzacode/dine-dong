@@ -1,4 +1,4 @@
-import { type MealResponse, type UserResponse } from '@/types/query';
+import { OrderWithMealResponse, type UserResponse } from '@/types/query';
 import { getBasePath } from '../utils';
 
 export async function getUserInformations(
@@ -115,16 +115,53 @@ export async function isUserRegistered(token: string) {
   }
 }
 
-export async function getUserMeals(sub: string, request: RequestInit = {}) {
-  const url = new URL(`${getBasePath()}/api/users/${sub}/meals`);
+export async function getUserPurchases(
+  sub: string,
+  request: RequestInit = {},
+  params: {
+    status?: 'FINALIZED' | 'IN_PROGRESS' | 'CANCELLED';
+  } = {}
+) {
+  const url = new URL(`${getBasePath()}/api/users/${sub}/purchases`);
+  if (params.status) {
+    url.searchParams.set('status', params.status);
+  }
 
   const response = await fetch(url.toString(), request);
 
   switch (response.status) {
     case 200:
-      return (await response.json()) as MealResponse[];
+      return (await response.json()) as OrderWithMealResponse[];
     case 404:
-      throw new Error('404 Aucun repas trouvé');
+      throw new Error('404 Aucun achat trouvé');
+    case 422:
+      throw new Error('422 Une erreur est survenue');
+    case 500:
+      throw new Error('500 Erreur serveur');
+    default:
+      throw new Error('Erreur inconnue');
+  }
+}
+
+export async function getUserSales(
+  sub: string,
+  request: RequestInit = {},
+  params: {
+    status?: 'FINALIZED' | 'IN_PROGRESS' | 'CANCELLED';
+  } = {}
+) {
+  const url = new URL(`${getBasePath()}/api/users/${sub}/sales`);
+  if (params.status) {
+    url.searchParams.set('status', params.status);
+  }
+
+  const response = await fetch(url.toString(), request);
+
+  switch (response.status) {
+    case 200:
+      return (await response.json()) as OrderWithMealResponse[];
+    case 404:
+      throw new Error('404 Aucun achat trouvé');
     case 422:
       throw new Error('422 Une erreur est survenue');
     case 500:

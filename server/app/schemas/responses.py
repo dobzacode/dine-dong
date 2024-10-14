@@ -1,10 +1,18 @@
+from datetime import datetime
+
 from pydantic import BaseModel, ConfigDict
 
-from .base import Address, Ingredient, IngredientMeal, Meal, User
+from .base import Address, Ingredient, IngredientMeal, Meal, Order, User
 
 
 class BaseResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
+
+
+class OrderResponse(BaseResponse, Order):
+    create_time: datetime
+    update_time: datetime
+    pass
 
 
 class AddressResponse(BaseResponse, Address):
@@ -25,6 +33,10 @@ class MealResponse(BaseResponse, Meal):
     meal_id: str
     user_sub: str
     pass
+
+
+class OrderWithMealResponse(OrderResponse):
+    meal: MealResponse
 
 
 class MealWithAddressResponse(BaseResponse, Meal):

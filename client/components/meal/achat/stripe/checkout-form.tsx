@@ -16,6 +16,7 @@ const CheckoutForm = ({
   mealSummaryDetails: {
     mealId: string;
     price: number;
+    ownerSub: string;
   };
   user: UserResponse;
 }) => {
@@ -30,7 +31,11 @@ const CheckoutForm = ({
       return;
     }
 
-    customRevalidateTag(['search-meals', `meal-details-${mealSummaryDetails.mealId}`]);
+    customRevalidateTag([
+      'search-meals',
+      `meal-details-${mealSummaryDetails.mealId}`,
+      `user-${mealSummaryDetails.ownerSub}-meals`
+    ]);
 
     const { error } = await stripe.confirmPayment({
       elements,

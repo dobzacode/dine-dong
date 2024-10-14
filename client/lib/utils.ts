@@ -1,3 +1,4 @@
+import { OrderStatusEnum } from '@/types/schema';
 import { clsx, type ClassValue } from 'clsx';
 import { Children, isValidElement } from 'react';
 import { twMerge } from 'tailwind-merge';
@@ -62,4 +63,15 @@ export const getChildByDisplayName = (
   });
   if (!child) return null;
   return child;
+};
+
+export const translateStatus = (status: keyof typeof OrderStatusEnum) => {
+  switch (status) {
+    case 'COMPLETED':
+      return 'Terminée';
+    case 'CANCELLED':
+      return 'Annulée';
+    case 'IN_PROGRESS':
+      return 'En cours';
+  }
 };

@@ -19,12 +19,25 @@ export interface Address extends BaseModel {
   address2: string | null;
   formatted_address: string;
   city: string;
-  department: string | null;
+    department: string | null;
   postal_code: string;
   country: string;
   lat: number;
   lng: number;
   distance?: number;
+}
+
+export enum OrderStatusEnum {
+  COMPLETED = 'FINALIZED',
+  CANCELLED = 'CANCELLED',
+  IN_PROGRESS = 'IN_PROGRESS'
+}
+
+export interface Order extends BaseModel {
+  order_id: string;
+  user_sub: string;
+  meal_id: string;
+  status: keyof typeof OrderStatusEnum;
 }
 
 export enum DietsEnum {

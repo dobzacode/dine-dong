@@ -3,6 +3,7 @@ import type {
   Ingredient,
   IngredientMeal,
   Meal,
+  Order,
   PaymentMethodsEnum,
   UnitEnum,
   User
@@ -17,6 +18,10 @@ export interface UserResponse extends User {
 export interface MealResponse extends Meal {
   meal_id: string;
   user_sub: string;
+}
+
+export interface OrderWithMealResponse extends Order {
+  meal: MealResponse;
 }
 
 export interface MealWithAddressResponse

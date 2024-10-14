@@ -61,11 +61,16 @@ export default async function Page({ params }: { params: { id: string } }) {
     redirect(`/`);
   }
 
+  if (meal.user_sub === session.user.sub) {
+    return redirect(`/commandes/ventes`);
+  }
+
   return (
     <section className="section-px shadow-primary-40 section-py container flex flex-col justify-center gap-sm tablet:flex-row laptop-sm:max-w-[1000px]">
       <MealResume meal={meal} />
       <aside className="min-w-fit tablet:w-1/3">
         <Checkout
+          ownerSub={meal.user_sub}
           user={user}
           isNewPaymentIntent={paymentIntentUserSub === null}
           mealId={meal.meal_id}

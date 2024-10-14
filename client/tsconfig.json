@@ -4,7 +4,7 @@
     "prettier.config.js",
     "next-env.d.ts",
     "**/*.ts",
-    "**/*/*.tsx",
+    "**/*/*/*.tsx",
     ".next/types/**/*.ts",
     "svgr.d.ts",
     "next.config.ts"

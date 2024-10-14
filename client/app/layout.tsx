@@ -25,7 +25,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html suppressHydrationWarning lang="en">
+    <html suppressHydrationWarning lang="en" color-scheme="light">
       <head />
       <body className={`background ${poppins.variable} ${lora.variable}`}>
         <Providers>{children}</Providers>
