@@ -50,7 +50,7 @@ const modifyProfileMutation = async ({
     const { key } = await uploadToS3(data.image, {
       endpoint: {
         request: {
-          url: `${getBasePath()}/api/s3-upload/?folder=dynamic/${sub}/user`
+          url: `${getBasePath()}/api/s3-upload/?folder=/dynamic/${sub}/user`
         }
       }
     });
@@ -181,7 +181,7 @@ export default function ProfilForm({
           return null;
         }
         setImagePreview(e.target?.result);
-        form.setValue('image', file);
+        form.setValue('image', file, { shouldDirty: true });
       };
       reader.readAsDataURL(file);
     }

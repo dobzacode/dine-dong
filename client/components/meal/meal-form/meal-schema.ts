@@ -32,7 +32,7 @@ const firstStepSchema = z.object({
   expirationDate: z.date(),
   image: z
     .union([
-      z.string(),
+      z.string().min(1, 'Une photo est requise'),
       z
         .instanceof(File, { message: 'Une photo est requise' })
         .refine(
@@ -45,6 +45,14 @@ const firstStepSchema = z.object({
         )
     ])
     .optional()
+    .superRefine((val, ctx) => {
+      if (val === undefined) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'Une photo est requise'
+        });
+      }
+    })
 });
 
 export const dietEnum: readonly {
