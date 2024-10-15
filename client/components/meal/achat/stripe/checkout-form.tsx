@@ -31,12 +31,6 @@ const CheckoutForm = ({
       return;
     }
 
-    customRevalidateTag([
-      'search-meals',
-      `meal-details-${mealSummaryDetails.mealId}`,
-      `user-${mealSummaryDetails.ownerSub}-meals`
-    ]);
-
     const { error } = await stripe.confirmPayment({
       elements,
       confirmParams: {
@@ -46,9 +40,23 @@ const CheckoutForm = ({
     });
 
     if (error) {
-      console.log(error.message);
-      error instanceof Error && log.error(`Error confirming payment`, { error, user });
+      return error instanceof Error && log.error(`Error confirming payment`, { error, user });
     }
+
+    customRevalidateTag([
+      'search-meals',
+      `meal-details-${mealSummaryDetails.mealId}`,
+      `user-${mealSummaryDetails.ownerSub}-meals`,
+      `user-${mealSummaryDetails.ownerSub}-sales`,
+      `user-${user.user_sub}-purchases`
+    ]);
+
+    return log.info('Payment confirmed', {
+      info: {
+        mealSummaryDetails,
+        user
+      }
+    });
   };
 
   return (

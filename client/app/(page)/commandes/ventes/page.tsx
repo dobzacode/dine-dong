@@ -29,7 +29,8 @@ export default async function Page({
     orders = await getUserSales(
       session.user.sub as string,
       {
-        next: { tags: [`user-${session.user.sub}-orders`] }
+        next: { tags: [`user-${session.user.sub}-sales`] },
+        headers: { Authorization: `Bearer ${session.accessToken}` }
       },
       { status: searchParams?.status }
     );

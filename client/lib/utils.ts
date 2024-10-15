@@ -67,7 +67,7 @@ export const getChildByDisplayName = (
 
 export const translateStatus = (status: keyof typeof OrderStatusEnum) => {
   switch (status) {
-    case 'COMPLETED':
+    case 'FINALIZED':
       return 'Terminée';
     case 'CANCELLED':
       return 'Annulée';

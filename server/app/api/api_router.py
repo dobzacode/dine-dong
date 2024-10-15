@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
 from app.api import api_messages
-from app.api.endpoints import meals, stripe, users
+from app.api.endpoints import meals, orders, stripe, users
 
 api_router = APIRouter(
     responses={
@@ -32,3 +32,4 @@ api_router = APIRouter(
 api_router.include_router(users.router, prefix="/users", tags=["users"])
 api_router.include_router(meals.router, prefix="/meals", tags=["meals"])
 api_router.include_router(stripe.router, prefix="/stripe", tags=["stripe"])
+api_router.include_router(orders.router, prefix="/orders", tags=["orders"])

@@ -159,6 +159,7 @@ async def get_user_purchase(
         None, description="Filtre les achats par statut"
     ),
     session: AsyncSession = Depends(deps.get_session),
+    auth: dict = Security(auth.verify),
 ):
     if not sub:
         raise HTTPException(status_code=422, detail="ID de l'utilisateur est requis")
@@ -197,6 +198,7 @@ async def get_user_sales(
         None, description="Filtre les ventes par statut"
     ),
     session: AsyncSession = Depends(deps.get_session),
+    auth: dict = Security(auth.verify),
 ):
     if not sub:
         raise HTTPException(status_code=422, detail="ID de l'utilisateur est requis")

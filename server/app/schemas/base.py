@@ -29,7 +29,7 @@ class User(BaseModel):
 
 
 class OrderEnum(str, Enum):
-    COMPLETED = "COMPLETED"
+    COMPLETED = "FINALIZED"
     CANCELLED = "CANCELLED"
     IN_PROGRESS = "IN_PROGRESS"
 

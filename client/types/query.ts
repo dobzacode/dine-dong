@@ -24,6 +24,10 @@ export interface OrderWithMealResponse extends Order {
   meal: MealResponse;
 }
 
+export interface ModifyOrderStatusResponse extends OrderResponse {
+  owner_sub: string;
+}
+
 export interface MealWithAddressResponse
   extends Omit<Meal, 'cooking_date' | 'expiration_date' | 'payment_method'> {
   meal_id: string;
@@ -53,6 +57,10 @@ export interface MealDetailsResponse extends MealWithAddressResponse {
 export interface UserResponse extends User {
   user_sub: string;
   residency: Address;
+}
+
+export interface OrderResponse extends Order {
+  order: OrderResponse;
 }
 
 export interface IngredientResponse extends Ingredient {

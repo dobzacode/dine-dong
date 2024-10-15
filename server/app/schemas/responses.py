@@ -15,6 +15,10 @@ class OrderResponse(BaseResponse, Order):
     pass
 
 
+class ModifyOrderStatusResponse(OrderResponse):
+    owner_sub: str
+
+
 class AddressResponse(BaseResponse, Address):
     pass
 

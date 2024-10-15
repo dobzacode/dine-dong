@@ -1,12 +1,14 @@
 import { constructS3Url, translateStatus } from '@/lib/utils';
 import { type OrderWithMealResponse } from '@/types/query';
+import { getSession } from '@auth0/nextjs-auth0';
 import { CheckIcon, Loader, X } from 'lucide-react';
 import moment from 'moment';
 import { Logger } from 'next-axiom';
 import Image from 'next/image';
+import ActionMenu from './action-menu';
 import BuyerSnippet from './sales/buyer-snippet';
 
-export default function OrderSnippet({
+export default async function OrderSnippet({
   order,
   log,
   isPurchase
@@ -15,9 +17,11 @@ export default function OrderSnippet({
   log: Logger;
   isPurchase?: boolean;
 }) {
+  const session = await getSession();
+
   const icon = () => {
     switch (order.status) {
-      case 'COMPLETED':
+      case 'FINALIZED':
         return <CheckIcon className="text-success h-4 w-4 shrink-0" />;
       case 'CANCELLED':
         return <X className="h-4 w-4 shrink-0 text-error" />;
@@ -54,6 +58,9 @@ export default function OrderSnippet({
           </div>
         </div>
       </div>
+      {order.status === 'IN_PROGRESS' && (
+        <ActionMenu token={session?.accessToken ?? undefined} order={order} />
+      )}
     </div>
   );
 }

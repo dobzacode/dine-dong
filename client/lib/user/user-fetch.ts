@@ -148,7 +148,7 @@ export async function getUserSales(
   request: RequestInit = {},
   params: {
     status?: 'FINALIZED' | 'IN_PROGRESS' | 'CANCELLED';
-  } = {}
+  } = {},
 ) {
   const url = new URL(`${getBasePath()}/api/users/${sub}/sales`);
   if (params.status) {
