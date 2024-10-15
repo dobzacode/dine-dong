@@ -1,3 +1,4 @@
+import logging
 from typing import Literal
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Security, status
@@ -50,6 +51,7 @@ async def get_meals(
     ),
     user_sub: str = Query(None, description="ID de l'utilisateur"),
     is_ordered: bool = Query(None, description="Filtre les repas non commandés"),
+    logger: logging.Logger = Depends(deps.get_logger),
 ):
     try:
         user_location = ST_GeogFromText(f"POINT({lng} {lat})")
@@ -120,6 +122,7 @@ async def get_meals(
 
     except Exception as e:
         print(e, "Error")
+        logger.error(f"Une erreur est survenue lors de la récupération des repas : {e}")
         raise HTTPException(status_code=500, detail="Une erreur est survenue")
 
     if not meals:
@@ -142,6 +145,7 @@ async def get_meal_details_by_id(
     id: str = Query(None, description="ID du repas à récupérer"),
     lat: float = Query(45.767572, description="Latitude de l'utilisateur"),
     lng: float = Query(4.833102, description="Longitude de l'utilisateur"),
+    logger: logging.Logger = Depends(deps.get_logger),
 ):
     if not id:
         raise HTTPException(status_code=422, detail="ID est requis")
@@ -189,6 +193,10 @@ async def get_meal_details_by_id(
         return meal
     except Exception as e:
         print(e, "Error")
+        logger.error(
+            f"Une erreur est survenue lors de la récupération des détails du repas {id}",
+            e,
+        )
         raise HTTPException(
             status_code=500,
             detail="Une erreur est survenue lors de la récupération des détails du repas",
@@ -203,6 +211,7 @@ async def get_meal_details_by_id(
 async def get_meal_summaries(
     session: AsyncSession = Depends(deps.get_session),
     id: str = Query(None, description="ID du repas à récupérer"),
+    logger: logging.Logger = Depends(deps.get_logger),
 ):
     try:
         query = select(Meal.meal_id, Meal.name, Meal.additional_information)
@@ -215,6 +224,10 @@ async def get_meal_summaries(
 
     except Exception as e:
         print(e)
+        logger.error(
+            f"Une erreur est survenue lors de la récupération des résumés des repas {id}",
+            e,
+        )
         raise HTTPException(
             status_code=500,
             detail="Une erreur est survenue lors de la récupération des résumés des repas",
@@ -239,6 +252,7 @@ async def get_distance(
     lat: float = Query(None, description="Latitude de l'utilisateur"),
     lng: float = Query(None, description="Longitude de l'utilisateur"),
     id: str = Query(None, description="ID du repas à récupérer"),
+    logger: logging.Logger = Depends(deps.get_logger),
     user: dict = Security(auth.verify),
 ):
     if not id or not lat or not lng:
@@ -259,6 +273,10 @@ async def get_distance(
 
     except Exception as e:
         print(e, "Error")
+        logger.error(
+            f"Une erreur est survenue lors de la récupération de la distance du repas {id}",
+            e,
+        )
         raise HTTPException(
             status_code=500,
             detail="Une erreur est survenue lors de la récupération de la distance du repas",
@@ -280,6 +298,7 @@ async def create_meal(
     meal_data: CreateMealRequest,
     session: AsyncSession = Depends(deps.get_session),
     token: dict[str, str] = Depends(deps.extract_sub_email_from_jwt),
+    logger: logging.Logger = Depends(deps.get_logger),
     user: dict = Security(auth.verify),
 ):
     user = await session.scalar(select(User).where(User.user_sub == token.get("sub")))
@@ -338,12 +357,14 @@ async def create_meal(
                 )
             session.add(ingredient_meal_data)
         await session.commit()
-
         await session.refresh(new_meal)
+
+        logging.info(f"Repas {new_meal.meal_id} créé avec succès")
 
         return new_meal
     except Exception as e:
         print(e)
+        logger.error(f"Une erreur est survenue lors de la création du repas : {e}")
         raise HTTPException(
             status_code=500,
             detail="Une erreur est survenue lors de la création du repas",
@@ -360,6 +381,7 @@ async def modify_user(
     meal_data: ModifyMealRequest,
     session: AsyncSession = Depends(deps.get_session),
     token: dict[str, str] = Depends(deps.extract_sub_email_from_jwt),
+    logger: logging.Logger = Depends(deps.get_logger),
     auth: dict = Security(auth.verify),
 ):
     if not meal_data.meal_id:
@@ -399,9 +421,16 @@ async def modify_user(
 
         await session.commit()
         await session.refresh(meal)
+
+        logger.info(f"Repas {meal_data.meal_id} modifié avec succès")
+
         return meal
     except Exception as e:
         print(e)
+        logger.error(
+            f"une erreur est survenue lors de la modification du repas {meal_data.meal_id}",
+            e,
+        )
         raise HTTPException(
             status_code=500,
             detail="Une erreur est survenue lors de la modification du repas",

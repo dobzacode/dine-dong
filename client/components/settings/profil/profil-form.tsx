@@ -54,7 +54,7 @@ const modifyProfileMutation = async ({
         }
       }
     });
-    picturekey = key;
+    picturekey = `/${key}`;
   }
 
   const response = await fetch(`${getBasePath()}/api/users`, {

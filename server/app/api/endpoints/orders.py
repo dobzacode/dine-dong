@@ -1,3 +1,4 @@
+import logging
 from typing import Literal
 
 from fastapi import APIRouter, Depends, HTTPException, Path, Query, Security
@@ -27,6 +28,7 @@ async def modify_order_status(
         None, description="Nouvel état de la commande"
     ),
     token: dict[str, str] = Depends(deps.extract_sub_email_from_jwt),
+    logger: logging.Logger = Depends(deps.get_logger),
     auth: dict = Security(auth.verify),
 ):
     if not order_id:
@@ -60,6 +62,9 @@ async def modify_order_status(
         order.status = new_status
         await session.commit()
         await session.refresh(order)
+
+        logger.info(f"La commande {order_id} a été modifiée avec succès")
+
         order_dict = {
             key: value
             for key, value in order.__dict__.items()
@@ -69,6 +74,10 @@ async def modify_order_status(
 
     except Exception as e:
         print(e, "Error")
+        logger.error(
+            f"Une erreur est survenue lors de la modification de la commande {order_id}",
+            e,
+        )
         raise HTTPException(
             status_code=500,
             detail="Une erreur est survenue lors de la modification de la commande",

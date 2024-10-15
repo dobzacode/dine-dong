@@ -1,4 +1,5 @@
 import asyncio
+import logging
 
 from fastapi import (
     APIRouter,
@@ -32,12 +33,16 @@ webhook_secret = get_settings().webhook_secret
 
 async def remove_payment_intent_and_kv_entry(meal_id: str, payment_intent_id: str):
     await asyncio.sleep(180)
+    logger: logging.Logger = deps.get_logger()
     payment_intent = stripe.PaymentIntent.retrieve(payment_intent_id)
     try:
-        if payment_intent.status != "succeeded":
+        print(payment_intent)
+        if payment_intent.status not in ["amount_capturable_updated", "succeeded"]:
+            logger.info(f"Payment intent {payment_intent.id} annulé avec succès")
             stripe.PaymentIntent.cancel(payment_intent_id)
         kv.delete(meal_id)
     except Exception as e:
+        logger.error(f"Error removing payment intent or KV entry: {e}")
         print(f"Error removing payment intent or KV entry: {e}")
 
 
@@ -46,6 +51,7 @@ async def create_payment_intent(
     request: CreatePaymentIntentRequest,
     background_tasks: BackgroundTasks,
     session: AsyncSession = Depends(deps.get_session),
+    logger: logging.Logger = Depends(deps.get_logger),
     auth: dict = Security(auth.verify),
 ):
     try:
@@ -77,6 +83,9 @@ async def create_payment_intent(
 
     except Exception as e:
         print(e, "Error")
+        logger.error(
+            f"Une erreur est survenue lors de la récupération de l'ordre pour le repas {request.mealId}, erreur : {e}"
+        )
         raise HTTPException(
             status_code=500,
             detail="Une erreur est survenue lors de la récupération de l'ordre",
@@ -87,7 +96,8 @@ async def create_payment_intent(
             amount=request.amount * 100,
             currency=request.currency,
             description=request.description,
-            payment_method_options={"card": {"capture_method": "manual"}},
+            payment_method_types=["card"],
+            capture_method="manual",
             metadata={"userSub": request.userSub, "mealId": request.mealId},
         )
 
@@ -96,6 +106,9 @@ async def create_payment_intent(
             background_tasks.add_task(
                 remove_payment_intent_and_kv_entry, request.mealId, payment_intent.id
             )
+
+        logger.info(f"Payment intent {payment_intent.id} créé avec succès")
+
         return {
             "status": "success",
             "clientSecret": payment_intent.client_secret,
@@ -103,7 +116,13 @@ async def create_payment_intent(
         }
     except Exception as e:
         print(e)
-        raise HTTPException(status_code=403, detail=str(e))
+        logger.error(
+            f"Une erreur est survenue lors de la création de l'intent pour le repas {request.mealId}, erreur : {e}"
+        )
+        raise HTTPException(
+            status_code=500,
+            detail="Une erreur est survenue lors de la création de l'intent",
+        )
 
 
 @router.post("/webhooks")
@@ -111,9 +130,9 @@ async def webhook_received(
     request: Request,
     stripe_signature: str = Header(None),
     session: AsyncSession = Depends(deps.get_session),
+    logger: logging.Logger = Depends(deps.get_logger),
 ):
     try:
-        print(request)
         data = await request.body()
         try:
             event = stripe.Webhook.construct_event(
@@ -121,9 +140,13 @@ async def webhook_received(
             )
         except Exception as e:
             print(e)
-            raise HTTPException(status_code=400, detail=f"Webhook Error: {str(e)}")
+            logger.error(
+                f"Une erreur est survenue lors de la construction de l'event : {e}, {request}"
+            )
+            raise HTTPException(status_code=500, detail=f"Webhook Error: {str(e)}")
 
         metadata = event["data"]["object"]["metadata"]
+        pi_id = event["data"]["object"]["id"]
 
         kv.delete(metadata["mealId"])
         event_type = event["type"]
@@ -139,7 +162,7 @@ async def webhook_received(
             new_order = Order(
                 meal_id=metadata["mealId"],
                 user_sub=metadata["userSub"],
-                pi_id=event["data"]["object"]["id"],
+                pi_id=pi_id,
                 status="IN_PROGRESS",
             )
             meal.is_ordered = True
@@ -147,12 +170,45 @@ async def webhook_received(
             session.add(new_order)
             await session.commit()
             await session.refresh(new_order)
-            print(new_order.order_id)
+
+            logger.info(f"Commande {new_order.order_id} créé avec succès")
+
             return {"status": "success", "order_id": new_order.order_id}
+
+        if event_type == "payment_intent.canceled":
+            query = select(Order).where(Order.pi_id == pi_id)
+            result = await session.execute(query)
+            modified_order = result.scalars().first()
+
+            if not modified_order:
+                return JSONResponse(
+                    status_code=404,
+                    content={"message": f"Pas de commande trouvée pour le pi: {pi_id}"},
+                )
+
+            modified_order.status = "CANCELLED"
+
+            session.add(meal)
+            session.add(modified_order)
+
+            await session.commit()
+            await session.refresh(modified_order)
+            logger.info(
+                f"Commande {modified_order.order_id} annulé avec succès pour le pi: {pi_id}"
+            )
+            return {"status": "success"}
+
         else:
             print(f"unhandled event: {event_type}")
+            return JSONResponse(
+                status_code=403,
+                content={"message": f"Evénement non géré : {event_type}"},
+            )
 
         return {"status": "success"}
     except Exception as e:
         print(e)
-        raise HTTPException(status_code=400, detail=f"Webhook Error: {str(e)}")
+        logger.error(
+            f"Une erreur est survenue lors du traitement de l'event : {e}, {request}"
+        )
+        raise HTTPException(status_code=500, detail=f"Webhook Error: {str(e)}")

@@ -30,6 +30,7 @@ class Security(BaseModel):
         "127.0.0.1",
         "dine-dong.fr",
         "9w5bah46td.execute-api.eu-west-3.amazonaws.com",
+        "hot-wallaby-smoothly.ngrok-free.app",
     ]
     backend_cors_origins: list[AnyHttpUrl] = []
 
@@ -57,6 +58,9 @@ class Settings(BaseSettings):
 
     kv_rest_api_url: str
     kv_rest_api_token: str
+
+    axiom_dataset: str
+    axiom_token: str
 
     @computed_field  # type: ignore[misc]
     @property

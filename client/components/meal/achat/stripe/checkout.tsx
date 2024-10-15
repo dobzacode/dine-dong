@@ -38,18 +38,17 @@ const Checkout = async ({
   } catch (error) {
     const message = getErrorMessage(error);
     if (message.includes('403')) {
-      log.error(`User not connected: ${message}`);
       await log.flush();
       return (
-        <div className="text-danger mt-2">
-          Vous n&apos;êtes pas connecté. Veuillez vous connecter.
+        <div className="text-danger body mt-2">
+          Une transaction est déjà en cours. Veuillez réessayer plus tard.
         </div>
       );
     }
     error instanceof Error && log.error(`Error creating payment intent: ${message}`);
     await log.flush();
     return (
-      <div className="text-danger mt-2">
+      <div className="text-danger body mt-2">
         Une erreur est survenue lors de la création du paiement. Veuillez réessayer.
       </div>
     );

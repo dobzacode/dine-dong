@@ -1,3 +1,4 @@
+import logging
 from typing import Literal
 
 from fastapi import APIRouter, Depends, HTTPException, Path, Query, Security
@@ -24,6 +25,7 @@ async def get_user_informations(
     session: AsyncSession = Depends(deps.get_session),
     sub: str = Query(None, description="Sub de l'utilisateur à récupérer"),
     username: str = Query(None, description="Pseudo de l'utilisateur à récupérer"),
+    logger: logging.Logger = Depends(deps.get_logger),
 ):
     if not sub and not username:
         raise HTTPException(status_code=422, detail="sub ou username requis")
@@ -38,6 +40,10 @@ async def get_user_informations(
 
     except Exception as e:
         print(e, "Error")
+        logger.error(
+            f"Une erreur est survenue lors de la récupération des détails de l'utilisateur {sub}",
+            e,
+        )
         raise HTTPException(
             status_code=500,
             detail="Une erreur est survenue lors de la récupération des détails de l'utilisateur",
@@ -69,14 +75,28 @@ async def get_auth0_information(
 async def is_user_registered(
     token: dict[str, str] = Depends(deps.extract_sub_email_from_jwt),
     session: AsyncSession = Depends(deps.get_session),
+    logger: logging.Logger = Depends(deps.get_logger),
     user: dict = Security(auth.verify),
 ):
-    user = await session.scalar(select(User).where(User.user_sub == token.get("sub")))
+    try:
+        user = await session.scalar(
+            select(User).where(User.user_sub == token.get("sub"))
+        )
 
-    if not user:
-        return False
+        if not user:
+            return False
 
-    return True
+        return True
+    except Exception as e:
+        print(e, "Error")
+        logger.error(
+            f"Une erreur est survenue lors de la vérification de l'utilisateur {token.get('sub')}",
+            e,
+        )
+        raise HTTPException(
+            status_code=500,
+            detail="Une erreur est survenue lors de la vérification de l'utilisateur",
+        )
 
 
 @router.get(
@@ -87,6 +107,7 @@ async def is_user_registered(
 async def check_username_availability(
     session: AsyncSession = Depends(deps.get_session),
     username: str = Query(None, description="Nom d'utilisateur à vérifier"),
+    logger: logging.Logger = Depends(deps.get_logger),
 ):
     if not username:
         raise HTTPException(status_code=422, detail="Le nom d'utilisateur est requis")
@@ -97,6 +118,10 @@ async def check_username_availability(
         return result is None
     except Exception as e:
         print(e, "Error")
+        logger.error(
+            f"Une erreur est survenue lors de la vérification de l'utilisateur {username}",
+            e,
+        )
         raise HTTPException(
             status_code=500,
             detail="Une erreur est survenue lors de la récupération des détails de l'utilisateur",
@@ -130,6 +155,7 @@ async def check_email_availability(
 @router.get("/get-user-params", response_model=list[str])
 async def get_user_params(
     session: AsyncSession = Depends(deps.get_session),
+    logger: logging.Logger = Depends(deps.get_logger),
 ):
     try:
         user_query = select(User.username)
@@ -139,6 +165,9 @@ async def get_user_params(
         return usernames
     except Exception as e:
         print(e, "Error")
+        logger.error(
+            f"Une erreur est survenue lors de la récupération des pseudos des utilisateurs : {e}"
+        )
         raise HTTPException(
             status_code=500,
             detail="Une erreur est survenue lors de la récupération des pseudos des utilisateurs",
@@ -159,6 +188,7 @@ async def get_user_purchase(
         None, description="Filtre les achats par statut"
     ),
     session: AsyncSession = Depends(deps.get_session),
+    logger: logging.Logger = Depends(deps.get_logger),
     auth: dict = Security(auth.verify),
 ):
     if not sub:
@@ -175,6 +205,10 @@ async def get_user_purchase(
 
     except Exception as e:
         print(e)
+        logger.error(
+            f"Une erreur est survenue lors de la récupération des achats de l'utilisateur {sub}",
+            e,
+        )
         raise HTTPException(
             status_code=500,
             detail="Une erreur est survenue lors de la récupération des achats de l'utilisateur",
@@ -198,6 +232,7 @@ async def get_user_sales(
         None, description="Filtre les ventes par statut"
     ),
     session: AsyncSession = Depends(deps.get_session),
+    logger: logging.Logger = Depends(deps.get_logger),
     auth: dict = Security(auth.verify),
 ):
     if not sub:
@@ -216,6 +251,9 @@ async def get_user_sales(
 
     except Exception as e:
         print(e)
+        logger.error(
+            f"Une erreur est survenue lors de la récupération des ventes de l'utilisateur {sub}, erreur : {e}"
+        )
         raise HTTPException(
             status_code=500,
             detail="Une erreur est survenue lors de la récupération des ventes de l'utilisateur",
@@ -234,6 +272,7 @@ async def get_user_sales(
 async def create_user(
     user_data: CreateUserRequest,
     session: AsyncSession = Depends(deps.get_session),
+    logger: logging.Logger = Depends(deps.get_logger),
 ):
     try:
         new_user = User(
@@ -263,9 +302,16 @@ async def create_user(
         session.add(new_user)
         await session.commit()
         await session.refresh(new_user)
+
+        logger.info(f"L'utilisateur {user_data.sub} a été créé avec succès")
+
         return new_user
     except Exception as e:
         print(e)
+        logger.error(
+            f"Une erreur est survenue lors de la création de l'utilisateur {user_data.sub}",
+            e,
+        )
         raise HTTPException(
             status_code=500,
             detail="Une erreur est survenue lors de la création de l'utilisateur",
@@ -282,6 +328,7 @@ async def modify_user(
     user_data: ModifyUserRequest,
     session: AsyncSession = Depends(deps.get_session),
     token: dict[str, str] = Depends(deps.extract_sub_email_from_jwt),
+    logger: logging.Logger = Depends(deps.get_logger),
     auth: dict = Security(auth.verify),
 ):
     if not user_data.user_sub:
@@ -306,9 +353,16 @@ async def modify_user(
 
         await session.commit()
         await session.refresh(user)
+
+        logger.info(f"L'utilisateur {user.user_sub} a été modifié avec succès")
+
         return user.username
     except Exception as e:
         print(e)
+        logger.error(
+            f"Une erreur est survenue lors de la modification du profil de l'utilisateur {user.user_sub}",
+            e,
+        )
         raise HTTPException(
             status_code=500,
             detail="Une erreur est survenue lors de la modification du profil de l'utilisateur",

@@ -1,3 +1,4 @@
+import logging
 from collections.abc import AsyncGenerator
 
 import jwt
@@ -6,6 +7,7 @@ from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core import database_session
+from app.core.axiom import axiom
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/token")
 
@@ -27,3 +29,8 @@ async def extract_sub_email_from_jwt(token: str = Depends(oauth2_scheme)):
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid or missing token",
         )
+
+
+def get_logger():
+    axiom.setup_logger()
+    return logging.getLogger()

@@ -63,7 +63,7 @@ const createMealMutation = async ({
       }
     });
     log.info('Uploaded image to S3', { key, sub });
-    picturekey = key;
+    picturekey = `/${key}`;
   }
 
   const response = await fetch(`${getBasePath()}/api/meals`, {

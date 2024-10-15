@@ -8,10 +8,11 @@ export const POST = route.configure({
       const url = new URL(req.url);
       const params = url.searchParams;
       const folder = params.get('folder');
-      return `/${folder}/${uuid()}-${sanitizeKey(filename)}`;
+      console.log(folder);
+      return `${folder}/${uuid()}-${sanitizeKey(filename)}`;
     } catch (error) {
       console.error('Error parsing JSON body:', error);
-      return `/${filename}`;
+      return `${filename}`;
     }
   }
 });
