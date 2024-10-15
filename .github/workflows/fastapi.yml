@@ -38,7 +38,9 @@ jobs:
         uses: hashicorp/setup-terraform@v3
        
       - name: Initialize Terraform
-        run: terraform init
+        run: |
+          terraform fmt
+          terraform init
         env:
           REGION: ${{ secrets.TF_VAR_REGION }}
           API_DOMAIN_NAME: ${{ secrets.TF_VAR_API_DOMAIN_NAME }}
@@ -48,10 +50,8 @@ jobs:
         run: terraform plan -no-color -var REGION=${{ secrets.TF_VAR_REGION }} -var API_DOMAIN_NAME=${{ secrets.TF_VAR_API_DOMAIN_NAME }} -var DOMAIN_NAME_CERTIFICATE_ARN=${{ secrets.TF_VAR_DOMAIN_NAME_CERTIFICATE_ARN }}
 
       - name: Apply Terraform changes (optional, requires confirmation)
-        run: |
-          if [[ $(git diff --cached --name-only | grep -qE '^\.terraform/') ]]; then
-            terraform apply -auto-approve
-          else
-            echo "No changes detected in Terraform configuration. Skipping apply."
-          fi
+        run: terraform apply -auto-approve
+          
+            
+         
 
