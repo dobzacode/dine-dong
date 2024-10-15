@@ -1,11 +1,14 @@
 variable "REGION" {
-  description = "The AWS region to deploy resources to"
+    type = string
+    description = "AWS Region"
 }
 
 variable "API_DOMAIN_NAME" {
-  description = "The domain name for the API Gateway"
+    type = string
+    description = "API Domain Name"
 }
 
 variable "DOMAIN_NAME_CERTIFICATE_ARN" {
-  description = "The ARN of the certificate for the domain name"
+    type = string
+    description = "Domain Name Certificate ARN"
 }

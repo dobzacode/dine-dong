@@ -33,9 +33,9 @@ jobs:
       - name: Initialize Terraform
         run: terraform init
         env:
-          region: ${{ secrets.TF_VAR_REGION }}
-          api_domain_name: ${{ secrets.TF_VAR_API_DOMAIN_NAME }}
-          domain_name_certificate_arn: ${{ secrets.TF_VAR_DOMAIN_NAME_CERTIFICATE_ARN }}
+          REGION: ${{ secrets.TF_VAR_REGION }}
+          API_DOMAIN_NAME: ${{ secrets.TF_VAR_API_DOMAIN_NAME }}
+          DOMAIN_NAME_CERTIFICATE_ARN: ${{ secrets.TF_VAR_DOMAIN_NAME_CERTIFICATE_ARN }}
 
       - name: Configure AWS credentials
         run: |
@@ -45,16 +45,16 @@ jobs:
      
       - name: Plan Terraform changes
         env: 
-          region: ${{ secrets.TF_VAR_REGION }}
-          api_domain_name: ${{ secrets.TF_VAR_API_DOMAIN_NAME }}
-          domain_name_certificate_arn: ${{ secrets.TF_VAR_DOMAIN_NAME_CERTIFICATE_ARN }}
+          REGION: ${{ secrets.TF_VAR_REGION }}
+          API_DOMAIN_NAME: ${{ secrets.TF_VAR_API_DOMAIN_NAME }}
+          DOMAIN_NAME_CERTIFICATE_ARN: ${{ secrets.TF_VAR_DOMAIN_NAME_CERTIFICATE_ARN }}
         run: terraform plan -no-color
 
       - name: Apply Terraform changes (optional, requires confirmation)
         env: 
-          region: ${{ secrets.TF_VAR_REGION }}
-          api_domain_name: ${{ secrets.TF_VAR_API_DOMAIN_NAME }}
-          domain_name_certificate_arn: ${{ secrets.TF_VAR_DOMAIN_NAME_CERTIFICATE_ARN }}
+          REGION: ${{ secrets.TF_VAR_REGION }}
+          API_DOMAIN_NAME: ${{ secrets.TF_VAR_API_DOMAIN_NAME }}
+          DOMAIN_NAME_CERTIFICATE_ARN: ${{ secrets.TF_VAR_DOMAIN_NAME_CERTIFICATE_ARN }}
         run: |
           if [[ $(git diff --cached --name-only | grep -qE '^\.terraform/') ]]; then
             terraform apply -auto-approve
