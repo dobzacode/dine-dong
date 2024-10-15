@@ -1,5 +1,6 @@
  
 
+
 terraform {
   required_providers {
     aws = {
@@ -10,7 +11,7 @@ terraform {
 }
 
 provider "aws" {
-  region = TF_VAR_region
+  region = var.REGION
 }
 
 
@@ -44,7 +45,7 @@ module "lambda_function" {
   source  = "terraform-aws-modules/lambda/aws"
   version = "~> 4.0"
 
-  function_name = "fastapi-prod-${TF_VAR_region}-lambda"
+  function_name = "fastapi-prod-${var.REGION}-lambda"
   description   = "Dine Dong API"
   handler       = "app.handler.handler"
   timeout       = 30
@@ -82,8 +83,8 @@ module "api_gateway" {
   protocol_type = "HTTP"
 
   create_api_domain_name = true
-  domain_name           = TF_VAR_api_domain_name
-  domain_name_certificate_arn = TF_VAR_domain_name_certificate_arn
+  domain_name           = var.API_DOMAIN_NAME
+  domain_name_certificate_arn = var.DOMAIN_NAME_CERTIFICATE_ARN
   
   cors_configuration = {
     allow_headers = ["*"]
