@@ -34,7 +34,7 @@ export default function Loading() {
           <Skeleton className="mb-2 h-4 w-1/6 rounded-md" />
           <Skeleton className="h-40 rounded-md" />
         </div>
-        <div className="flex w-full gap-sm">
+        <div className="flex w-full gap-xs">
           <Skeleton className="h-12 w-1/2 rounded-md rounded-r-none" />
           <Skeleton className="h-12 w-1/2 rounded-md rounded-l-none" />
         </div>

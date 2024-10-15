@@ -50,7 +50,7 @@ const modifyProfileMutation = async ({
     const { key } = await uploadToS3(data.image, {
       endpoint: {
         request: {
-          url: `${getBasePath()}/api/s3-upload/?folder=/dynamic/${sub}/user`
+          url: `${getBasePath()}/api/s3-upload/?folder=dynamic/${sub}/user`
         }
       }
     });

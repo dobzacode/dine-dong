@@ -11,7 +11,7 @@ export const POST = route.configure({
       return `${folder}/${uuid()}-${sanitizeKey(filename)}`;
     } catch (error) {
       console.error('Error parsing JSON body:', error);
-      return `${filename}`;
+      return `/${filename}`;
     }
   }
 });
