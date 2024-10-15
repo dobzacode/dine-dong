@@ -1,5 +1,9 @@
 name: FastAPI CI
 
+env:
+  TF_LOG: INFO
+  TF_INPUT: false
+
 on:
   workflow_dispatch:
   push:
@@ -28,6 +32,10 @@ jobs:
        
       - name: Initialize Terraform
         run: terraform init
+        env:
+          TF_VAR_region: ${{ secrets.TF_VAR_REGION }}
+          TF_VAR_api_domain_name: ${{ secrets.TF_VAR_API_DOMAIN_NAME }}
+          TF_VAR_domain_name_certificate_arn: ${{ secrets.TF_VAR_DOMAIN_NAME_CERTIFICATE_ARN }}
 
       - name: Configure AWS credentials
         run: |
@@ -35,11 +43,18 @@ jobs:
           export AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} 
           export AWS_DEFAULT_REGION=${{ secrets.AWS_REGION }}
      
-
       - name: Plan Terraform changes
-        run: terraform plan
+        env: 
+          TF_VAR_region: ${{ secrets.TF_VAR_REGION }}
+          TF_VAR_api_domain_name: ${{ secrets.TF_VAR_API_DOMAIN_NAME }}
+          TF_VAR_domain_name_certificate_arn: ${{ secrets.TF_VAR_DOMAIN_NAME_CERTIFICATE_ARN }}
+        run: terraform plan -no-color
 
       - name: Apply Terraform changes (optional, requires confirmation)
+        env: 
+          TF_VAR_region: ${{ secrets.TF_VAR_REGION }}
+          TF_VAR_api_domain_name: ${{ secrets.TF_VAR_API_DOMAIN_NAME }}
+          TF_VAR_domain_name_certificate_arn: ${{ secrets.TF_VAR_DOMAIN_NAME_CERTIFICATE_ARN }}
         run: |
           if [[ $(git diff --cached --name-only | grep -qE '^\.terraform/') ]]; then
             terraform apply -auto-approve

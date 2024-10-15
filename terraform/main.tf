@@ -1,3 +1,5 @@
+ 
+
 terraform {
   required_providers {
     aws = {
@@ -8,14 +10,10 @@ terraform {
 }
 
 provider "aws" {
-  region = var.REGION
+  region = TF_VAR_region
 }
 
-variable "REGION" {
-  description = "Region AWS"
-  type        = string
-  default     = "eu-central-1"
-}
+
 
 module "lambda_layer_poetry" {
   source  = "terraform-aws-modules/lambda/aws"
@@ -46,7 +44,7 @@ module "lambda_function" {
   source  = "terraform-aws-modules/lambda/aws"
   version = "~> 4.0"
 
-  function_name = "fastapi-prod-eu-central-1-lambda"
+  function_name = "fastapi-prod-${TF_VAR_region}-lambda"
   description   = "Dine Dong API"
   handler       = "app.handler.handler"
   timeout       = 30
@@ -84,8 +82,8 @@ module "api_gateway" {
   protocol_type = "HTTP"
 
   create_api_domain_name = true
-  domain_name = "dine-dong.fr"
-  domain_name_certificate_arn = "arn:aws:acm:eu-central-1:182399718556:certificate/dff5751d-1c3b-45ce-ab03-2621cd1f8acc"
+  domain_name           = TF_VAR_api_domain_name
+  domain_name_certificate_arn = TF_VAR_domain_name_certificate_arn
   
   cors_configuration = {
     allow_headers = ["*"]
