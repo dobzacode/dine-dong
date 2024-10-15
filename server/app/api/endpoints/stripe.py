@@ -49,7 +49,8 @@ async def create_payment_intent(
     auth: dict = Security(auth.verify),
 ):
     try:
-        check_redis = await kv.get(request.mealId)
+        check_redis = kv.get(request.mealId)
+
         if check_redis is not None:
             return JSONResponse(
                 status_code=403,
@@ -67,15 +68,13 @@ async def create_payment_intent(
         )
         result = await session.execute(query)
         order = result.scalars().first()
-        if order is None:
-            return JSONResponse(
-                status_code=404, content={"message": "Repas non trouvé"}
-            )
-        if order.status in ("IN_PROGRESS", "FINALIZED"):
+
+        if order is not None and order.status in ("IN_PROGRESS", "FINALIZED"):
             return JSONResponse(
                 status_code=403,
                 content={"message": "Une transaction est déjà en cours"},
             )
+
     except Exception as e:
         print(e, "Error")
         raise HTTPException(
@@ -88,6 +87,7 @@ async def create_payment_intent(
             amount=request.amount * 100,
             currency=request.currency,
             description=request.description,
+            payment_method_options={"card": {"capture_method": "manual"}},
             metadata={"userSub": request.userSub, "mealId": request.mealId},
         )
 
@@ -135,10 +135,11 @@ async def webhook_received(
         if meal is None:
             raise HTTPException(status_code=404, detail="Repas non trouvé")
 
-        if event_type == "payment_intent.succeeded":
+        if event_type == "payment_intent.amount_capturable_updated":
             new_order = Order(
                 meal_id=metadata["mealId"],
                 user_sub=metadata["userSub"],
+                pi_id=event["data"]["object"]["id"],
                 status="IN_PROGRESS",
             )
             meal.is_ordered = True

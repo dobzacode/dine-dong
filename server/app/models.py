@@ -258,6 +258,7 @@ class Order(Base):
     order_id: Mapped[str] = mapped_column(
         Uuid(as_uuid=False), primary_key=True, default=lambda _: str(uuid.uuid4())
     )
+    pi_id: Mapped[str] = mapped_column(String(256), nullable=False, unique=True)
 
     user: Mapped["User"] = relationship(back_populates="orders", lazy="selectin")
     user_sub: Mapped[str] = mapped_column(

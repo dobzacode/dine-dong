@@ -1,4 +1,4 @@
-import SaleSnippet from '@/components/orders/sale/sale-snippet';
+import SaleSnippet from '@/components/orders/order-snippet';
 import TopMenu from '@/components/orders/top-menu';
 import { getUserSales } from '@/lib/user/user-fetch';
 import { getErrorMessage } from '@/lib/utils';
