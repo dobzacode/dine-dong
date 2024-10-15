@@ -50,7 +50,7 @@ jobs:
         run: terraform plan -no-color -var REGION=${{ secrets.TF_VAR_REGION }} -var API_DOMAIN_NAME=${{ secrets.TF_VAR_API_DOMAIN_NAME }} -var DOMAIN_NAME_CERTIFICATE_ARN=${{ secrets.TF_VAR_DOMAIN_NAME_CERTIFICATE_ARN }}
 
       - name: Apply Terraform changes (optional, requires confirmation)
-        run: terraform apply -auto-approve
+        run: terraform apply -auto-approve -var REGION=${{ secrets.TF_VAR_REGION }} -var API_DOMAIN_NAME=${{ secrets.TF_VAR_API_DOMAIN_NAME }} -var DOMAIN_NAME_CERTIFICATE_ARN=${{ secrets.TF_VAR_DOMAIN_NAME_CERTIFICATE_ARN }}
           
             
          
