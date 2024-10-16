@@ -50,7 +50,7 @@ export default async function Page({
       <TopMenu status={searchParams?.status} />
       <section className="flex flex-col gap-md">
         {orders.length > 0 ? (
-          orders.map((order) => <SaleSnippet log={log} key={order.order_id} order={order} />)
+          orders.map((order) => <SaleSnippet key={order.order_id} order={order} />)
         ) : (
           <h3 className="heading-h1 text-center">Aucunes ventes trouvées</h3>
         )}

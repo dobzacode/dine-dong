@@ -1,21 +1,19 @@
 import { constructS3Url, translateStatus } from '@/lib/utils';
 import { type OrderWithMealResponse } from '@/types/query';
-import { getSession } from '@auth0/nextjs-auth0';
 import { CheckIcon, Loader, X } from 'lucide-react';
 import moment from 'moment';
-import { Logger } from 'next-axiom';
 import Image from 'next/image';
 
 export default async function OrderSnippet({
   order,
-  log,
+
   isPurchase
 }: {
   order: OrderWithMealResponse;
-  log: Logger;
+
   isPurchase?: boolean;
 }) {
-  const session = await getSession();
+
 
   const icon = () => {
     switch (order.status) {

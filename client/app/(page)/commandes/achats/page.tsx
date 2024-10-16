@@ -53,7 +53,7 @@ export default async function Page({
       <section className="flex flex-col gap-md">
         {orders.length > 0 ? (
           orders.map((order) => (
-            <SaleSnippet isPurchase={true} log={log} key={order.order_id} order={order} />
+            <SaleSnippet isPurchase={true} key={order.order_id} order={order} />
           ))
         ) : (
           <h3 className="heading-h1 text-center">Aucuns achats trouvés</h3>
