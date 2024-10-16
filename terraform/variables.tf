@@ -52,7 +52,7 @@ variable "DATABASE__PASSWORD" {
 }
 
 variable "DATABASE__PORT" {
-  type = number
+  type = string
   description = "Database port"
 }
 
