@@ -1,11 +1,19 @@
 import { getUserInformations } from '@/lib/user/user-fetch';
-import { constructS3Url, getErrorMessage } from '@/lib/utils';
+import { cn, constructS3Url, getErrorMessage } from '@/lib/utils';
 import { Logger } from 'next-axiom';
 import Link from 'next/link';
 import ImagePulsing from '../ui/image-pulsing';
 import Rating from '../ui/rating';
 
-export async function UserInformations({ userSub }: { userSub: string }) {
+export async function UserInformations({
+  userSub,
+  className,
+  isOrderPage = false
+}: {
+  userSub: string;
+  className?: string;
+  isOrderPage?: boolean;
+}) {
   const log = new Logger();
   let user = null;
   try {
@@ -28,7 +36,7 @@ export async function UserInformations({ userSub }: { userSub: string }) {
   }
 
   return (
-    <section className="card flex h-fit items-center gap-md p-md">
+    <section className={cn('card flex h-fit items-center gap-md p-md', className)}>
       <Link
         href={`/utilisateur/${user.username}`}
         className="relative h-3xl w-3xl overflow-hidden rounded-xs"
@@ -44,10 +52,13 @@ export async function UserInformations({ userSub }: { userSub: string }) {
         />
       </Link>
       <div className="flex flex-col">
-        <Link href={`/utilisateur/${user.username}`} className="body font-medium">
+        <Link
+          href={`/utilisateur/${user.username}`}
+          className={cn('body font-medium', isOrderPage && 'body-sm font-normal')}
+        >
           {user.username}
         </Link>
-        <Rating value={3.5} />
+        {!isOrderPage ? <Rating value={3.5} /> : <p className="body-sm">{user.email}</p>}
       </div>
     </section>
   );

@@ -16,10 +16,6 @@ class OrderResponse(BaseResponse, Order):
     pass
 
 
-class OrderDetailResponse(OrderResponse):
-    meal: Meal
-
-
 class OrderSummary(BaseResponse):
     order_id: str
     status: Literal["FINALIZED", "CANCELLED", "IN_PROGRESS"]

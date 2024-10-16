@@ -11,8 +11,8 @@ from app.core.security.authenticate import VerifyToken
 from app.models import Meal, Order
 from app.schemas.responses import (
     ModifyOrderStatusResponse,
-    OrderDetailResponse,
     OrderSummary,
+    OrderWithMealResponse,
 )
 
 router = APIRouter()
@@ -60,7 +60,7 @@ async def get_order_summaries(
 
 @router.get(
     "/{order_id}",
-    response_model=OrderDetailResponse,
+    response_model=OrderWithMealResponse,
     description="Obtenir les détails d'une commande",
 )
 async def get_order(
@@ -71,7 +71,7 @@ async def get_order(
     auth: dict = Security(auth.verify),
 ):
     try:
-        query = select(Order).join(Meal).where(Order.order_id == order_id)
+        query = select(Order, Meal).join(Meal).where(Order.order_id == order_id)
         result = await session.execute(query)
         order = result.scalars().first()
 

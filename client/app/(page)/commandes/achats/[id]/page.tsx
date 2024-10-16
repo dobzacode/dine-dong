@@ -1,7 +1,10 @@
+import MealResume from '@/components/meal/achat/meal-resume';
+import OrderDetails from '@/components/orders/order-details';
 import { getOrderDetails, getOrdersSummaries } from '@/lib/order/order-fetch';
 import { getErrorMessage, translateStatus } from '@/lib/utils';
 import { OrderSummaryResponse } from '@/types/query';
 import { getSession } from '@auth0/nextjs-auth0';
+import moment from 'moment';
 import { type Metadata } from 'next';
 import { Logger } from 'next-axiom';
 import { notFound, redirect } from 'next/navigation';
@@ -78,5 +81,14 @@ export default async function Home({ params }: Props) {
     return notFound();
   }
 
-  return <p>{order.meal.name}</p>;
+  return (
+    <section className="flex w-full flex-col gap-sm">
+      <MealResume
+        isOrderPage={true}
+        title={`Achat du ${moment(order.create_time).format('DD/MM/YYYY à HH:mm')}`}
+        meal={order.meal}
+      />
+      <OrderDetails order={order} isSales={false} />
+    </section>
+  );
 }

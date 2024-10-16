@@ -11,13 +11,13 @@ export default function SideMenu() {
       <h1 className="heading-h1 whitespace-nowrap font-medium">Mes commandes</h1>
       <nav className="[&>a]:heading-h4 flex gap-md laptop-sm:flex-col laptop-sm:gap-sm">
         <Link
-          className={pathname === '/commandes/ventes' ? '' : 'text-grayed'}
+          className={pathname.includes('/ventes') ? '' : 'text-grayed'}
           href="/commandes/ventes"
         >
           Ventes
         </Link>
         <Link
-          className={pathname === '/commandes/achats' ? '' : 'text-grayed'}
+          className={pathname.includes('/achats') ? '' : 'text-grayed'}
           href="/commandes/achats"
         >
           Achats

@@ -1,9 +1,9 @@
-import { constructS3Url, translateStatus } from '@/lib/utils';
+import { constructS3Url } from '@/lib/utils';
 import { type OrderWithMealResponse } from '@/types/query';
-import { CheckIcon, Loader, X } from 'lucide-react';
 import moment from 'moment';
 import Image from 'next/image';
 import Link from 'next/link';
+import StatusLabel from './status-label';
 
 export default async function OrderSnippet({
   order,
@@ -14,17 +14,6 @@ export default async function OrderSnippet({
 
   isPurchase?: boolean;
 }) {
-  const icon = () => {
-    switch (order.status) {
-      case 'FINALIZED':
-        return <CheckIcon className="h-4 w-4 shrink-0 text-green-500" />;
-      case 'CANCELLED':
-        return <X className="h-4 w-4 shrink-0 text-error" />;
-      case 'IN_PROGRESS':
-        return <Loader className="h-4 w-4 shrink-0 text-primary-500" />;
-    }
-  };
-
   return (
     <Link
       href={`/commandes/${isPurchase ? 'achats' : 'ventes'}/${order.order_id}`}
@@ -42,10 +31,7 @@ export default async function OrderSnippet({
         </div>
         <div className="flex flex-col gap-xxs self-start">
           <p className="body font-medium">{order.meal.name}</p>
-          <div className="flex items-center gap-xs">
-            {icon()} <p className="body-sm">{translateStatus(order.status)}</p>
-          </div>
-
+          <StatusLabel status={order.status} />
           <p className="body-sm">
             {isPurchase ? 'Acheté' : 'Vendu'} le {moment(order.create_time).format('DD/MM/YYYY')}
           </p>
