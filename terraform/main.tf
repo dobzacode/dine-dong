@@ -52,6 +52,34 @@ module "lambda_function" {
   runtime       = "python3.10"
   publish       = true
   create_lambda_function_url = true
+  environment_variables = {
+    "SECURITY__JWT_SECRET_KEY" = var.SECURITY__JWT_SECRET_KEY
+    "SECURITY__BACKEND_CORS_ORIGINS" = var.SECURITY__BACKEND_CORS_ORIGINS
+    "SECURITY__ALLOWED_HOSTS" = var.SECURITY__ALLOWED_HOSTS
+
+    "DATABASE__HOSTNAME" = var.DATABASE__HOSTNAME
+    "DATABASE__USERNAME" = var.DATABASE__USERNAME
+    "DATABASE__PASSWORD" = var.DATABASE__PASSWORD
+    "DATABASE__PORT" = var.DATABASE__PORT
+    "DATABASE__DB" = var.DATABASE__DB
+
+    "AUTH0_DOMAIN" = var.AUTH0_DOMAIN
+    "AUTH0_API_AUDIENCE" = var.AUTH0_API_AUDIENCE
+    "AUTH0_ISSUER" = var.AUTH0_ISSUER
+    "AUTH0_ALGORITHMS" = var.AUTH0_ALGORITHMS
+
+    "BASE_URL" = var.BASE_URL
+
+    "STRIPE_SECRET_KEY" = var.STRIPE_SECRET_KEY
+    "WEBHOOK_SECRET" = var.WEBHOOK_SECRET
+
+    "KV_REST_API_URL" = var.KV_REST_API_URL
+    "KV_REST_API_TOKEN" = var.KV_REST_API_TOKEN
+
+    "AXIOM_DATASET" = var.AXIOM_DATASET
+    "AXIOM_TOKEN" = var.AXIOM_TOKEN
+  }
+    
 
   source_path = "${path.root}/../server"
 
