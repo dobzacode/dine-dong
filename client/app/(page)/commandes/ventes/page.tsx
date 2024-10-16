@@ -48,7 +48,7 @@ export default async function Page({
   return (
     <section className="card flex w-full flex-col gap-lg">
       <TopMenu status={searchParams?.status} />
-      <section className="flex flex-col gap-md">
+      <section className="flex flex-col gap-xs">
         {orders.length > 0 ? (
           orders.map((order) => <SaleSnippet key={order.order_id} order={order} />)
         ) : (

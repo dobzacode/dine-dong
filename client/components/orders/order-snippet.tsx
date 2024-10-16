@@ -3,6 +3,7 @@ import { type OrderWithMealResponse } from '@/types/query';
 import { CheckIcon, Loader, X } from 'lucide-react';
 import moment from 'moment';
 import Image from 'next/image';
+import Link from 'next/link';
 
 export default async function OrderSnippet({
   order,
@@ -13,8 +14,6 @@ export default async function OrderSnippet({
 
   isPurchase?: boolean;
 }) {
-
-
   const icon = () => {
     switch (order.status) {
       case 'FINALIZED':
@@ -27,7 +26,10 @@ export default async function OrderSnippet({
   };
 
   return (
-    <div className="flex w-full items-center justify-between gap-md">
+    <Link
+      href={`/commandes/${isPurchase ? 'achats' : 'ventes'}/${order.order_id}`}
+      className="flex w-full items-center justify-between gap-md rounded-sm p-sm duration-fast hover:bg-primary-50"
+    >
       <div className="flex items-center gap-md">
         <div className="relative h-3xl w-3xl overflow-hidden rounded-xs">
           <Image
@@ -51,6 +53,6 @@ export default async function OrderSnippet({
         </div>
       </div>
       <p className="body-sm text-grayed whitespace-nowrap">{order.meal.price} €</p>
-    </div>
+    </Link>
   );
 }

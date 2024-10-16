@@ -45,12 +45,10 @@ export default async function Page({
     await log.flush();
   }
 
-  console.log(orders);
-
   return (
     <section className="card flex w-full flex-col gap-lg">
       <TopMenu status={searchParams?.status} />
-      <section className="flex flex-col gap-md">
+      <section className="flex flex-col gap-xs">
         {orders.length > 0 ? (
           orders.map((order) => (
             <SaleSnippet isPurchase={true} key={order.order_id} order={order} />
