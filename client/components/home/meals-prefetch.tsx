@@ -30,7 +30,6 @@ export default async function MealsPrefetch({
   };
   const log = new Logger();
   let prefetchMeals: MealsPaginatedResponse | Error;
-
   try {
     prefetchMeals = await getMeals(
       { ...fetchOptions },
