@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Literal
 
 from pydantic import BaseModel, ConfigDict
 
@@ -13,6 +14,15 @@ class OrderResponse(BaseResponse, Order):
     create_time: datetime
     update_time: datetime
     pass
+
+
+class OrderDetailResponse(OrderResponse):
+    meal: Meal
+
+
+class OrderSummary(BaseResponse):
+    order_id: str
+    status: Literal["FINALIZED", "CANCELLED", "IN_PROGRESS"]
 
 
 class ModifyOrderStatusResponse(OrderResponse):

@@ -43,7 +43,8 @@ const createOrderMutation = async ({
     `meal-details-${dataResponse.meal_id}`,
     `user-${dataResponse.owner_sub}-meals`,
     `user-${dataResponse.owner_sub}-sales`,
-    `user-${dataResponse.user_sub}-purchases`
+    `user-${dataResponse.user_sub}-purchases`,
+    `order-details-${dataResponse.order_id}`
   ]);
   return dataResponse;
 };

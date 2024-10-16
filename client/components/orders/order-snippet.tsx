@@ -47,8 +47,7 @@ export default async function OrderSnippet({
           </div>
 
           <p className="body-sm">
-            {isPurchase ? 'Acheté' : 'Vendu'} le{' '}
-            {moment(order.create_time).format('DD/MM/YYYY à HH:mm')}
+            {isPurchase ? 'Acheté' : 'Vendu'} le {moment(order.create_time).format('DD/MM/YYYY')}
           </p>
         </div>
       </div>

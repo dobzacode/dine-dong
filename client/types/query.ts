@@ -4,6 +4,7 @@ import type {
   IngredientMeal,
   Meal,
   Order,
+  OrderStatusEnum,
   PaymentMethodsEnum,
   UnitEnum,
   User
@@ -22,6 +23,11 @@ export interface MealResponse extends Meal {
 
 export interface OrderWithMealResponse extends Order {
   meal: MealResponse;
+}
+
+export interface OrderSummaryResponse {
+  order_id: string;
+  status: keyof typeof OrderStatusEnum;
 }
 
 export interface ModifyOrderStatusResponse extends OrderResponse {
