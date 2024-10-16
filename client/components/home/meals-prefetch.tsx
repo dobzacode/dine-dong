@@ -34,7 +34,15 @@ export default async function MealsPrefetch({
   try {
     prefetchMeals = await getMeals(
       { ...fetchOptions },
-      { next: { tags: ['search-meals', user_sub ? `user-${user_sub}-meals` : ''] } }
+      {
+        next: {
+          tags: [
+            'search-meals',
+            JSON.stringify(fetchOptions),
+            user_sub ? `user-${user_sub}-meals` : ''
+          ]
+        }
+      }
     );
   } catch (error) {
     const message = getErrorMessage(error);

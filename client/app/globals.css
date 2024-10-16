@@ -123,7 +123,7 @@
   }
 
   .inner-section-gap {
-    @apply gap-md mobile-lg:gap-lg tablet:gap-xl;
+    @apply gap-md mobile-lg:gap-lg tablet:gap-xl laptop-sm:gap-2xl laptop:gap-4xl;
   }
 }
 

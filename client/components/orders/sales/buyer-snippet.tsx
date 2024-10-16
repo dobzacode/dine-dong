@@ -39,7 +39,7 @@ export default async function BuyerSnippet({
 
   return (
     <div className="body-sm flex gap-xs">
-      <p>Vendu le {moment(order.create_time).format('DD/MM/YYYY à HH:mm')} à </p>
+      <p>Vendu le {moment(order.create_time).format('DD/MM/YYYY')} à </sp>
       <Link className="duration-fast hover:opacity-80" href={`/utilisateur/${buyer.username}`}>
         {buyer.username}
       </Link>

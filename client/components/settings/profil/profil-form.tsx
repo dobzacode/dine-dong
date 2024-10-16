@@ -191,7 +191,7 @@ export default function ProfilForm({
     <FormProvider {...form}>
       <form
         className={cn(
-          'laptop-sm:section-px container mx-auto flex flex-col gap-md laptop-sm:max-w-[800px]',
+          'laptop-sm:section-px mx-auto flex w-full flex-col gap-md',
           isPending && 'pointer-events-none animate-pulse'
         )}
       >
