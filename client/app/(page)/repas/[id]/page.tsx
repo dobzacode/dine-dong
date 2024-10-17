@@ -4,10 +4,9 @@ import ImagePulsing from '@/components/ui/image-pulsing';
 import { getMealDetails, getMealsSummaries } from '@/lib/meal/meal-fetch';
 import { constructS3Url, getErrorMessage } from '@/lib/utils';
 import { type MealSummaryResponse } from '@/types/query';
-import { getSession } from '@auth0/nextjs-auth0';
 import { type Metadata } from 'next';
 import { Logger } from 'next-axiom';
-import { notFound, redirect } from 'next/navigation';
+import { notFound } from 'next/navigation';
 
 type Props = {
   params: { id: string };
@@ -64,19 +63,10 @@ export default async function Home({ params }: Props) {
   const log = new Logger();
   let meal;
 
-  const session = await getSession();
-
-  if (!session?.user?.sub || !session.accessToken) {
-    redirect('/');
-  }
-
   try {
     meal = await getMealDetails(params, {
       next: {
         tags: [`meal-details-${params.id}`]
-      },
-      headers: {
-        Authorization: `Bearer ${session.accessToken}`
       }
     });
   } catch (error) {
