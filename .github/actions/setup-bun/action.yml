@@ -8,13 +8,9 @@ defaults:
 runs:
   using: composite
   steps:
-    - uses: pnpm/action-setup@v4
+    - uses: oven-sh/setup-bun@v2
       with:
-        version: latest
-    - uses: actions/setup-node@v4
-      with:
-        node-version: 20
-        cache: "pnpm"
+        bun-version: latest
 
     - shell: bash
-      run: pnpm install
+      run: bun install
