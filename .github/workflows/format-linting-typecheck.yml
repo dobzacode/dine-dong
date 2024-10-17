@@ -17,7 +17,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Setup
-        uses: ./.github/actions/setup-node-pnpm
+        uses: ./.github/actions/setup-bun
       - name: Lint
         run: pnpm lint
 
@@ -26,7 +26,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Setup
-        uses: ./.github/actions/setup-node-pnpm
+        uses: ./.github/actions/setup-bun
       - name: Format
         run: pnpm prettier:check
 
@@ -35,7 +35,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Setup
-        uses: ./.github/actions/setup-node-pnpm
+        uses: ./.github/actions/setup-bun
       - name: Typecheck
         run: pnpm typecheck
 
