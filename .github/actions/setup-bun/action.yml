@@ -1,9 +1,6 @@
 name: "Setup and Install"
 description: "Common setup steps for Actions"
 
-defaults:
-  run:
-    working-directory: ./client
 
 runs:
   using: composite
@@ -16,4 +13,3 @@ runs:
       shell: bash
     - run: bun install
       shell: bash
-      working-directory: ./client
