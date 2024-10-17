@@ -46,41 +46,28 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with: 
-          path: ./server
 
       - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12.2"
-
-      - name: Install Poetry
-        uses: snok/install-poetry@v1
-        with:
-          virtualenvs-create: true
-          virtualenvs-in-project: true
-
-      - name: Install Poetry
-        uses: snok/install-poetry@v1
-        with:
-          virtualenvs-create: true
-          virtualenvs-in-project: false
-          virtualenvs-path: /opt/venv
-
-      - name: Load cached venv
-        id: cached-poetry-dependencies
-        uses: actions/cache@v4
-        with:
-          path: /opt/venv
-          key: venv-${{ runner.os }}-python-3.12.2-${{ hashFiles('server/poetry.lock') }}
-
-      - name: Install dependencies and activate virtualenv
-        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
         run: |
+          cd server
+          python3 -m venv .venv
+          source .venv/bin/activate
+
+      - name: Install Poetry
+        run: |
+          cd server
+          pip install poetry
+
+      - name: Install dependencies
+        run: |
+          cd server
+          poetry config virtualenvs.create true
+          poetry config virtualenvs.in-project true
           poetry install --no-interaction --no-root
 
       - name: Run ${{ matrix.check }}
         run: |
+          cd server
           poetry run ${{ matrix.check }} .
 
   trigger-workflows:
