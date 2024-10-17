@@ -63,8 +63,7 @@ jobs:
             "AXIOM_DATASET": "${{ secrets.TF_VAR_AXIOM_DATASET }}",
             "AXIOM_TOKEN": "${{ secrets.TF_VAR_AXIOM_TOKEN }}"
           }
-          EOF 
-
+          EOF
       - name: Plan Terraform changes
         run: terraform plan -no-color -var-file=terraform.tfvars.json
 
