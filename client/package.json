@@ -10,7 +10,8 @@
     "format": "prettier --check . --ignore-path ../../.gitignore",
     "test": "bun lint && bun prettier:check",
     "prepare": "husky",
-    "prettier:check": "prettier --check ."
+    "prettier:check": "prettier --check . --write",
+    "typecheck": "tsc --noEmit"
   },
   "config": {
     "commitizen": {

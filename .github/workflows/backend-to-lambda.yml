@@ -6,16 +6,10 @@ env:
 
 on:
   workflow_dispatch:
-  push:
-    branches: [ 'main' ]
-    paths:
-      - 'backend/**'
-      - 'terraform/**'
-  pull_request:
-    branches: [ 'main' ]
-    paths:
-      - 'backend/**'
-      - 'terraform/**'
+
+concurrency: 
+  group: build
+  cancel-in-progress: true
 
 jobs:
   deploy:
