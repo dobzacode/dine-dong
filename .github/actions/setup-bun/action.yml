@@ -1,6 +1,9 @@
 name: "Setup and Install"
 description: "Common setup steps for Actions"
 
+defaults:
+  run:
+    working-directory: ./client
 
 runs:
   using: composite
