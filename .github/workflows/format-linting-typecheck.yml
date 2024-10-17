@@ -88,10 +88,10 @@ jobs:
           files_yaml: |
             client: 
               - client/**
-              - .github/workflows/nextjs.yml
+              - .github/workflows/client-build.yml
             server:
               - server/**
-              - .github/workflows/fastapi.yml
+              - .github/workflows/backend-to-lambda.yml
               - terraform/**
 
       - name: Trigger FastAPI Build and Push Workflow
