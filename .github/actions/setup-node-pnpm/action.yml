@@ -11,6 +11,7 @@ runs:
     - uses: pnpm/action-setup@v4
     - uses: actions/setup-node@v4
       with:
+        pnpm-version: latest
         node-version: 20
         cache: "pnpm"
 
