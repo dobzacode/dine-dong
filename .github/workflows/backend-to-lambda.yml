@@ -58,7 +58,13 @@ jobs:
         
 
       - name: Plan Terraform changes
-        run: terraform plan -no-color \ -var SECURITY__ALLOWED_HOSTS=${{secrets.TF_VAR_SECURITY__ALLOWED_HOSTS}} \ -var SECURITY__BACKEND_CORS_ORIGINS=${{secrets.TF_VAR_SECURITY__BACKEND_CORS_ORIGINS}}
+        run: |
+          terraform plan -no-color \
+            -var=SECURITY__ALLOWED_HOSTS=${{ secrets.TF_VAR_SECURITY__ALLOWED_HOSTS }} \
+            -var=SECURITY__BACKEND_CORS_ORIGINS=${{ secrets.TF_VAR_SECURITY__BACKEND_CORS_ORIGINS }}
 
       - name: Apply Terraform changes (optional, requires confirmation)
-        run: terraform apply -auto-approve \ -var SECURITY__ALLOWED_HOSTS=${{secrets.TF_VAR_SECURITY__ALLOWED_HOSTS}} \ -var SECURITY__BACKEND_CORS_ORIGINS=${{secrets.TF_VAR_SECURITY__BACKEND_CORS_ORIGINS}}
+        run: |
+          terraform apply -auto-approve \
+            -var=SECURITY__ALLOWED_HOSTS=${{ secrets.TF_VAR_SECURITY__ALLOWED_HOSTS }} \
+            -var=SECURITY__BACKEND_CORS_ORIGINS=${{ secrets.TF_VAR_SECURITY__BACKEND_CORS_ORIGINS }}
