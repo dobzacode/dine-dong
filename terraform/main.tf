@@ -53,31 +53,31 @@ module "lambda_function" {
   publish       = true
   create_lambda_function_url = true
   environment_variables = {
-    SECURITY__JWT_SECRET_KEY = var.configuration.SECURITY__JWT_SECRET_KEY
-    SECURITY__BACKEND_CORS_ORIGINS = jsonencode(var.configuration.SECURITY__BACKEND_CORS_ORIGINS)
-    SECURITY__ALLOWED_HOSTS = jsonencode(var.configuration.SECURITY__ALLOWED_HOSTS)
+    SECURITY__JWT_SECRET_KEY = var.configuration.SECURITY.JWT_SECRET_KEY
+    SECURITY__BACKEND_CORS_ORIGINS = jsonencode(var.configuration.SECURITY.BACKEND_CORS_ORIGINS)
+    SECURITY__ALLOWED_HOSTS = jsonencode(var.configuration.SECURITY.ALLOWED_HOSTS)
 
-    DATABASE__HOSTNAME = var.configuration.DATABASE__HOSTNAME
-    DATABASE__USERNAME = var.configuration.DATABASE__USERNAME
-    DATABASE__PASSWORD = var.configuration.DATABASE__PASSWORD
-    DATABASE__PORT = var.configuration.DATABASE__PORT
-    DATABASE__DB = var.configuration.DATABASE__DB
+    DATABASE__HOSTNAME = var.configuration.DATABASE.HOSTNAME
+    DATABASE__USERNAME = var.configuration.DATABASE.USERNAME
+    DATABASE__PASSWORD = var.configuration.DATABASE.PASSWORD
+    DATABASE__PORT = var.configuration.DATABASE.PORT
+    DATABASE__DB = var.configuration.DATABASE.DB
 
-    AUTH0_DOMAIN = var.configuration.AUTH0_DOMAIN
-    AUTH0_API_AUDIENCE = var.configuration.AUTH0_API_AUDIENCE
-    AUTH0_ISSUER = var.configuration.AUTH0_ISSUER
-    AUTH0_ALGORITHMS = var.configuration.AUTH0_ALGORITHMS
+    AUTH0_DOMAIN = var.configuration.AUTH0.DOMAIN
+    AUTH0_API_AUDIENCE = var.configuration.AUTH0.API_AUDIENCE
+    AUTH0_ISSUER = var.configuration.AUTH0.ISSUER
+    AUTH0_ALGORITHMS = var.configuration.AUTH0.ALGORITHMS
 
     BASE_URL = var.configuration.BASE_URL
 
-    STRIPE_SECRET_KEY = var.configuration.STRIPE_SECRET_KEY
+    STRIPE_SECRET_KEY = var.configuration.STRIPE.SECRET_KEY
     WEBHOOK_SECRET = var.configuration.WEBHOOK_SECRET
 
-    KV_REST_API_URL = var.configuration.KV_REST_API_URL
-    KV_REST_API_TOKEN = var.configuration.KV_REST_API_TOKEN
+    KV_REST_API_URL = var.configuration.KV.REST_API_URL
+    KV_REST_API_TOKEN = var.configuration.KV.REST_API_TOKEN
 
-    AXIOM_DATASET = var.configuration.AXIOM_DATASET
-    AXIOM_TOKEN = var.configuration.AXIOM_TOKEN
+    AXIOM_DATASET = var.configuration.AXIOM.DATASET
+    AXIOM_TOKEN = var.configuration.AXIOM.TOKEN
   }
     
 
