@@ -16,7 +16,7 @@ export default async function Home({ params }: { params: { id: string } }) {
     meal = await getMealDetails(params, {
       next: {
         tags: [`meal-details-${params.id}`]
-      }
+        }
     });
   } catch (error) {
     const message = getErrorMessage(error);

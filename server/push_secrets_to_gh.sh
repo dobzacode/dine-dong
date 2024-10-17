@@ -49,9 +49,6 @@ while IFS= read -r line || [[ -n "$line" ]]; do
         SECRET_NAME="${BASH_REMATCH[1]}"
         SECRET_VALUE="${BASH_REMATCH[2]}"
 
-        # Remove possible surrounding quotes from the value
-        SECRET_VALUE=$(echo "$SECRET_VALUE" | sed -e 's/^"//' -e 's/"$//')
-
         echo "Processing secret: $SECRET_NAME"
 
         # Set the secret using gh secret set
