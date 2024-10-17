@@ -40,28 +40,28 @@ jobs:
         run: |
           cat > terraform.tfvars.json <<EOF
           {
-            "REGION": "${{ secrets.TF_VAR_REGION }}",
-            "API_DOMAIN_NAME": "${{ secrets.TF_VAR_API_DOMAIN_NAME }}",
-            "DOMAIN_NAME_CERTIFICATE_ARN": "${{ secrets.TF_VAR_DOMAIN_NAME_CERTIFICATE_ARN }}",
-            "SECURITY__JWT_SECRET_KEY": "${{ secrets.TF_VAR_SECURITY__JWT_SECRET_KEY }}",
+            "REGION": ${{ secrets.TF_VAR_REGION }},
+            "API_DOMAIN_NAME": ${{ secrets.TF_VAR_API_DOMAIN_NAME }},
+            "DOMAIN_NAME_CERTIFICATE_ARN": ${{ secrets.TF_VAR_DOMAIN_NAME_CERTIFICATE_ARN }},
+            "SECURITY__JWT_SECRET_KEY": ${{ secrets.TF_VAR_SECURITY__JWT_SECRET_KEY }},
             "SECURITY__BACKEND_CORS_ORIGINS": ${{ secrets.TF_VAR_SECURITY__BACKEND_CORS_ORIGINS }},
             "SECURITY__ALLOWED_HOSTS": ${{ secrets.TF_VAR_SECURITY__ALLOWED_HOSTS }},
-            "DATABASE__HOSTNAME": "${{ secrets.TF_VAR_DATABASE__HOSTNAME }}",
-            "DATABASE__USERNAME": "${{ secrets.TF_VAR_DATABASE__USERNAME }}",
-            "DATABASE__PASSWORD": "${{ secrets.TF_VAR_DATABASE__PASSWORD }}",
-            "DATABASE__PORT": "${{ secrets.TF_VAR_DATABASE__PORT }}",
-            "DATABASE__DB": "${{ secrets.TF_VAR_DATABASE__DB }}",
-            "AUTH0_DOMAIN": "${{ secrets.TF_VAR_AUTH0_DOMAIN }}",
-            "AUTH0_API_AUDIENCE": "${{ secrets.TF_VAR_AUTH0_API_AUDIENCE }}",
-            "AUTH0_ISSUER": "${{ secrets.TF_VAR_AUTH0_ISSUER }}",
-            "AUTH0_ALGORITHMS": "${{ secrets.TF_VAR_AUTH0_ALGORITHMS }}",
-            "BASE_URL": "${{ secrets.TF_VAR_BASE_URL }}",
-            "STRIPE_SECRET_KEY": "${{ secrets.TF_VAR_STRIPE_SECRET_KEY }}",
-            "WEBHOOK_SECRET": "${{ secrets.TF_VAR_WEBHOOK_SECRET }}",
-            "KV_REST_API_URL": "${{ secrets.TF_VAR_KV_REST_API_URL }}",
-            "KV_REST_API_TOKEN": "${{ secrets.TF_VAR_KV_REST_API_TOKEN }}",
-            "AXIOM_DATASET": "${{ secrets.TF_VAR_AXIOM_DATASET }}",
-            "AXIOM_TOKEN": "${{ secrets.TF_VAR_AXIOM_TOKEN }}"
+            "DATABASE__HOSTNAME": ${{ secrets.TF_VAR_DATABASE__HOSTNAME }},
+            "DATABASE__USERNAME": ${{ secrets.TF_VAR_DATABASE__USERNAME }},
+            "DATABASE__PASSWORD": ${{ secrets.TF_VAR_DATABASE__PASSWORD }},
+            "DATABASE__PORT": ${{ secrets.TF_VAR_DATABASE__PORT }},
+            "DATABASE__DB": ${{ secrets.TF_VAR_DATABASE__DB }},
+            "AUTH0_DOMAIN": ${{ secrets.TF_VAR_AUTH0_DOMAIN }},
+            "AUTH0_API_AUDIENCE": ${{ secrets.TF_VAR_AUTH0_API_AUDIENCE }},
+            "AUTH0_ISSUER": ${{ secrets.TF_VAR_AUTH0_ISSUER }},
+            "AUTH0_ALGORITHMS": ${{ secrets.TF_VAR_AUTH0_ALGORITHMS }},
+            "BASE_URL": ${{ secrets.TF_VAR_BASE_URL }},
+            "STRIPE_SECRET_KEY": ${{ secrets.TF_VAR_STRIPE_SECRET_KEY }},
+            "WEBHOOK_SECRET": ${{ secrets.TF_VAR_WEBHOOK_SECRET }},
+            "KV_REST_API_URL": ${{ secrets.TF_VAR_KV_REST_API_URL }},
+            "KV_REST_API_TOKEN": ${{ secrets.TF_VAR_KV_REST_API_TOKEN }},
+            "AXIOM_DATASET": ${{ secrets.TF_VAR_AXIOM_DATASET }},
+            "AXIOM_TOKEN": ${{ secrets.TF_VAR_AXIOM_TOKEN }}
           }
           EOF
 
