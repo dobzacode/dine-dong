@@ -39,7 +39,7 @@ export async function UserInformations({
     <section className={cn('card flex h-fit items-center gap-md p-md', className)}>
       <Link
         href={`/utilisateur/${user.username}`}
-        className="relative h-3xl w-3xl overflow-hidden rounded-xs"
+        className="relative h-3xl w-3xl shrink-0 overflow-hidden rounded-xs"
       >
         <ImagePulsing
           skeletoncss={'h-full w-full object-cover absolute object-center rounded-xs'}
@@ -58,7 +58,11 @@ export async function UserInformations({
         >
           {user.username}
         </Link>
-        {!isOrderPage ? <Rating value={3.5} /> : <p className="body-sm">{user.email}</p>}
+        {!isOrderPage ? (
+          <Rating value={3.5} />
+        ) : (
+          <p className="body-sm text-ellipsis break-words">{user.email}</p>
+        )}
       </div>
     </section>
   );

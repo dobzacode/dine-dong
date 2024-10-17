@@ -1,4 +1,4 @@
-import { OrderWithMealResponse, type UserResponse } from '@/types/query';
+import { type OrderWithMealResponse, type UserResponse } from '@/types/query';
 import { getBasePath } from '../utils';
 
 export async function getUserInformations(

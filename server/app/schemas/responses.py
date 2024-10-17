@@ -17,6 +17,8 @@ class OrderResponse(BaseResponse, Order):
 
 
 class OrderSummary(BaseResponse):
+    create_time: datetime
+    update_time: datetime
     order_id: str
     status: Literal["FINALIZED", "CANCELLED", "IN_PROGRESS"]
 

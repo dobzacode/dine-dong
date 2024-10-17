@@ -1,5 +1,5 @@
 import { getGeolocation } from '@/lib/server-only-utils';
-import { AxiomRequest, withAxiom } from 'next-axiom';
+import { type AxiomRequest, withAxiom } from 'next-axiom';
 
 import { NextResponse } from 'next/server';
 

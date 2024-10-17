@@ -1,5 +1,5 @@
 import { constructS3Url } from '@/lib/utils';
-import { MealDetailsResponse } from '@/types/query';
+import { type MealDetailsResponse } from '@/types/query';
 import Image from 'next/image';
 import Link from 'next/link';
 import LocationMap from '../meal-form/location-map';

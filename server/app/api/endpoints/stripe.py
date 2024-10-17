@@ -54,44 +54,43 @@ async def create_payment_intent(
     logger: logging.Logger = Depends(deps.get_logger),
     auth: dict = Security(auth.verify),
 ):
-    try:
-        check_redis = kv.get(request.mealId)
-
-        if check_redis is not None:
-            return JSONResponse(
-                status_code=403,
-                content={"message": "Une transaction est déjà en cours"},
-            )
-    except Exception as e:
-        print(e, "Error")
-        raise HTTPException(status_code=404, detail="Repas non trouvé")
+    check_redis = kv.get(request.mealId)
+    if check_redis is not None:
+        return JSONResponse(
+            status_code=403, content={"message": "Une transaction est déjà en cours"}
+        )
 
     try:
-        query = (
+        query_order = (
             select(Order)
             .where(Order.meal_id == request.mealId)
             .where(Order.user_sub == request.userSub)
         )
-        result = await session.execute(query)
+        result = await session.execute(query_order)
         order = result.scalars().first()
 
         if order is not None and order.status in ("IN_PROGRESS", "FINALIZED"):
             return JSONResponse(
-                status_code=403,
-                content={"message": "Une transaction est déjà en cours"},
+                status_code=403, content={"message": "Une commande est déjà en cours"}
             )
 
-    except Exception as e:
-        print(e, "Error")
-        logger.error(
-            f"Une erreur est survenue lors de la récupération de l'ordre pour le repas {request.mealId}, erreur : {e}"
-        )
-        raise HTTPException(
-            status_code=500,
-            detail="Une erreur est survenue lors de la récupération de l'ordre",
-        )
+        query_meal = select(Meal).where(Meal.meal_id == request.mealId)
+        result = await session.execute(query_meal)
+        meal = result.scalars().first()
 
-    try:
+        if meal is None:
+            return JSONResponse(
+                status_code=404, content={"message": "Repas non trouvé"}
+            )
+
+        if meal.user_sub == request.userSub:
+            return JSONResponse(
+                status_code=403,
+                content={
+                    "message": "Le plat ne peut pas être acheté par la personne l'ayant produit"
+                },
+            )
+
         payment_intent = stripe.PaymentIntent.create(
             amount=request.amount * 100,
             currency=request.currency,
@@ -108,21 +107,17 @@ async def create_payment_intent(
             )
 
         logger.info(f"Payment intent {payment_intent.id} créé avec succès")
-
         return {
             "status": "success",
             "clientSecret": payment_intent.client_secret,
             "id": payment_intent.id,
         }
+
     except Exception as e:
-        print(e)
         logger.error(
             f"Une erreur est survenue lors de la création de l'intent pour le repas {request.mealId}, erreur : {e}"
         )
-        raise HTTPException(
-            status_code=500,
-            detail="Une erreur est survenue lors de la création de l'intent",
-        )
+        raise HTTPException(status_code=500, detail="Une erreur est survenue")
 
 
 @router.post("/webhooks")

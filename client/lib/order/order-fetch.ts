@@ -1,4 +1,6 @@
-import { OrderWithMealResponse } from '@/types/query';
+import { type ModifyOrderStatusResponse, type OrderWithMealResponse } from '@/types/query';
+import { type OrderStatusEnum } from '@/types/schema';
+import { customRevalidateTag } from '../actions';
 import { getBasePath } from '../utils';
 
 export async function getOrdersSummaries<T>(params?: { id?: string }, request: RequestInit = {}) {
@@ -39,3 +41,43 @@ export async function getOrderDetails(params: { orderId: string }, request: Requ
       throw new Error('Erreur inconnue');
   }
 }
+
+export const modifyOrderMutation = async ({
+  status,
+  token,
+  orderId
+}: {
+  status: keyof typeof OrderStatusEnum;
+  token?: string;
+  orderId: string;
+}) => {
+  if (!token) {
+    throw new Error('Token is required');
+  }
+
+  const response = await fetch(
+    `${getBasePath()}/api/orders/${orderId}/status?new_status=${status}`,
+    {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      }
+    }
+  );
+  if (!response.ok) {
+    const error = (await response.json()) as { detail: string };
+    console.log(error);
+    throw new Error(error.detail);
+  }
+  const dataResponse = (await response.json()) as ModifyOrderStatusResponse;
+  customRevalidateTag([
+    'search-meals',
+    `meal-details-${dataResponse.meal_id}`,
+    `user-${dataResponse.owner_sub}-meals`,
+    `user-${dataResponse.owner_sub}-sales`,
+    `user-${dataResponse.user_sub}-purchases`,
+    `order-details-${dataResponse.order_id}`
+  ]);
+  return dataResponse;
+};

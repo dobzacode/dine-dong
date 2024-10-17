@@ -28,6 +28,8 @@ export interface OrderWithMealResponse extends Order {
 export interface OrderSummaryResponse {
   order_id: string;
   status: keyof typeof OrderStatusEnum;
+  create_time: string;
+  update_time: string;
 }
 
 export interface ModifyOrderStatusResponse extends OrderResponse {

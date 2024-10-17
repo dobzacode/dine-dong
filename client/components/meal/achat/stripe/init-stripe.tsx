@@ -1,6 +1,6 @@
 'use client';
 
-import { UserResponse } from '@/types/query';
+import { type UserResponse } from '@/types/query';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe, type BaseStripeElementsOptions } from '@stripe/stripe-js';
 import CheckoutForm from './checkout-form';

@@ -2,7 +2,7 @@ import MealResume from '@/components/meal/achat/meal-resume';
 import OrderDetails from '@/components/orders/order-details';
 import { getOrderDetails, getOrdersSummaries } from '@/lib/order/order-fetch';
 import { getErrorMessage, translateStatus } from '@/lib/utils';
-import { OrderSummaryResponse } from '@/types/query';
+import { type OrderSummaryResponse } from '@/types/query';
 import { getSession } from '@auth0/nextjs-auth0';
 import moment from 'moment';
 import { type Metadata } from 'next';
@@ -51,7 +51,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata | un
   console.log(order);
 
   return {
-    title: `Vente ${order.order_id} | ${translateStatus(order.status)}`
+    title: `Vente du ${moment(order.create_time).format('DD/MM/YYYY à HH:mm')} | ${translateStatus(order.status)}`
   } satisfies Metadata;
 }
 
@@ -88,7 +88,7 @@ export default async function Home({ params }: Props) {
         title={`Vente du ${moment(order.create_time).format('DD/MM/YYYY à HH:mm')}`}
         meal={order.meal}
       />
-      <OrderDetails order={order} isSales={true} />
+      <OrderDetails token={session.accessToken} order={order} isSales={true} />
     </section>
   );
 }

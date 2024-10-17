@@ -1,8 +1,8 @@
 import { getUserInformations } from '@/lib/user/user-fetch';
 import { getErrorMessage } from '@/lib/utils';
-import { OrderWithMealResponse } from '@/types/query';
+import { type OrderWithMealResponse } from '@/types/query';
 import moment from 'moment';
-import { Logger } from 'next-axiom';
+import { type Logger } from 'next-axiom';
 import Link from 'next/link';
 
 export default async function BuyerSnippet({

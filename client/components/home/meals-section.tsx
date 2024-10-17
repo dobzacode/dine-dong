@@ -39,7 +39,6 @@ const MealsSection = ({
     };
   }, [location, passedOptions]);
 
-
   const { data, isFetchingNextPage, fetchNextPage, isError, error } = useInfiniteQuery<
     MealsPaginatedResponse,
     Error

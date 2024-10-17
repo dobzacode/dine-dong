@@ -50,7 +50,7 @@ export default async function MealBuyButton({
       )}
       href={user?.user_sub ? `/repas/${mealId}/achat` : '/api/auth/login'}
     >
-      Acheter
+      Acheter le repas
     </Link>
   );
 }

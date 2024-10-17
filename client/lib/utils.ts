@@ -1,4 +1,4 @@
-import { OrderStatusEnum } from '@/types/schema';
+import { type OrderStatusEnum } from '@/types/schema';
 import { clsx, type ClassValue } from 'clsx';
 import { Children, isValidElement } from 'react';
 import { twMerge } from 'tailwind-merge';

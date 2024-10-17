@@ -1,6 +1,6 @@
 import { CreatePaymentIntent } from '@/lib/stripe/stripe-fetch';
 import { getErrorMessage } from '@/lib/utils';
-import { UserResponse } from '@/types/query';
+import { type UserResponse } from '@/types/query';
 import { Logger } from 'next-axiom';
 import InitStripe from './init-stripe';
 
@@ -12,6 +12,7 @@ interface CheckoutProps {
   ownerSub: string;
   isNewPaymentIntent: boolean;
   user: UserResponse;
+  token: string;
 }
 
 const Checkout = async ({
@@ -21,6 +22,7 @@ const Checkout = async ({
   user,
   mealId,
   ownerSub,
+  token,
   isNewPaymentIntent
 }: CheckoutProps) => {
   const log = new Logger();
@@ -33,7 +35,8 @@ const Checkout = async ({
       description,
       userSub: user.user_sub,
       mealId,
-      isNewPaymentIntent
+      isNewPaymentIntent,
+      token
     });
   } catch (error) {
     const message = getErrorMessage(error);

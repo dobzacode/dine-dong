@@ -268,6 +268,8 @@ class Order(Base):
     meal: Mapped["Meal"] = relationship(back_populates="orders", lazy="selectin")
     meal_id: Mapped[str] = mapped_column(ForeignKey("meal.meal_id"), nullable=False)
 
+    cancellation_reason = mapped_column(String(256), nullable=True)
+
     status: Mapped[StatusEnum] = mapped_column(
         SqlEnum(
             *get_args(StatusEnum),

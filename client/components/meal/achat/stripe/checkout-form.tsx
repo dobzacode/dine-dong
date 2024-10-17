@@ -2,7 +2,7 @@
 
 import { customRevalidateTag } from '@/lib/actions';
 import { getBasePath } from '@/lib/utils';
-import { UserResponse } from '@/types/query';
+import { type UserResponse } from '@/types/query';
 import { PaymentElement, useElements, useStripe } from '@stripe/react-stripe-js';
 import { ShieldCheck } from 'lucide-react';
 import { useLogger } from 'next-axiom';

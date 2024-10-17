@@ -19,7 +19,7 @@ import NextPrev from '../../ui/next-prev';
 import StepsIndicator from '../../ui/steps-indicator';
 
 import { useToast } from '@/components/ui/use-toast';
-import { Logger, useLogger } from 'next-axiom';
+import { type Logger, useLogger } from 'next-axiom';
 import { useRouter } from 'next/navigation';
 import { userSchema, type UserSchema } from './user-schema';
 import WizardFinalStep from './wizard-final-step';

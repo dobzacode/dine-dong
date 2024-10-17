@@ -14,7 +14,7 @@ export default async function Page({ params }: { params: { id: string } }) {
   const session = await getSession();
   const log = new Logger();
 
-  if (!session?.user?.sub) {
+  if (!session?.user?.sub || !session?.accessToken) {
     redirect(`/repas/${params.id}`);
   }
 

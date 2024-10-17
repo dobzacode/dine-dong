@@ -30,7 +30,9 @@ async def get_order_summaries(
     logger: logging.Logger = Depends(deps.get_logger),
 ):
     try:
-        query = select(Order.order_id, Order.status)
+        query = select(
+            Order.order_id, Order.status, Order.create_time, Order.update_time
+        )
 
         if id:
             query = query.where(Order.order_id == id)
@@ -52,8 +54,13 @@ async def get_order_summaries(
     if not order_summaries:
         raise HTTPException(status_code=404, detail="Aucunes commandes trouvées")
     orders = [
-        {"order_id": order_id, "status": order_status}
-        for order_id, order_status in order_summaries
+        {
+            "order_id": order_id,
+            "status": order_status,
+            "create_time": create_time,
+            "update_time": update_time,
+        }
+        for order_id, order_status, create_time, update_time in order_summaries
     ]
     return orders
 

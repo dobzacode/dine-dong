@@ -2,7 +2,7 @@ import MealResume from '@/components/meal/achat/meal-resume';
 import OrderDetails from '@/components/orders/order-details';
 import { getOrderDetails, getOrdersSummaries } from '@/lib/order/order-fetch';
 import { getErrorMessage, translateStatus } from '@/lib/utils';
-import { OrderSummaryResponse } from '@/types/query';
+import { type OrderSummaryResponse } from '@/types/query';
 import { getSession } from '@auth0/nextjs-auth0';
 import moment from 'moment';
 import { type Metadata } from 'next';
@@ -33,7 +33,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata | un
 
   let order;
   try {
-    order = await getOrdersSummaries<OrderSummaryResponse>(params, {
+    [order] = await getOrdersSummaries<OrderSummaryResponse[]>(params, {
       next: {
         tags: [`order-details-${params.id}`]
       }
@@ -48,10 +48,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata | un
     return undefined;
   }
 
-  console.log(order);
-
   return {
-    title: `Achat ${order.order_id} | ${translateStatus(order.status)}`
+    title: `Achat du ${moment(order.create_time).format('DD/MM/YYYY à HH:mm')} | ${translateStatus(order.status)}`
   } satisfies Metadata;
 }
 
@@ -88,7 +86,7 @@ export default async function Home({ params }: Props) {
         title={`Achat du ${moment(order.create_time).format('DD/MM/YYYY à HH:mm')}`}
         meal={order.meal}
       />
-      <OrderDetails order={order} isSales={false} />
+      <OrderDetails token={session.accessToken} order={order} isSales={false} />
     </section>
   );
 }

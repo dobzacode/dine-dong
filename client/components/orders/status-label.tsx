@@ -1,5 +1,5 @@
 import { translateStatus } from '@/lib/utils';
-import { OrderStatusEnum } from '@/types/schema';
+import { type OrderStatusEnum } from '@/types/schema';
 import { CheckIcon, Loader, X } from 'lucide-react';
 
 export default function StatusLabel({ status }: { status: keyof typeof OrderStatusEnum }) {

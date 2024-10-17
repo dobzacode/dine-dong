@@ -1,5 +1,5 @@
 import { type AddressType } from '@/components/ui/address-autocomplete';
-import { AxiomRequest, withAxiom } from 'next-axiom';
+import { type AxiomRequest, withAxiom } from 'next-axiom';
 import { NextResponse } from 'next/server';
 
 interface PlusCode {
