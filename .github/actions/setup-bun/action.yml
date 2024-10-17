@@ -5,7 +5,7 @@ defaults:
   run:
     working-directory: ./client
 
-jobs:
+runs:
   using: composite
   steps:
     - uses: actions/checkout@v4
