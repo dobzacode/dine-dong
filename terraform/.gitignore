@@ -21,3 +21,5 @@ y
 
 .terraformrc
 terraform.rc
+
+.github.env
