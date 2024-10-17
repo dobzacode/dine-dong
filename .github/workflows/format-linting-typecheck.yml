@@ -20,7 +20,7 @@ jobs:
         uses: ./.github/actions/setup-bun
       - name: Lint
         run: |
-          cd client
+          cd ./client
           bun lint
 
   format_client:
@@ -31,7 +31,7 @@ jobs:
         uses: ./.github/actions/setup-bun
       - name: Format
         run: |
-          cd client
+          cd ./client
           bun prettier:check
 
   typecheck_client:
@@ -42,7 +42,7 @@ jobs:
         uses: ./.github/actions/setup-bun
       - name: Typecheck
         run: |
-          cd client
+          cd ./client
           bun typecheck
 
   typecheck_server:

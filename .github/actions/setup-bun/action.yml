@@ -1,9 +1,6 @@
 name: "Setup and Install"
 description: "Common setup steps for Actions"
 
-defaults:
-  run:
-    working-directory: ./client
 
 runs:
   using: composite
@@ -14,5 +11,7 @@ runs:
         node-version: 20
     - run: npm install -g bun
       shell: bash
-    - run: bun install
+    - run: |
+        cd ./client
+        bun install
       shell: bash
