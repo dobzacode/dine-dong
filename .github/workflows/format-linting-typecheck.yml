@@ -47,7 +47,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with: 
-          path: server
+          path: ./server
 
       - name: Set up Python
         uses: actions/setup-python@v5
