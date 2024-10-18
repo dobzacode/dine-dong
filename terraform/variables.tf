@@ -20,38 +20,16 @@ variable "SECURITY__JWT_SECRET_KEY" {
   description = "JWT Secret Key for Security"
 }
 
-variable "SECURITY__BACKEND_CORS_ORIGINS_0" {
-  type = string
+variable "SECURITY__BACKEND_CORS_ORIGINS" {
+  type = list(string)
+  default = ["http://localhost:3000","http://localhost:8000", "https://dine-dong.fr"]
   sensitive = true
   description = "Allowed CORS origins for the backend API"
 }
 
-variable "SECURITY__BACKEND_CORS_ORIGINS_1" {
-  type = string
-  sensitive = true
-  description = "Allowed CORS origins for the backend API"
-}
-
-variable "SECURITY__BACKEND_CORS_ORIGINS_2" {
-  type = string 
-  sensitive = true
-  description = "Allowed CORS origins for the backend API"
-}
-
-variable "SECURITY__ALLOWED_HOSTS_0" {
-  type = string
-  sensitive = true
-  description = "Allowed hostnames for the application"
-}
-
-variable "SECURITY__ALLOWED_HOSTS_1" {
-  type = string
-  sensitive = true
-  description = "Allowed hostnames for the application"
-}
-
-variable "SECURITY__ALLOWED_HOSTS_2" {
-  type = string
+variable "SECURITY__ALLOWED_HOSTS" {
+  type = list(string)
+  default = ["localhost", "127.0.0.1", "dine-dong.fr", "hot-wallaby-smoothly.ngrok-free.app"]
   sensitive = true
   description = "Allowed hostnames for the application"
 }
