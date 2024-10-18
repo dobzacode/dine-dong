@@ -37,6 +37,7 @@ module "lambda_layer_poetry" {
   runtime         = "python3.10"
   docker_image    = "build-python3.10-poetry"
   docker_file     = "${path.module}/../server/Dockerfile"
+
   artifacts_dir   = "${path.root}/builds/lambda_layer_poetry/"
 }
 
