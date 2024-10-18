@@ -11,7 +11,7 @@ terraform {
 }
 
 provider "aws" {
-  region = var.REGION
+  region = var.AWS_REGION
 }
 
 
@@ -47,7 +47,7 @@ module "lambda_function" {
   source  = "terraform-aws-modules/lambda/aws"
   version = "~> 4.0"
 
-  function_name = "fastapi-prod-${var.REGION}-lambda"
+  function_name = "fastapi-prod-${var.AWS_REGION}-lambda"
   description   = "Dine Dong API"
   handler       = "app.handler.handler"
   timeout       = 30

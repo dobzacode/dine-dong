@@ -17,7 +17,7 @@ jobs:
   IaC:
     runs-on: ubuntu-latest
     env:
-      TF_VAR_REGION: ${{ secrets.TF_VAR_REGION }}
+      TF_VAR_AWS_REGION: ${{ secrets.TF_VAR_REGION }}
       TF_VAR_API_DOMAIN_NAME: ${{ secrets.TF_VAR_API_DOMAIN_NAME }}
       TF_VAR_DOMAIN_NAME_CERTIFICATE_ARN: ${{ secrets.TF_VAR_DOMAIN_NAME_CERTIFICATE_ARN }}
       TF_VAR_SECURITY__JWT_SECRET_KEY: ${{ secrets.TF_VAR_SECURITY__JWT_SECRET_KEY }}
@@ -50,7 +50,8 @@ jobs:
       - name: Initialize Terraform
         run: |
           terraform fmt
-          terraform init -backend-config="access_key=${{ secrets.AWS_ACCESS_KEY_ID }}" -backend-config="secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" -backend-config="region=${{ secrets.AWS_REGION }}"
+          terraform init 
+
         
       - name: Plan Terraform changes
         run: terraform plan -no-color
