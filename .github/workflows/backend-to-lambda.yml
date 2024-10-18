@@ -1,7 +1,7 @@
 name: FastAPI CI
 
 env:
-  TF_LOG: INFO
+  TF_LOG: TRACE
   TF_INPUT: false
   TF_VAR_REGION: ${{ secrets.TF_VAR_REGION }}
   TF_VAR_API_DOMAIN_NAME: ${{ secrets.TF_VAR_API_DOMAIN_NAME }}
