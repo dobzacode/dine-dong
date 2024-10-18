@@ -42,6 +42,10 @@ grep -v '^#' "$ENV_FILE" | grep -v '^\s*$' | while IFS= read -r line; do
     SECRET_NAME="${line%%=*}"
     SECRET_VALUE="${line#*=}"
 
+    # Remove leading and trailing double quotes from SECRET_VALUE
+    SECRET_VALUE="${SECRET_VALUE%\"}"
+    SECRET_VALUE="${SECRET_VALUE#\"}"
+
     PREFIXED_SECRET_NAME="TF_VAR_$SECRET_NAME"
 
     echo "Processing secret: $SECRET_NAME"
