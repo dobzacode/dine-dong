@@ -7,6 +7,8 @@ env:
   TF_VAR_API_DOMAIN_NAME: ${{ secrets.TF_VAR_API_DOMAIN_NAME }}
   TF_VAR_DOMAIN_NAME_CERTIFICATE_ARN: ${{ secrets.TF_VAR_DOMAIN_NAME_CERTIFICATE_ARN }}
   TF_VAR_SECURITY__JWT_SECRET_KEY: ${{ secrets.TF_VAR_SECURITY__JWT_SECRET_KEY }}
+  TF_VAR_SECURITY__BACKEND_CORS_ORIGINS: ${{ secrets.TF_VAR_SECURITY__BACKEND_CORS_ORIGINS }}
+  TF_VAR_SECURITY__ALLOWED_HOSTS: ${{ secrets.TF_VAR_SECURITY__ALLOWED_HOSTS }}
   TF_VAR_DATABASE__HOSTNAME: ${{ secrets.TF_VAR_DATABASE__HOSTNAME }}
   TF_VAR_DATABASE__USERNAME: ${{ secrets.TF_VAR_DATABASE__USERNAME }}
   TF_VAR_DATABASE__PASSWORD: ${{ secrets.TF_VAR_DATABASE__PASSWORD }}
@@ -59,9 +61,9 @@ jobs:
 
       - name: Plan Terraform changes
         run: |
-          terraform plan -no-color -var 'SECURITY__ALLOWED_HOSTS=${{ secrets.TF_VAR_SECURITY__ALLOWED_HOSTS }}' -var 'SECURITY__BACKEND_CORS_ORIGINS=${{ secrets.TF_VAR_SECURITY__BACKEND_CORS_ORIGINS }}'
+          terraform plan -no-color
             
 
       - name: Apply Terraform changes (optional, requires confirmation)
         run: |
-          terraform plan apply -auto-approve 'SECURITY__ALLOWED_HOSTS=${{ secrets.TF_VAR_SECURITY__ALLOWED_HOSTS }}' -var 'SECURITY__BACKEND_CORS_ORIGINS=${{ secrets.TF_VAR_SECURITY__BACKEND_CORS_ORIGINS }}'
+          terraform plan apply -auto-approve 
