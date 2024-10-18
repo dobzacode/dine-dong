@@ -19,6 +19,8 @@ jobs:
       TF_VAR_API_DOMAIN_NAME: ${{ secrets.TF_VAR_API_DOMAIN_NAME }}
       TF_VAR_DOMAIN_NAME_CERTIFICATE_ARN: ${{ secrets.TF_VAR_DOMAIN_NAME_CERTIFICATE_ARN }}
       TF_VAR_SECURITY__JWT_SECRET_KEY: ${{ secrets.TF_VAR_SECURITY__JWT_SECRET_KEY }}
+      TF_VAR_SECURITY__BACKEND_CORS_ORIGINS: ${{ fromJson(secrets.TF_VAR_SECURITY__BACKEND_CORS_ORIGINS) }}
+      TF_VAR_SECURITY__ALLOWED_HOSTS: ${{ fromJson(secrets.TF_VAR_SECURITY__ALLOWED_HOSTS) }}
       TF_VAR_DATABASE__HOSTNAME: ${{ secrets.TF_VAR_DATABASE__HOSTNAME }}
       TF_VAR_DATABASE__USERNAME: ${{ secrets.TF_VAR_DATABASE__USERNAME }}
       TF_VAR_DATABASE__PASSWORD: ${{ secrets.TF_VAR_DATABASE__PASSWORD }}
@@ -44,10 +46,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Debug Secrets Usage
-        run: |
-          echo "CORS Origins: ${{ secrets.TF_VAR_SECURITY__BACKEND_CORS_ORIGINS }}"
-
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -64,7 +62,7 @@ jobs:
           terraform init
 
       - name: Plan Terraform changes
-        run: terraform plan -no-color -var 'SECURITY__ALLOWED_HOSTS=["localhost", "127.0.0.1", "dine-dong.fr", "hot-wallaby-smoothly.ngrok-free.app"]' -var 'SECURITY__BACKEND_CORS_ORIGINS=["http://localhost:3000","http://localhost:8000", "https://dine-dong.fr"]'
+        run: terraform plan -no-color
 
       - name: Apply Terraform changes (optional, requires confirmation)
-        run: terraform apply -auto-approve -var 'SECURITY__ALLOWED_HOSTS=["localhost", "127.0.0.1", "dine-dong.fr", "hot-wallaby-smoothly.ngrok-free.app"]' -var 'SECURITY__BACKEND_CORS_ORIGINS=["http://localhost:3000","http://localhost:8000", "https://dine-dong.fr"]'
+        run: terraform apply -auto-approve 
