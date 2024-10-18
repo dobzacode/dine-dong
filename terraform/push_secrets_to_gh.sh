@@ -23,11 +23,11 @@ if [ -z "$OWNER" ] || [ -z "$REPO" ]; then
     exit 1
 fi
 
-# Check if tfvars.json file exists
-TFVARS_FILE="terraform.tfvars.json"
+# Check if .env file exists
+ENV_FILE="terraform.tfvars"
 
-if [ ! -f "$TFVARS_FILE" ]; then
-    echo "Error: Could not find tfvars.json file at $TFVARS_FILE"
+if [ ! -f "$ENV_FILE" ]; then
+    echo "Error: Could not find .env file at $ENV_FILE"
     exit 1
 fi
 
@@ -37,21 +37,21 @@ if ! gh auth status &>/dev/null; then
     gh auth login
 fi
 
-# Process secrets from tfvars.json
-jq -r 'to_entries | .[] | "\(.key)=\(.value | if type == "array" then tostring | gsub("\\\\"; "") else tostring end)"' "$TFVARS_FILE" | while IFS= read -r line; do
+# Process secrets from .env file
+grep -v '^#' "$ENV_FILE" | grep -v '^\s*$' | while IFS= read -r line; do
     SECRET_NAME="${line%%=*}"
     SECRET_VALUE="${line#*=}"
 
+    PREFIXED_SECRET_NAME="TF_VAR_$SECRET_NAME"
+
     echo "Processing secret: $SECRET_NAME"
 
-    # Set the secret using gh secret set without additional quoting
-    echo "$SECRET_VALUE" | xargs echo -n | gh secret set "TF_VAR_$SECRET_NAME" --repo "$OWNER/$REPO" -b -
+    # Set the prefixed secret using gh secret set
+    echo "$SECRET_VALUE" | xargs echo -n | gh secret set "$PREFIXED_SECRET_NAME" --repo "$OWNER/$REPO" -b -
 
     if [ $? -eq 0 ]; then
-        echo "Secret \"$SECRET_NAME\" created/updated successfully with the value: $SECRET_VALUE"
+        echo "Secret \"$PREFIXED_SECRET_NAME\" created/updated successfully with the value: $SECRET_VALUE"
     else
-        echo "Error: Failed to create/update secret \"$SECRET_NAME\"."
+        echo "Error: Failed to create/update secret \"$PREFIXED_SECRET_NAME\"."
     fi
 done
-
-

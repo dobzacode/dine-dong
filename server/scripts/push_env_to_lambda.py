@@ -4,14 +4,12 @@ import boto3  # type: ignore
 def set_lambda_environment_variables(lambda_arn, env_variables):
     client = boto3.client("lambda")
 
-    # Get current environment variables
     response = client.get_function_configuration(FunctionName=lambda_arn)
-    current_env = response["Environment"].get("Variables", {})
+    # Safely gets the "Environment" dict, or an empty dict if it doesn't exist
+    current_env = response.get("Environment", {}).get("Variables", {})
 
-    # Update with new environment variables
     current_env.update(env_variables)
 
-    # Update function configuration
     client.update_function_configuration(
         FunctionName=lambda_arn, Environment={"Variables": current_env}
     )

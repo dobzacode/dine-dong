@@ -1,3 +1,6 @@
+ 
+
+
 terraform {
   required_providers {
     aws = {
@@ -11,11 +14,7 @@ provider "aws" {
   region = var.REGION
 }
 
-variable "REGION" {
-  description = "Region AWS"
-  type        = string
-  default     = "eu-central-1"
-}
+
 
 module "lambda_layer_poetry" {
   source  = "terraform-aws-modules/lambda/aws"
@@ -32,10 +31,14 @@ module "lambda_layer_poetry" {
     }
   ]
 
+  timeout = 30
+
   build_in_docker = true
   runtime         = "python3.10"
   docker_image    = "build-python3.10-poetry"
   docker_file     = "${path.module}/../server/Dockerfile"
+
+
   artifacts_dir   = "${path.root}/builds/lambda_layer_poetry/"
 }
 
@@ -44,13 +47,42 @@ module "lambda_function" {
   source  = "terraform-aws-modules/lambda/aws"
   version = "~> 4.0"
 
-  function_name = "fastapi-prod-eu-central-1-lambda"
+  function_name = "fastapi-prod-${var.REGION}-lambda"
   description   = "Dine Dong API"
   handler       = "app.handler.handler"
   timeout       = 30
   runtime       = "python3.10"
   publish       = true
   create_lambda_function_url = true
+  environment_variables = {
+    SECURITY__JWT_SECRET_KEY = var.SECURITY__JWT_SECRET_KEY
+    SECURITY__BACKEND_CORS_ORIGINS = [var.SECURITY__BACKEND_CORS_ORIGINS_0, var.SECURITY__BACKEND_CORS_ORIGINS_1, var.SECURITY__BACKEND_CORS_ORIGINS_2]
+    SECURITY__ALLOWED_HOSTS = [var.SECURITY__ALLOWED_HOSTS_0, var.SECURITY__ALLOWED_HOSTS_1, var.SECURITY__ALLOWED_HOSTS_2]
+    
+
+    DATABASE__HOSTNAME = var.DATABASE__HOSTNAME
+    DATABASE__USERNAME = var.DATABASE__USERNAME
+    DATABASE__PASSWORD = var.DATABASE__PASSWORD
+    DATABASE__PORT = var.DATABASE__PORT
+    DATABASE__DB = var.DATABASE__DB
+
+    AUTH0_DOMAIN = var.AUTH0_DOMAIN
+    AUTH0_API_AUDIENCE = var.AUTH0_API_AUDIENCE
+    AUTH0_ISSUER = var.AUTH0_ISSUER
+    AUTH0_ALGORITHMS = var.AUTH0_ALGORITHMS
+
+    BASE_URL = var.BASE_URL
+
+    STRIPE_SECRET_KEY = var.STRIPE_SECRET_KEY
+    WEBHOOK_SECRET = var.WEBHOOK_SECRET
+
+    KV_REST_API_URL = var.KV_REST_API_URL
+    KV_REST_API_TOKEN = var.KV_REST_API_TOKEN
+
+    AXIOM_DATASET = var.AXIOM_DATASET
+    AXIOM_TOKEN = var.AXIOM_TOKEN
+  }
+    
 
   source_path = "${path.root}/../server"
 
@@ -82,8 +114,8 @@ module "api_gateway" {
   protocol_type = "HTTP"
 
   create_api_domain_name = true
-  domain_name = "dine-dong.fr"
-  domain_name_certificate_arn = "arn:aws:acm:eu-central-1:182399718556:certificate/dff5751d-1c3b-45ce-ab03-2621cd1f8acc"
+  domain_name           = var.API_DOMAIN_NAME
+  domain_name_certificate_arn = var.DOMAIN_NAME_CERTIFICATE_ARN
   
   cors_configuration = {
     allow_headers = ["*"]
@@ -119,3 +151,4 @@ output "lambda_function_url" {
   description = "Lambda URL"
   value       = module.lambda_function.lambda_function_url
 }
+
