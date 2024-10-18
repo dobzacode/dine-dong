@@ -5,7 +5,6 @@ env:
   TF_INPUT: false
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
 
 on:
   workflow_dispatch:
@@ -51,8 +50,8 @@ jobs:
       - name: Initialize Terraform
         run: |
           terraform fmt
-          terraform init
-
+          terraform init -backend-config="access_key=${{ secrets.AWS_ACCESS_KEY_ID }}" -backend-config="secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" -backend-config="region=${{ secrets.AWS_REGION }}"
+        
       - name: Plan Terraform changes
         run: terraform plan -no-color
 
