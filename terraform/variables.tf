@@ -21,19 +21,19 @@ variable "SECURITY__JWT_SECRET_KEY" {
 }
 
 variable "SECURITY__BACKEND_CORS_ORIGINS_0" {
-  type = list(string)
+  type = string
   sensitive = true
   description = "Allowed CORS origins for the backend API"
 }
 
 variable "SECURITY__BACKEND_CORS_ORIGINS_1" {
-  type = list(string)
+  type = string
   sensitive = true
   description = "Allowed CORS origins for the backend API"
 }
 
 variable "SECURITY__BACKEND_CORS_ORIGINS_2" {
-  type = list(string)
+  type = string 
   sensitive = true
   description = "Allowed CORS origins for the backend API"
 }
