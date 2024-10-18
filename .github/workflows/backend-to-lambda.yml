@@ -61,10 +61,16 @@ jobs:
         run: |
           cat > terraform.tfvars.json <<EOF
           {
-            "SECURITY__BACKEND_CORS_ORIGINS": ${{ secrets.TF_VAR_SECURITY__BACKEND_CORS_ORIGINS }},
-            "SECURITY__ALLOWED_HOSTS": ${{ secrets.TF_VAR_SECURITY__ALLOWED_HOSTS }}
+            "SECURITY__BACKEND_CORS_ORIGINS": ["*"],
+            "SECURITY__ALLOWED_HOSTS": ["*"]
           }
           EOF
+
+      - name: Output tfvars.json as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: terraform.tfvars.json
+          path: terraform.tfvars.json
   
       - name: Plan Terraform changes
         run: terraform plan -no-color -var-file=terraform.tfvars.json
