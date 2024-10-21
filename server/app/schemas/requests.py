@@ -53,3 +53,13 @@ class ModifyUserRequest(BaseRequest):
     about_me: str | None = None
     picture_key: str | None = None
     residency: Address | None = None
+
+
+class CreateChatRequest(BaseRequest):
+    user1_sub: str
+    user2_sub: str
+
+
+class CreateMessageRequest(BaseRequest):
+    content: str
+    receiver_sub: str

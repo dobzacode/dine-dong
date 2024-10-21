@@ -3,7 +3,7 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict
 
-from .base import Address, Ingredient, IngredientMeal, Meal, Order, User
+from .base import Address, Chat, Ingredient, IngredientMeal, Meal, Order, User
 
 
 class BaseResponse(BaseModel):
@@ -93,4 +93,28 @@ class MealWithIngredientsAndAddressResponse(BaseResponse, Meal):
 class IngredientMealResponse(BaseResponse, IngredientMeal):
     meal_id: str
     ingredient_id: str
+    pass
+
+
+class ChatResponse(BaseResponse, Chat):
+    create_time: datetime
+    update_time: datetime
+    pass
+
+
+class ExtendedChatResponse(ChatResponse):
+    other_user_image: str | None
+    other_user_name: str
+    last_message_content: str | None
+    meal_image: str
+    meal_name: str
+
+
+class CreateChatResponse(BaseResponse):
+    chat_id: str
+    pass
+
+
+class CreateMessageResponse(BaseResponse):
+    message_id: str
     pass

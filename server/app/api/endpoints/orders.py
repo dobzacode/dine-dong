@@ -5,6 +5,7 @@ from fastapi import APIRouter, Depends, HTTPException, Path, Query, Security
 from fastapi.responses import JSONResponse
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from stripe import stripe  # type: ignore
 
 from app.api import deps
 from app.core.security.authenticate import VerifyToken
@@ -134,9 +135,7 @@ async def modify_order_status(
         )
 
     try:
-        query = (
-            select(Order, Meal.user_sub).join(Meal).where(Order.order_id == order_id)
-        )
+        query = select(Order, Meal).join(Meal).where(Order.order_id == order_id)
         result = await session.execute(query)
         order = result.scalars().first()
 
@@ -153,11 +152,22 @@ async def modify_order_status(
                 },
             )
 
-        order.status = new_status
-        await session.commit()
-        await session.refresh(order)
+        # Only interact with Stripe if new_status is "CANCELLED"
+        if new_status == "CANCELLED":
+            try:
+                stripe.PaymentIntent.cancel(order.pi_id)
+                logger.info(f"Le pi {order.pi_id} a été annulé avec succès")
+            except Exception as e:
+                logger.error(
+                    f"Une erreur est survenue lors de l'annulation du payment intent {order.pi_id}: {e}"
+                )
+                raise HTTPException(
+                    status_code=500,
+                    detail="Une erreur est survenue lors de l'annulation du payment intent",
+                )
 
-        logger.info(f"La commande {order_id} a été modifiée avec succès")
+        # Don't change the order status or commit
+        logger.info(f"Le statut de la commande {order_id} a été vérifié avec succès")
 
         order_dict = {
             key: value
@@ -169,8 +179,7 @@ async def modify_order_status(
     except Exception as e:
         print(e, "Error")
         logger.error(
-            f"Une erreur est survenue lors de la modification de la commande {order_id}",
-            e,
+            f"Une erreur est survenue lors de la modification de la commande {order_id}: {e}"
         )
         raise HTTPException(
             status_code=500,

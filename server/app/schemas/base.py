@@ -84,3 +84,16 @@ class Meal(BaseModel):
 
 class Ingredient(BaseModel):
     name: str
+
+
+class Chat(BaseModel):
+    chat_id: str
+    user1_sub: str
+    user2_sub: str
+
+
+class Message(BaseModel):
+    content: str
+    timestamp: datetime
+    sender_sub: str
+    receiver_sub: str

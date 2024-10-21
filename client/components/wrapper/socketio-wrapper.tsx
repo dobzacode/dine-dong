@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 export default function Chat({ token }: { token: string }) {
   const [isConnected, setIsConnected] = useState(false);
   const [transport, setTransport] = useState('N/A');
+  const [message, setMessage] = useState('');
 
   useEffect(() => {
     if (socket.connected) {
@@ -29,7 +30,8 @@ export default function Chat({ token }: { token: string }) {
     socket.on('connect', onConnect);
     socket.on('disconnect', onDisconnect);
 
-    socket.io.opts.query = { token };
+    socket.auth = { token };
+    socket.connect();
 
     return () => {
       socket.off('connect', onConnect);
@@ -37,10 +39,26 @@ export default function Chat({ token }: { token: string }) {
     };
   }, [token]);
 
+  const sendMessage = () => {
+    if (message.trim()) {
+      socket.emit('sendMessage', {
+        message
+      });
+      setMessage('');
+    }
+  };
+
   return (
     <div>
       <p>Status: {isConnected ? 'connected' : 'disconnected'}</p>
       <p>Transport: {transport}</p>
+      <input
+        type="text"
+        value={message}
+        onChange={(e) => setMessage(e.target.value)}
+        placeholder="Type your message..."
+      />
+      <button onClick={sendMessage}>Send</button>
     </div>
   );
 }

@@ -2,6 +2,19 @@ interface BaseModel {
   create_time: Date;
   update_time: Date;
 }
+
+export interface Chat extends BaseModel {
+  chat_id: string;
+  user1_sub: string;
+  user2_sub: string;
+}
+
+export interface Message extends BaseModel {
+  chat_id: string;
+  sender_sub: string;
+  receiver_sub: string;
+  content: string;
+}
 export interface User extends BaseModel {
   user_sub: string;
   email: string;

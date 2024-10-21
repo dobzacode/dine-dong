@@ -279,3 +279,70 @@ class Order(Base):
         ),
         nullable=False,
     )
+
+    chat: Mapped["Chat"] = relationship(
+        "Chat", back_populates="order", uselist=False, cascade="all, delete-orphan"
+    )
+
+
+class Chat(Base):
+    __tablename__ = "chat"
+
+    chat_id: Mapped[str] = mapped_column(
+        Uuid(as_uuid=False), primary_key=True, default=lambda _: str(uuid.uuid4())
+    )
+
+    user1: Mapped["User"] = relationship(
+        lazy="selectin", foreign_keys="[Chat.user1_sub]"
+    )
+    user1_sub: Mapped[str] = mapped_column(
+        ForeignKey("user_account.user_sub"), nullable=False
+    )
+
+    user2: Mapped["User"] = relationship(
+        lazy="selectin", foreign_keys="[Chat.user2_sub]"
+    )
+    user2_sub: Mapped[str] = mapped_column(
+        ForeignKey("user_account.user_sub"), nullable=False
+    )
+
+    messages: Mapped[list["Message"]] = relationship(
+        back_populates="chat", lazy="selectin", cascade="all, delete"
+    )
+
+    order_id: Mapped[str] = mapped_column(
+        ForeignKey("order.order_id"), unique=True, nullable=False
+    )
+
+    order: Mapped["Order"] = relationship("Order", back_populates="chat")
+
+
+class Message(Base):
+    __tablename__ = "message"
+
+    message_id: Mapped[str] = mapped_column(
+        Uuid(as_uuid=False), primary_key=True, default=lambda _: str(uuid.uuid4())
+    )
+
+    content: Mapped[str] = mapped_column(String(1000), nullable=False)
+
+    timestamp: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now()
+    )
+
+    chat: Mapped["Chat"] = relationship(back_populates="messages", lazy="selectin")
+    chat_id: Mapped[str] = mapped_column(ForeignKey("chat.chat_id"), nullable=False)
+
+    sender: Mapped["User"] = relationship(
+        lazy="selectin", foreign_keys="[Message.sender_sub]"
+    )
+    sender_sub: Mapped[str] = mapped_column(
+        ForeignKey("user_account.user_sub"), nullable=False
+    )
+
+    receiver: Mapped["User"] = relationship(
+        lazy="selectin", foreign_keys="[Message.receiver_sub]"
+    )
+    receiver_sub: Mapped[str] = mapped_column(
+        ForeignKey("user_account.user_sub"), nullable=False
+    )

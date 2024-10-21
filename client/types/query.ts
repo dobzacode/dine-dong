@@ -1,5 +1,6 @@
 import type {
   Address,
+  Chat,
   Ingredient,
   IngredientMeal,
   Meal,
@@ -86,4 +87,19 @@ export interface IngredientMealResponse extends Omit<IngredientMeal, 'unit'> {
   unit: keyof typeof UnitEnum;
   meal_id: string;
   ingredient_id: string;
+}
+
+export interface ChatResponse extends Chat {}
+
+export interface ExtendedChatResponse extends ChatResponse {
+  other_user_image: string | null;
+  other_user_name: string;
+  last_message_content: string | null;
+  meal_image: string;
+  meal_name: string;
+}
+
+export interface ChatSnippetResponse {
+  meal_name: string;
+  other_user_name: string;
 }

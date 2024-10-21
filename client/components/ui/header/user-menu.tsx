@@ -47,6 +47,9 @@ export default function UserMenu({ user }: { user: UserResponse }) {
         <DropdownMenuItem asChild>
           <Link href={`/commandes/ventes`}>Mes commandes</Link>
         </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link href={`/messagerie`}>Mes messages</Link>
+        </DropdownMenuItem>
         <DropdownMenuItem className="focus:!bg-error-50">
           <a href={`/api/auth/logout`} className={'text-error hover:!bg-none'}>
             Se déconnecter
