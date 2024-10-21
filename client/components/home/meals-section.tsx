@@ -52,7 +52,8 @@ const MealsSection = ({
     initialData: { pages: [prefetchMeals], pageParams: [undefined] },
     getNextPageParam: (lastPage, allPages) => (lastPage.hasMore ? allPages.length * 20 : undefined),
     refetchOnWindowFocus: false,
-    retry: false
+    retry: false,
+    refetchInterval: 3600
   });
 
   useEffect(() => {

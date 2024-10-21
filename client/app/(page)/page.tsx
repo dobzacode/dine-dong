@@ -11,6 +11,8 @@ export const metadata: Metadata = {
   description: "Accueil de l'application"
 };
 
+export const revalidate = 3600;
+
 export default async function Home({
   searchParams: { name, diet, radius, sort, max_price, lat, lng }
 }: {

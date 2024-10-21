@@ -14,6 +14,8 @@ import { Logger } from 'next-axiom';
 import { notFound, redirect } from 'next/navigation';
 import { Suspense } from 'react';
 
+export const revalidate = 3600;
+
 export async function generateStaticParams() {
   const log = new Logger();
   const data = await getUsersParams();
