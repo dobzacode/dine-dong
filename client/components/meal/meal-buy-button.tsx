@@ -39,6 +39,17 @@ export default async function MealBuyButton({
     );
   }
 
+  if (user?.user_sub) {
+    return (
+      <a
+        className={cn(buttonVariants({ variant: 'default' }), 'w-full rounded-sm')}
+        href={'/api/auth/login'}
+      >
+        Acheter le repas
+      </a>
+    );
+  }
+
   return (
     <Link
       className={cn(
@@ -48,7 +59,7 @@ export default async function MealBuyButton({
           ? 'pointer-events-none opacity-50'
           : ''
       )}
-      href={user?.user_sub ? `/repas/${mealId}/achat` : '/api/auth/login'}
+      href={`/repas/${mealId}/achat`}
     >
       Acheter le repas
     </Link>
