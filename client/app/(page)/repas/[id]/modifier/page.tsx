@@ -1,7 +1,8 @@
 import MealForm from '@/components/meal/meal-form';
 import { getMealDetails } from '@/lib/meal/meal-fetch';
+import { getSessionOrRedirect } from '@/lib/server-only-utils';
 import { getErrorMessage } from '@/lib/utils';
-import { getSession } from '@auth0/nextjs-auth0';
+import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import { type Metadata } from 'next';
 import { notFound, redirect } from 'next/navigation';
 
@@ -10,13 +11,14 @@ export const metadata: Metadata = {
   description: 'Création de repas'
 };
 
-export default async function Home({ params }: { params: { id: string } }) {
+//@ts-expect-error - type is valid
+export default withPageAuthRequired(async function Page({ params }: { params: { id: string } }) {
   let meal;
   try {
     meal = await getMealDetails(params, {
       next: {
         tags: [`meal-details-${params.id}`]
-        }
+      }
     });
   } catch (error) {
     const message = getErrorMessage(error);
@@ -26,20 +28,15 @@ export default async function Home({ params }: { params: { id: string } }) {
     redirect(`/`);
   }
 
-  const session = await getSession();
+  const session = await getSessionOrRedirect();
 
-  if (!session?.user?.sub || session.user.sub !== meal.user_sub || !session.accessToken) {
+  if (session.user.sub !== meal.user_sub) {
     redirect('/');
   }
 
   return (
     <section className="section-py container mx-auto flex h-full max-w-[1200px] flex-col justify-center">
-      <MealForm
-        mealId={params.id}
-        meal={meal}
-        sub={session.user.sub as string}
-        token={session.accessToken}
-      />
+      <MealForm mealId={params.id} meal={meal} sub={session.user.sub} token={session.accessToken} />
     </section>
   );
-}
+});

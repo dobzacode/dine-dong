@@ -1,8 +1,6 @@
 import SearchBar from '@/components/home/search-bar';
-import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { Suspense } from 'react';
-import { buttonVariants } from '../button';
 import { Skeleton } from '../skeleton';
 import UserSection from './user-section';
 
@@ -16,12 +14,16 @@ export default function Header() {
         <SearchBar className="hidden tablet:block" />
       </Suspense>
       <nav className="flex gap-lg">
-        <Suspense fallback={<Skeleton className="h-button w-[140px] rounded-md" />}>
+        <Suspense
+          fallback={
+            <>
+              <Skeleton className="h-button w-[140px] rounded-md" />
+              <Skeleton className="h-button w-[160px] rounded-md" />
+            </>
+          }
+        >
           <UserSection />
         </Suspense>
-        <Link className={cn(buttonVariants({ variant: 'default' }))} href="/nouveau/repas">
-          Vendre un repas
-        </Link>
       </nav>
     </header>
   );

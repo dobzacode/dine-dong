@@ -1,13 +1,14 @@
 import MealResume from '@/components/meal/achat/meal-resume';
 import OrderDetails from '@/components/orders/order-details';
 import { getOrderDetails, getOrdersSummaries } from '@/lib/order/order-fetch';
+import { getSessionOrRedirect } from '@/lib/server-only-utils';
 import { getErrorMessage, translateStatus } from '@/lib/utils';
 import { type OrderSummaryResponse } from '@/types/query';
-import { getSession } from '@auth0/nextjs-auth0';
+import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import moment from 'moment';
 import { type Metadata } from 'next';
 import { Logger } from 'next-axiom';
-import { notFound, redirect } from 'next/navigation';
+import { notFound } from 'next/navigation';
 
 type Props = {
   params: { id: string };
@@ -68,14 +69,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata | un
   } satisfies Metadata;
 }
 
-export default async function Home({ params }: Props) {
+//@ts-expect-error - type is valid
+export default withPageAuthRequired(async function Page({ params }: Props) {
   const log = new Logger();
 
-  const session = await getSession();
-
-  if (!session?.user?.sub || !session?.accessToken) {
-    redirect(`/`);
-  }
+  const session = await getSessionOrRedirect();
 
   let order;
   try {
@@ -104,4 +102,4 @@ export default async function Home({ params }: Props) {
       <OrderDetails token={session.accessToken} order={order} isSales={true} />
     </section>
   );
-}
+});

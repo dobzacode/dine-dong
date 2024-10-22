@@ -1,27 +1,25 @@
 import MealResume from '@/components/meal/achat/meal-resume';
 import Checkout from '@/components/meal/achat/stripe/checkout';
 import { getMealDetails } from '@/lib/meal/meal-fetch';
+import { getSessionOrRedirect } from '@/lib/server-only-utils';
 import { getUserInformations } from '@/lib/user/user-fetch';
 import { getErrorMessage } from '@/lib/utils';
-import { getSession } from '@auth0/nextjs-auth0';
+import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import { kv } from '@vercel/kv';
 import { Logger } from 'next-axiom';
 import { notFound, redirect } from 'next/navigation';
 
 export const dynamic = 'force-dynamic';
 
-export default async function Page({ params }: { params: { id: string } }) {
-  const session = await getSession();
+//@ts-expect-error - type is valid
+export default withPageAuthRequired(async function Page({ params }: { params: { id: string } }) {
   const log = new Logger();
-
-  if (!session?.user?.sub || !session?.accessToken) {
-    redirect(`/repas/${params.id}`);
-  }
+  const session = await getSessionOrRedirect(`/repas/${params.id}`);
 
   let user;
   try {
     user = await getUserInformations(
-      { sub: session.user.sub as string },
+      { sub: session.user.sub },
       { next: { tags: [`user-informations-${session.user.sub}`] } }
     );
   } catch (error) {
@@ -80,4 +78,4 @@ export default async function Page({ params }: { params: { id: string } }) {
       </aside>
     </section>
   );
-}
+});

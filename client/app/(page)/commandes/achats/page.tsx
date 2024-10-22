@@ -3,7 +3,7 @@ import TopMenu from '@/components/orders/top-menu';
 import { getUserPurchases } from '@/lib/user/user-fetch';
 import { getErrorMessage } from '@/lib/utils';
 import { type OrderWithMealResponse } from '@/types/query';
-import { getSession } from '@auth0/nextjs-auth0';
+import { getSession, withPageAuthRequired } from '@auth0/nextjs-auth0';
 import { Logger } from 'next-axiom';
 import { redirect } from 'next/navigation';
 
@@ -12,10 +12,11 @@ export const metadata = {
   description: 'Achats'
 };
 
-export default async function Page({
+//@ts-expect-error - type is valid
+export default withPageAuthRequired(async function Page({
   searchParams
 }: {
-  searchParams?: { status: 'FINALIZED' | 'IN_PROGRESS' | 'CANCELLED' };
+  searchParams: { status?: 'FINALIZED' | 'IN_PROGRESS' | 'CANCELLED' };
 }) {
   const log = new Logger();
   const session = await getSession();
@@ -59,4 +60,4 @@ export default async function Page({
       </section>
     </section>
   );
-}
+});
