@@ -11,7 +11,7 @@ import { getSession } from '@auth0/nextjs-auth0';
 
 import { type Metadata } from 'next';
 import { Logger } from 'next-axiom';
-import { notFound, redirect } from 'next/navigation';
+import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 
 export const revalidate = 3600;
@@ -63,30 +63,19 @@ export default async function Home({
   params: { username: string };
   searchParams: getMealsParams;
 }) {
-  const log = new Logger();
   const session = await getSession();
 
-  let user;
-  try {
-    user = await getUserInformations(
-      { username: params.username },
-      { next: { tags: [`user-informations-${params.username}`] } }
-    );
-  } catch (error) {
-    const message = getErrorMessage(error);
-    console.log(message);
+  const user = await getUserInformations(
+    { username: params.username },
+    { next: { tags: [`user-informations-${params.username}`] } }
+  );
+
+  if (user instanceof Error) {
+    const message = getErrorMessage(user);
     if (message.includes('404')) {
-      log.error(`User not found: ${message}`);
-      await log.flush();
       return notFound();
     }
-    log.error(`Error fetching user informations: ${message}`);
-    await log.flush();
-    redirect('/');
-  }
-
-  if (!user) {
-    return notFound();
+    throw new Error(`Error fetching user informations: ${message}`);
   }
 
   return (

@@ -19,13 +19,13 @@ export async function getUserInformations(
     case 200:
       return (await response.json()) as UserResponse;
     case 404:
-      throw new Error('404 Aucun utilisateur trouvé');
+      return new Error('404 Aucun utilisateur trouvé');
     case 422:
-      throw new Error('422 Une erreur est survenue');
+      return new Error('422 Une erreur est survenue');
     case 500:
-      throw new Error('500 Erreur serveur');
+      return new Error('500 Erreur serveur');
     default:
-      throw new Error('Erreur inconnue');
+      return new Error('Erreur inconnue');
   }
 }
 
@@ -41,13 +41,13 @@ export async function checkUsernameAvailability(username: string) {
     case 200:
       return (await response.json()) as boolean;
     case 404:
-      throw new Error('404 Aucun utilisateur trouvé');
+      return new Error('404 Aucun utilisateur trouvé');
     case 422:
-      throw new Error('422 Une erreur est survenue');
+      return new Error('422 Une erreur est survenue');
     case 500:
-      throw new Error('500 Erreur serveur');
+      return new Error('500 Erreur serveur');
     default:
-      throw new Error('Erreur inconnue');
+      return new Error('Erreur inconnue');
   }
 }
 
@@ -63,13 +63,13 @@ export async function checkEmailAvailability(email: string) {
     case 200:
       return (await response.json()) as boolean;
     case 404:
-      throw new Error('404 Aucun utilisateur trouvé');
+      return new Error('404 Aucun utilisateur trouvé');
     case 422:
-      throw new Error('422 Une erreur est survenue');
+      return new Error('422 Une erreur est survenue');
     case 500:
-      throw new Error('500 Erreur serveur');
+      return new Error('500 Erreur serveur');
     default:
-      throw new Error('Erreur inconnue');
+      return new Error('Erreur inconnue');
   }
 }
 
@@ -84,13 +84,13 @@ export async function getAuth0Information(token: string) {
     case 200:
       return (await response.json()) as { email: string };
     case 404:
-      throw new Error('404 Aucun utilisateur trouvé');
+      return new Error('404 Aucun utilisateur trouvé');
     case 422:
-      throw new Error('422 Une erreur est survenue');
+      return new Error('422 Une erreur est survenue');
     case 500:
-      throw new Error('500 Erreur serveur');
+      return new Error('500 Erreur serveur');
     default:
-      throw new Error('Erreur inconnue');
+      return new Error('Erreur inconnue');
   }
 }
 
@@ -105,13 +105,13 @@ export async function isUserRegistered(token: string) {
     case 200:
       return (await response.json()) as boolean;
     case 404:
-      throw new Error('404 Aucun utilisateur trouvé');
+      return new Error('404 Aucun utilisateur trouvé');
     case 422:
-      throw new Error('422 Une erreur est survenue');
+      return new Error('422 Une erreur est survenue');
     case 500:
-      throw new Error('500 Erreur serveur');
+      return new Error('500 Erreur serveur');
     default:
-      throw new Error('Erreur inconnue');
+      return new Error('Erreur inconnue');
   }
 }
 
@@ -133,13 +133,13 @@ export async function getUserPurchases(
     case 200:
       return (await response.json()) as OrderWithMealResponse[];
     case 404:
-      throw new Error('404 Aucun achat trouvé');
+      return new Error('404 Aucun achat trouvé');
     case 422:
-      throw new Error('422 Une erreur est survenue');
+      return new Error('422 Une erreur est survenue');
     case 500:
-      throw new Error('500 Erreur serveur');
+      return new Error('500 Erreur serveur');
     default:
-      throw new Error('Erreur inconnue');
+      return new Error('Erreur inconnue');
   }
 }
 
@@ -161,13 +161,13 @@ export async function getUserSales(
     case 200:
       return (await response.json()) as OrderWithMealResponse[];
     case 404:
-      throw new Error('404 Aucun achat trouvé');
+      return new Error('404 Aucun achat trouvé');
     case 422:
-      throw new Error('422 Une erreur est survenue');
+      return new Error('422 Une erreur est survenue');
     case 500:
-      throw new Error('500 Erreur serveur');
+      return new Error('500 Erreur serveur');
     default:
-      throw new Error('Erreur inconnue');
+      return new Error('Erreur inconnue');
   }
 }
 

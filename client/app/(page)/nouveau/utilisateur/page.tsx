@@ -2,7 +2,6 @@ import UserForm from '@/components/user/user-form';
 import { getUserInformations } from '@/lib/user/user-fetch';
 import { getErrorMessage } from '@/lib/utils';
 
-import { type UserResponse } from '@/types/query';
 import { verify } from 'jsonwebtoken';
 import { type Metadata } from 'next';
 import { Logger } from 'next-axiom';
@@ -50,21 +49,13 @@ export default async function Page({
     username?: string;
   };
 
-  let user: UserResponse | null | Error = null;
+  const user = await getUserInformations(
+    { sub: sub },
+    { next: { tags: [`user-informations-${sub}`] } }
+  );
 
-  try {
-    user = await getUserInformations(
-      { sub: sub },
-      { next: { tags: [`user-informations-${sub}`] } }
-    );
-  } catch (error) {
-    console.log(error);
-  }
-
-  if (user && user instanceof Error && !user.message.includes('404')) {
-    log.error(`Error fetching user informations: ${getErrorMessage(user)}`);
-    await log.flush();
-    redirect(`/`);
+  if (user instanceof Error && !user.message.includes('404')) {
+    throw new Error(`Error fetching user informations: ${getErrorMessage(user)}`);
   }
 
   return (

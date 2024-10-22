@@ -2,40 +2,22 @@ import { getUserInformations } from '@/lib/user/user-fetch';
 import { getErrorMessage } from '@/lib/utils';
 import { type OrderWithMealResponse } from '@/types/query';
 import moment from 'moment';
-import { type Logger } from 'next-axiom';
 import Link from 'next/link';
+import { notFound } from 'next/navigation';
 
-export default async function BuyerSnippet({
-  order,
-  log
-}: {
-  order: OrderWithMealResponse;
-  log: Logger;
-}) {
-  console.log(order);
-  let buyer;
-  try {
-    buyer = await getUserInformations(
-      { sub: order.user_sub },
-      { next: { tags: [`user-informations-${order.user_sub}`] } }
-    );
-  } catch (error) {
-    const message = getErrorMessage(error);
-    console.log(message);
+export default async function BuyerSnippet({ order }: { order: OrderWithMealResponse }) {
+  const buyer = await getUserInformations(
+    { sub: order.user_sub },
+    { next: { tags: [`user-informations-${order.user_sub}`] } }
+  );
+
+  if (buyer instanceof Error) {
+    const message = getErrorMessage(buyer);
     if (message.includes('404')) {
-      log.error(`User not found: ${message}`);
-      await log.flush();
-      return '';
+      return notFound();
     }
-    log.error(`Error fetching user informations: ${message}`);
-    await log.flush();
+    throw new Error(`Error fetching user informations: ${message}`);
   }
-
-  if (!buyer) {
-    return <></>;
-  }
-
-  console.log(order.create_time);
 
   return (
     <div className="body-sm flex gap-xs">

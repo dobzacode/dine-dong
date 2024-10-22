@@ -15,7 +15,7 @@ export async function CreatePaymentIntent({
   userSub: string;
   mealId: string;
   isNewPaymentIntent: boolean;
-}) {
+}): Promise<{ clientSecret: string; id: string } | Error> {
   const token = await getAccessToken();
   if (!token) {
     throw new Error("403 Vous n'êtes pas connecté");
@@ -37,13 +37,10 @@ export async function CreatePaymentIntent({
 
   switch (response.status) {
     case 200:
-      const data = (await response.json()) as { clientSecret: string; id: string };
-
-      return data;
-
+      return (await response.json()) as { clientSecret: string; id: string };
     case 403:
-      throw new Error("403 Vous n'êtes pas connecté");
+      return new Error("403 Vous n'êtes pas connecté");
     default:
-      throw new Error('Erreur inconnue');
+      return new Error('Erreur inconnue');
   }
 }

@@ -1,7 +1,6 @@
 import { getMeals, type getMealsParams } from '@/lib/meal/meal-fetch';
 import { cn, getErrorMessage } from '@/lib/utils';
 import { type MealsPaginatedResponse } from '@/types/query';
-import { Logger } from 'next-axiom';
 import Link from 'next/link';
 import { buttonVariants } from '../ui/button';
 import MealsSection from './meals-section';
@@ -28,26 +27,23 @@ export default async function MealsPrefetch({
     user_sub,
     is_ordered: false
   };
-  const log = new Logger();
-  let prefetchMeals: MealsPaginatedResponse | Error;
-  try {
-    prefetchMeals = await getMeals(
-      { ...fetchOptions },
-      {
-        next: {
-          tags: [
-            'search-meals',
-            JSON.stringify(fetchOptions),
-            user_sub ? `user-${user_sub}-meals` : ''
-          ]
-        }
+
+  const prefetchMeals: MealsPaginatedResponse | Error = await getMeals(
+    { ...fetchOptions },
+    {
+      next: {
+        tags: [
+          'search-meals',
+          JSON.stringify(fetchOptions),
+          user_sub ? `user-${user_sub}-meals` : ''
+        ]
       }
-    );
-  } catch (error) {
-    const message = getErrorMessage(error);
+    }
+  );
+
+  if (prefetchMeals instanceof Error) {
+    const message = getErrorMessage(prefetchMeals);
     if (message.includes('404')) {
-      log.error(`Meals not found: ${message}`);
-      await log.flush();
       return (
         <div className="flex w-full flex-col items-center justify-center gap-md">
           <h3 className="heading-h1">Aucun repas trouvé</h3>
@@ -59,11 +55,7 @@ export default async function MealsPrefetch({
         </div>
       );
     }
-    log.error(`Error fetching meals: ${message}`);
-    await log.flush();
-    return (
-      <h3 className="heading-h1">Une erreur est survenue lors de la récupération des repas.</h3>
-    );
+    throw new Error(`Error fetching meals: ${message}`);
   }
 
   return (

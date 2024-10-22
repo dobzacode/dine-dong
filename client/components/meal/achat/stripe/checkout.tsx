@@ -1,7 +1,6 @@
 import { CreatePaymentIntent } from '@/lib/stripe/stripe-fetch';
 import { getErrorMessage } from '@/lib/utils';
 import { type UserResponse } from '@/types/query';
-import { Logger } from 'next-axiom';
 import InitStripe from './init-stripe';
 
 interface CheckoutProps {
@@ -23,35 +22,25 @@ const Checkout = async ({
   ownerSub,
   isNewPaymentIntent
 }: CheckoutProps) => {
-  const log = new Logger();
-  let data: { clientSecret: string; id: string };
+  const data: { clientSecret: string; id: string } | Error = await CreatePaymentIntent({
+    amount,
+    currency,
+    description,
+    userSub: user.user_sub,
+    mealId,
+    isNewPaymentIntent
+  });
 
-  try {
-    data = await CreatePaymentIntent({
-      amount,
-      currency,
-      description,
-      userSub: user.user_sub,
-      mealId,
-      isNewPaymentIntent
-    });
-  } catch (error) {
-    const message = getErrorMessage(error);
+  if (data instanceof Error) {
+    const message = getErrorMessage(data);
     if (message.includes('403')) {
-      await log.flush();
       return (
-        <div className="text-danger body mt-2">
+        <p className="text-danger body mt-2">
           Une transaction est déjà en cours. Veuillez réessayer plus tard.
-        </div>
+        </p>
       );
     }
-    error instanceof Error && log.error(`Error creating payment intent: ${message}`);
-    await log.flush();
-    return (
-      <div className="text-danger body mt-2">
-        Une erreur est survenue lors de la création du paiement. Veuillez réessayer.
-      </div>
-    );
+    throw new Error(`Error creating payment intent: ${message}`);
   }
 
   return (

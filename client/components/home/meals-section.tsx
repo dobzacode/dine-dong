@@ -8,7 +8,6 @@ import { cn } from '@/lib/utils';
 import type { MealWithAddressResponse, MealsPaginatedResponse } from '@/types/query';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
-import { useLogger } from 'next-axiom';
 import Link from 'next/link';
 import { delayFadeInVariant } from '../framer/div-variants';
 import { buttonVariants } from '../ui/button';
@@ -24,8 +23,6 @@ const MealsSection = ({
   fetchOptions: getMealsParams;
   isUserPage?: boolean;
 }) => {
-  const log = useLogger();
-
   const location = useGeoLocation();
 
   const fetchOptions = useMemo(() => {
@@ -76,7 +73,6 @@ const MealsSection = ({
 
   if (isError) {
     if (error.message.includes('404')) {
-      log.error('No meals found');
       return (
         <div className="flex w-full flex-col items-center justify-center gap-md">
           <h3 className="heading-h1">Aucun repas trouvé</h3>
@@ -88,10 +84,7 @@ const MealsSection = ({
         </div>
       );
     }
-    log.error('Error fetching meals', { error });
-    return (
-      <h3 className="heading-h1">Une erreur est survenue lors de la récupération des repas.</h3>
-    );
+    throw new Error(`Error fetching meals: ${error.message}`);
   }
 
   if (!data) {

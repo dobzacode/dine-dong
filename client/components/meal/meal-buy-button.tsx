@@ -1,5 +1,5 @@
 import { getUserInformations } from '@/lib/user/user-fetch';
-import { cn } from '@/lib/utils';
+import { cn, getErrorMessage } from '@/lib/utils';
 import { getSession } from '@auth0/nextjs-auth0';
 import { kv } from '@vercel/kv';
 import Link from 'next/link';
@@ -14,16 +14,25 @@ export default async function MealBuyButton({
 }) {
   const session = await getSession();
 
-  let user;
-  if (session?.user?.sub) {
-    try {
-      user = await getUserInformations(
-        { sub: session.user.sub as string },
-        { next: { tags: [`user-informations-${session.user.sub}`] } }
-      );
-    } catch (error) {
-      console.error(error);
-    }
+  if (!session?.user.sub) {
+    return (
+      <a
+        className={cn(buttonVariants({ variant: 'default' }), 'w-full rounded-sm')}
+        href={'/api/auth/login'}
+      >
+        Acheter le repas
+      </a>
+    );
+  }
+
+  const user = await getUserInformations(
+    { sub: session.user.sub as string },
+    { next: { tags: [`user-informations-${session.user.sub}`] } }
+  );
+
+  if (user instanceof Error) {
+    const message = getErrorMessage(user);
+    throw new Error(`Error fetching user informations: ${message}`);
   }
 
   const paymentIntentUserId = await kv.get(mealId);
@@ -36,17 +45,6 @@ export default async function MealBuyButton({
       >
         Modifier le repas
       </Link>
-    );
-  }
-
-  if (user?.user_sub) {
-    return (
-      <a
-        className={cn(buttonVariants({ variant: 'default' }), 'w-full rounded-sm')}
-        href={'/api/auth/login'}
-      >
-        Acheter le repas
-      </a>
     );
   }
 

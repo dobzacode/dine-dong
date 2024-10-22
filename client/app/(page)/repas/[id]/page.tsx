@@ -62,21 +62,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata | un
 }
 
 export default async function Home({ params }: Props) {
-  const log = new Logger();
-  let meal;
+  const meal = await getMealDetails(params, {
+    next: {
+      tags: [`meal-details-${params.id}`]
+    }
+  });
 
-  try {
-    meal = await getMealDetails(params, {
-      next: {
-        tags: [`meal-details-${params.id}`]
-      }
-    });
-  } catch (error) {
-    const message = getErrorMessage(error);
-    console.log(message);
-    log.error(`Error fetching meal details: ${message}`);
-    await log.flush();
-    return notFound();
+  if (meal instanceof Error) {
+    const message = getErrorMessage(meal);
+    if (message.includes('404')) {
+      return notFound();
+    }
+    throw new Error(`Error fetching meal details: ${message}`);
   }
 
   return (

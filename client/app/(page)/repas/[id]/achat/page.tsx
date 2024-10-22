@@ -4,59 +4,44 @@ import { getMealDetails } from '@/lib/meal/meal-fetch';
 import { getSessionOrRedirect } from '@/lib/server-only-utils';
 import { getUserInformations } from '@/lib/user/user-fetch';
 import { getErrorMessage } from '@/lib/utils';
-import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import { kv } from '@vercel/kv';
-import { Logger } from 'next-axiom';
 import { notFound, redirect } from 'next/navigation';
 
 export const dynamic = 'force-dynamic';
 
-//@ts-expect-error - type is valid
-export default withPageAuthRequired(async function Page({ params }: { params: { id: string } }) {
-  const log = new Logger();
+export default async function Page({ params }: { params: { id: string } }) {
   const session = await getSessionOrRedirect(`/repas/${params.id}`);
 
-  let user;
-  try {
-    user = await getUserInformations(
-      { sub: session.user.sub },
-      { next: { tags: [`user-informations-${session.user.sub}`] } }
-    );
-  } catch (error) {
-    const message = getErrorMessage(error);
-    console.log(message);
-    error instanceof Error && log.error(`Error fetching user informations: ${message}`);
-    await log.flush();
-    redirect(`/repas/${params.id}`);
+  const user = await getUserInformations(
+    { sub: session.user.sub },
+    { next: { tags: [`user-informations-${session.user.sub}`] } }
+  );
+
+  if (user instanceof Error) {
+    const message = getErrorMessage(user);
+    throw new Error(`Error fetching user informations: ${message}`);
   }
 
   const paymentIntentUserSub = await kv.get(params.id);
 
   if (paymentIntentUserSub && paymentIntentUserSub !== user.user_sub) {
-    log.error(
+    throw new Error(
       `Payment intent user sub mismatch: ${JSON.stringify(paymentIntentUserSub)} !== ${user.user_sub}`
     );
-    await log.flush();
-    redirect(`/repas/${params.id}`);
   }
 
-  let meal;
-  try {
-    meal = await getMealDetails(params, {
-      next: {
-        tags: [`meal-details-${params.id}`]
-      }
-    });
-  } catch (error) {
-    const message = getErrorMessage(error);
+  const meal = await getMealDetails(params, {
+    next: {
+      tags: [`meal-details-${params.id}`]
+    }
+  });
+
+  if (meal instanceof Error) {
+    const message = getErrorMessage(meal);
     if (message.includes('404')) {
-      log.error(`Meal not found: ${message}`);
-      await log.flush();
       return notFound();
     }
-    error instanceof Error && log.error(`Error fetching meal details: ${message}`);
-    await log.flush();
-    redirect(`/`);
+    throw new Error(`Error fetching meal details: ${message}`);
   }
 
   if (meal.user_sub === session.user.sub) {
@@ -78,4 +63,4 @@ export default withPageAuthRequired(async function Page({ params }: { params: { 
       </aside>
     </section>
   );
-});
+}

@@ -2,7 +2,6 @@ import MealForm from '@/components/meal/meal-form';
 import { getMealDetails } from '@/lib/meal/meal-fetch';
 import { getSessionOrRedirect } from '@/lib/server-only-utils';
 import { getErrorMessage } from '@/lib/utils';
-import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import { type Metadata } from 'next';
 import { notFound, redirect } from 'next/navigation';
 
@@ -11,21 +10,19 @@ export const metadata: Metadata = {
   description: 'Création de repas'
 };
 
-//@ts-expect-error - type is valid
-export default withPageAuthRequired(async function Page({ params }: { params: { id: string } }) {
-  let meal;
-  try {
-    meal = await getMealDetails(params, {
-      next: {
-        tags: [`meal-details-${params.id}`]
-      }
-    });
-  } catch (error) {
-    const message = getErrorMessage(error);
+export default async function Page({ params }: { params: { id: string } }) {
+  const meal = await getMealDetails(params, {
+    next: {
+      tags: [`meal-details-${params.id}`]
+    }
+  });
+
+  if (meal instanceof Error) {
+    const message = getErrorMessage(meal);
     if (message.includes('404')) {
       return notFound();
     }
-    redirect(`/`);
+    throw new Error(`Error fetching meal details ${params.id}: ${message}`);
   }
 
   const session = await getSessionOrRedirect();
@@ -39,4 +36,4 @@ export default withPageAuthRequired(async function Page({ params }: { params: { 
       <MealForm mealId={params.id} meal={meal} sub={session.user.sub} token={session.accessToken} />
     </section>
   );
-});
+}

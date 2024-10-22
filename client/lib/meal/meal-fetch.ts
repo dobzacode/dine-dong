@@ -46,13 +46,13 @@ export async function getMeals(
     case 200:
       return (await response.json()) as MealsPaginatedResponse;
     case 404:
-      throw new Error('404 Aucun repas trouvé');
+      return new Error('404 Aucun repas trouvé');
     case 422:
-      throw new Error('422 Une erreur est survenue');
+      return new Error('422 Une erreur est survenue');
     case 500:
-      throw new Error('500 Erreur serveur');
+      return new Error('500 Erreur serveur');
     default:
-      throw new Error('Erreur inconnue');
+      return new Error('Erreur inconnue');
   }
 }
 
@@ -67,13 +67,13 @@ export async function getMealsSummaries<T>(params?: { id?: string }, request: Re
     case 200:
       return (await response.json()) as T;
     case 404:
-      throw new Error('404 Aucun repas trouvé');
+      return new Error('404 Aucun repas trouvé');
     case 422:
-      throw new Error('422 Une erreur est survenue');
+      return new Error('422 Une erreur est survenue');
     case 500:
-      throw new Error('500 Erreur serveur');
+      return new Error('500 Erreur serveur');
     default:
-      throw new Error('Erreur inconnue');
+      return new Error('Erreur inconnue');
   }
 }
 
@@ -95,12 +95,12 @@ export async function getMealDetails(
     case 200:
       return (await response.json()) as MealDetailsResponse;
     case 404:
-      throw new Error('404 Aucun repas trouvé');
+      return new Error('404 Aucun repas trouvé');
     case 422:
-      throw new Error('422 Une erreur est survenue');
+      return new Error('422 Une erreur est survenue');
     case 500:
-      throw new Error('500 Erreur serveur');
+      return new Error('500 Erreur serveur');
     default:
-      throw new Error('Erreur inconnue');
+      return new Error('Erreur inconnue');
   }
 }
