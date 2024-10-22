@@ -42,6 +42,7 @@ export async function UserInformations({
         className="relative h-3xl w-3xl shrink-0 overflow-hidden rounded-xs"
       >
         <ImagePulsing
+          key={`${user.user_sub}-avatar`}
           skeletoncss={'h-full w-full object-cover absolute object-center rounded-xs'}
           fill
           src={constructS3Url(user.picture_key ?? '/static/default-avatar.png')}

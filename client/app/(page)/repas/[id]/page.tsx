@@ -83,6 +83,7 @@ export default async function Home({ params }: Props) {
     <section className="section-px shadow-primary-40 section-py container flex flex-col justify-center gap-sm tablet:flex-row">
       <div className="relative aspect-square w-full rounded-md tablet:w-2/3">
         <ImagePulsing
+          key={`${meal.meal_id}-picture`}
           skeletoncss={'h-full w-full object-cover absolute object-center rounded-md'}
           priority
           fill

@@ -9,11 +9,12 @@ export default function InformationsSection({ user }: { user: UserResponse }) {
     <section className="flex h-7xl gap-lg">
       <div className="relative aspect-square h-full max-h-7xl overflow-hidden rounded-xs">
         <ImagePulsing
+          key={`${user.user_sub}-avatar`}
           skeletoncss={'h-full w-full object-cover absolute object-center rounded-xs'}
           priority
           fill
           src={constructS3Url(user.picture_key ?? '/static/default-avatar.png')}
-          alt={'user.name'}
+          alt={`${user.username}'s avatar`}
           sizes={'(max-width: 768px) 20vw, 300px'}
           className="rounded-xs object-contain object-center"
         />

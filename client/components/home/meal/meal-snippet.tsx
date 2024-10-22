@@ -30,12 +30,12 @@ export default function MealSnippet(props: MealSnippetProps) {
   return (
     <Link href={`/repas/${meal_id}`} className="flex w-full flex-col gap-sm">
       <div
-        key={`${picture_key}-${name}-parent`}
+        key={`${picture_key}-${meal_id}-parent`}
         className="relative aspect-[5/2] w-full overflow-hidden rounded-md mobile-lg:aspect-square"
       >
         <ImagePulsing
           skeletoncss={'h-full w-full object-cover absolute object-center'}
-          key={`${picture_key}-${name}`}
+          key={`${picture_key}-${meal_id}`}
           fill
           src={constructS3Url(picture_key)}
           alt={name}
