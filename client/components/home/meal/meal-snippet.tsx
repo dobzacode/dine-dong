@@ -36,7 +36,6 @@ export default function MealSnippet(props: MealSnippetProps) {
         <ImagePulsing
           skeletoncss={'h-full w-full object-cover absolute object-center'}
           key={`${picture_key}-${name}`}
-          priority
           fill
           src={constructS3Url(picture_key)}
           alt={name}

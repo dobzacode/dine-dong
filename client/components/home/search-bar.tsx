@@ -19,12 +19,13 @@ export default function SearchBar({ className }: { className?: string }) {
   useEffect(() => {
     const currentUrl = new URL(window.location.href);
     const newSearchParams = new URLSearchParams(currentUrl.search);
+    const trimLength = debouncedSearchTerm.trim().length;
 
-    debouncedSearchTerm.trim().length > 0
+    trimLength
       ? newSearchParams.set('name', debouncedSearchTerm)
       : newSearchParams.delete('name');
 
-    if (currentUrl.pathname !== '/') {
+    if (currentUrl.pathname !== '/' && trimLength) {
       currentUrl.pathname = '/';
     }
 

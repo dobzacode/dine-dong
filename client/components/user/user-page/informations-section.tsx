@@ -14,7 +14,7 @@ export default function InformationsSection({ user }: { user: UserResponse }) {
           fill
           src={constructS3Url(user.picture_key ?? '/static/default-avatar.png')}
           alt={'user.name'}
-          sizes={'(max-width: 768px) 100vw, 300px'}
+          sizes={'(max-width: 768px) 20vw, 300px'}
           className="rounded-xs object-contain object-center"
         />
       </div>

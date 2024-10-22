@@ -43,7 +43,6 @@ export async function UserInformations({
       >
         <ImagePulsing
           skeletoncss={'h-full w-full object-cover absolute object-center rounded-xs'}
-          priority
           fill
           src={constructS3Url(user.picture_key ?? '/static/default-avatar.png')}
           alt={'user.name'}

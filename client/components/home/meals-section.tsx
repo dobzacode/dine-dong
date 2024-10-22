@@ -53,7 +53,7 @@ const MealsSection = ({
     getNextPageParam: (lastPage, allPages) => (lastPage.hasMore ? allPages.length * 20 : undefined),
     refetchOnWindowFocus: false,
     retry: false,
-    refetchInterval: 3600
+    refetchInterval: 60000
   });
 
   useEffect(() => {

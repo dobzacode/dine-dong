@@ -11,7 +11,7 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'dxtj9n9fj7mre.cloudfront.net'
+        hostname: 'dine-dong.fr'
       }
     ]
   },
