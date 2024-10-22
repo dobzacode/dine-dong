@@ -12,8 +12,6 @@ type Props = {
   params: { id: string };
 };
 
-export const revalidate = 3600;
-
 export async function generateStaticParams() {
   const log = new Logger();
   const meals = await getMealsSummaries<MealSummaryResponse[]>(

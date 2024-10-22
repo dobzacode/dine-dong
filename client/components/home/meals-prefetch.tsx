@@ -47,7 +47,7 @@ export default async function MealsPrefetch({
       return (
         <div className="flex w-full flex-col items-center justify-center gap-md">
           <h3 className="heading-h1">Aucun repas trouvé</h3>
-          {typeof isUserPage === 'boolean' && isUserPage && (
+          {typeof isUserPage === 'boolean' && (
             <Link className={cn(buttonVariants({ variant: 'default' }))} href="/nouveau/repas">
               Ajouter un repas
             </Link>

@@ -1,30 +1,23 @@
 import SaleSnippet from '@/components/orders/order-snippet';
 import TopMenu from '@/components/orders/top-menu';
+import { getSessionOrRedirect } from '@/lib/server-only-utils';
 import { getUserPurchases } from '@/lib/user/user-fetch';
 import { getErrorMessage } from '@/lib/utils';
-import { getSession, withPageAuthRequired } from '@auth0/nextjs-auth0';
-import { redirect } from 'next/navigation';
 
 export const metadata = {
   title: 'Mes commandes | Achats',
   description: 'Achats'
 };
 
-//@ts-expect-error - type is valid
-export default withPageAuthRequired(async function Page({
+export default async function Page({
   searchParams
 }: {
   searchParams: { status?: 'FINALIZED' | 'IN_PROGRESS' | 'CANCELLED' };
 }) {
-
-  const session = await getSession();
-
-  if (!session?.user?.sub || !session.accessToken) {
-    redirect('/');
-  }
+  const session = await getSessionOrRedirect();
 
   const orders = await getUserPurchases(
-    session.user.sub as string,
+    session.user.sub,
     {
       next: { tags: [`user-${session.user.sub}-purchases`] },
       headers: { Authorization: `Bearer ${session.accessToken}` }
@@ -53,4 +46,4 @@ export default withPageAuthRequired(async function Page({
       </section>
     </section>
   );
-});
+}

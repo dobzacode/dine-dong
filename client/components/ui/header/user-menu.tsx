@@ -37,6 +37,10 @@ export default function UserMenu({ user }: { user: UserResponse }) {
         </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-fit rounded-md [&>a]:cursor-pointer">
+        <DropdownMenuItem className="mobile-lg:hidden" asChild>
+          <Link href={`/nouveau/repas`}>Vendre un repas</Link>
+        </DropdownMenuItem>
+
         <DropdownMenuItem asChild>
           <Link href={`/utilisateur/${user.username}`}>Mon profil</Link>
         </DropdownMenuItem>

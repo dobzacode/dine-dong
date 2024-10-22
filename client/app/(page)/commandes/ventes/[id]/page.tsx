@@ -15,14 +15,7 @@ type Props = {
 
 export async function generateStaticParams() {
   const log = new Logger();
-  const orders = await getOrdersSummaries<OrderSummaryResponse[]>(
-    {},
-    {
-      next: {
-        revalidate: 60
-      }
-    }
-  );
+  const orders = await getOrdersSummaries<OrderSummaryResponse[]>();
 
   if (!orders || orders instanceof Error) {
     log.error(`Error fetching orders: ${getErrorMessage(orders)}`);

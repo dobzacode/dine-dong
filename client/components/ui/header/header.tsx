@@ -7,11 +7,11 @@ import UserSection from './user-section';
 export default function Header() {
   return (
     <header className="section-px relative z-50 flex w-screen items-center justify-between overflow-hidden bg-transparent py-md laptop:px-2xl">
-      <Link href="/">
-        <p className="heading-h1 font-bold">Dine Dong</p>
+      <Link className="heading-h1 whitespace-nowrap font-bold" href="/">
+        Dine Dong
       </Link>
       <Suspense>
-        <SearchBar className="hidden tablet:block" />
+        <SearchBar className="hidden laptop-sm:block" />
       </Suspense>
       <nav className="flex gap-lg">
         <Suspense

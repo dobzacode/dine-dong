@@ -11,8 +11,6 @@ export const metadata: Metadata = {
   description: "Accueil de l'application"
 };
 
-export const revalidate = 3600;
-
 export default async function Home({
   searchParams: { name, diet, radius, sort, max_price, lat, lng }
 }: {
@@ -20,8 +18,8 @@ export default async function Home({
 }) {
   return (
     <>
-      <SearchBar className="section-px w-full tablet:hidden laptop:px-0" />
       <section className="section-px container flex flex-col items-center gap-sm">
+        <SearchBar className="w-full laptop-sm:hidden" />
         <FilterSortMenu />
         <Suspense fallback={<MealsSectionSkeleton />}>
           <MealsPrefetch {...{ name, diet, radius, sort, max_price, lat, lng }} />

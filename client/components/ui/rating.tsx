@@ -38,7 +38,11 @@ const Rating: React.FC<RatingProps> = ({ value, totalStars = 5 }) => {
     }
   }
 
-  return <div className="relative z-20 flex [&>svg]:stroke-primary-300">{stars}</div>;
+  return (
+    <div className="relative z-20 mr-auto flex origin-left max-tablet:scale-[80%] [&>svg]:stroke-primary-300">
+      {stars}
+    </div>
+  );
 };
 
 export default Rating;

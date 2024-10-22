@@ -39,16 +39,16 @@ export async function UserInformations({
     <section className={cn('card flex h-fit items-center gap-md p-md', className)}>
       <Link
         href={`/utilisateur/${user.username}`}
-        className="relative h-3xl w-3xl shrink-0 overflow-hidden rounded-xs"
+        className="relative h-3xl w-3xl shrink-0 overflow-hidden rounded-md"
       >
         <ImagePulsing
           key={`${user.user_sub}-avatar`}
-          skeletoncss={'h-full w-full object-cover absolute object-center rounded-xs'}
+          skeletoncss={'h-full w-full object-cover absolute object-center rounded-md'}
           fill
           src={constructS3Url(user.picture_key ?? '/static/default-avatar.png')}
           alt={'user.name'}
           sizes={'(max-width: 768px) 100vw, 200px'}
-          className="rounded-xs object-contain"
+          className="rounded-md object-contain"
         />
       </Link>
       <div className="flex flex-col">
