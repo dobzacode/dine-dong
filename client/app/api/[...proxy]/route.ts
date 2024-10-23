@@ -4,6 +4,7 @@ import { type NextRequest } from 'next/server';
 export const GET = apiProxy;
 export const PUT = apiProxy;
 export const POST = apiProxy;
+export const DELETE = apiProxy;
 
 async function apiProxy(request: NextRequest, proxyPath: string): Promise<Response> {
   const headers = new Headers(request.headers);

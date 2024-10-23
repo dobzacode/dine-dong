@@ -55,7 +55,7 @@ async def create_payment_intent(
     auth: dict = Security(auth.verify),
 ):
     check_redis = kv.get(request.mealId)
-    if check_redis is not None:
+    if check_redis is not None and check_redis != request.userSub:
         return JSONResponse(
             status_code=403, content={"message": "Une transaction est déjà en cours"}
         )

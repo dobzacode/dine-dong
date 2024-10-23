@@ -134,18 +134,18 @@ async def modify_order_status(
         )
 
     try:
-        query = (
-            select(Order, Meal.user_sub).join(Meal).where(Order.order_id == order_id)
-        )
+        query = select(Order, Meal).join(Meal).where(Order.order_id == order_id)
         result = await session.execute(query)
-        order = result.scalars().first()
+        order_result = result.first()
 
-        if not order:
+        if not order_result:
             return JSONResponse(
                 status_code=404, content={"message": "Commande non trouvée"}
             )
 
-        if token.get("sub") not in [order.user_sub, order.meal.user_sub]:
+        order, meal = order_result
+
+        if token.get("sub") not in [order.user_sub, meal.user_sub]:
             return JSONResponse(
                 status_code=401,
                 content={
@@ -154,6 +154,10 @@ async def modify_order_status(
             )
 
         order.status = new_status
+
+        if new_status == "CANCELLED":
+            meal.is_ordered = False
+
         await session.commit()
         await session.refresh(order)
 
@@ -164,7 +168,7 @@ async def modify_order_status(
             for key, value in order.__dict__.items()
             if not key.startswith("_")
         }
-        return {**order_dict, "owner_sub": order.meal.user_sub}
+        return {**order_dict, "owner_sub": meal.user_sub}
 
     except Exception as e:
         print(e, "Error")

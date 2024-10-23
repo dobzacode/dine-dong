@@ -1,8 +1,11 @@
 import MealForm from '@/components/meal/meal-form';
+import { buttonVariants } from '@/components/ui/button';
 import { getMealDetails } from '@/lib/meal/meal-fetch';
 import { getSessionOrRedirect } from '@/lib/server-only-utils';
-import { getErrorMessage } from '@/lib/utils';
+import { cn, getErrorMessage } from '@/lib/utils';
+import { kv } from '@vercel/kv';
 import { type Metadata } from 'next';
+import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
 
 export const metadata: Metadata = {
@@ -11,6 +14,23 @@ export const metadata: Metadata = {
 };
 
 export default async function Page({ params }: { params: { id: string } }) {
+  const paymentIntentUserId = await kv.get(params.id);
+
+  if (paymentIntentUserId) {
+    return (
+      <main className="flex min-h-[calc(100vh-11.7rem)] flex-col items-center justify-center px-lg py-lg">
+        <section className="flex flex-col items-center justify-center gap-md">
+          <p className="body max-w-[400px] text-center">
+            Une tentative de paiement est déjà en cours pour ce repas, veuillez réessayer plus tard.
+          </p>
+          <Link className={cn(buttonVariants({ variant: 'default' }))} href="/">
+            Retour à la page d&apos;accueil
+          </Link>
+        </section>
+      </main>
+    );
+  }
+
   const meal = await getMealDetails(params, {
     next: {
       tags: [`meal-details-${params.id}`]
@@ -29,6 +49,21 @@ export default async function Page({ params }: { params: { id: string } }) {
 
   if (session.user.sub !== meal.user_sub) {
     redirect('/');
+  }
+
+  if (meal.is_ordered) {
+    return (
+      <main className="flex min-h-[calc(100vh-11.7rem)] flex-col items-center justify-center px-lg py-lg">
+        <section className="flex flex-col items-center justify-center gap-md">
+          <p className="body max-w-[400px] text-center">
+            Le repas a déjà été commandé par un autre utilisateur, veuillez réessayer plus tard.
+          </p>
+          <Link className={cn(buttonVariants({ variant: 'default' }))} href="/">
+            Retour à la page d&apos;accueil
+          </Link>
+        </section>
+      </main>
+    );
   }
 
   return (

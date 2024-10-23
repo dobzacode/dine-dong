@@ -30,7 +30,7 @@ export default async function UserMealsSection({
   }
 
   return (
-    <Suspense fallback={<MealsSectionSkeleton/>}>
+    <Suspense fallback={<MealsSectionSkeleton />}>
       <MealsPrefetch
         isUserPage={session?.user?.sub === user.user_sub}
         user_sub={user.user_sub}

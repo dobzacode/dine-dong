@@ -31,6 +31,8 @@ const Checkout = async ({
     isNewPaymentIntent
   });
 
+  console.log(data);
+
   if (data instanceof Error) {
     const message = getErrorMessage(data);
     if (message.includes('403')) {

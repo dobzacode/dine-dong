@@ -3,7 +3,6 @@ import { cn } from '@/lib/utils';
 import { getSession } from '@auth0/nextjs-auth0';
 import { Logger } from 'next-axiom';
 import Link from 'next/link';
-import { redirect } from 'next/navigation';
 import { Button, buttonVariants } from '../button';
 import UserMenu from './user-menu';
 
@@ -31,10 +30,6 @@ export default async function UserSection() {
     { sub: session.user.sub as string },
     { next: { tags: [`user-informations-${session.user.sub}`] } }
   );
-
-  if (!user) {
-    return redirect('/api/auth/logout');
-  }
 
   if (user instanceof Error) {
     log.error(`Error while fetching user informations: ${session.user.sub}`, user);

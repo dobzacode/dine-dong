@@ -41,7 +41,7 @@ function MealDetail({
       <h2 className="body text-grayed">{title}</h2>
       <div className="flex w-full items-center justify-between">
         <Link href={`/repas/${meal_id}`} className="flex gap-sm">
-          <div className="relative aspect-square h-3xl overflow-hidden rounded-xs">
+          <div className="relative aspect-square h-3xl overflow-hidden rounded-sm">
             <Image
               src={constructS3Url(picture_key)}
               alt={`Photo de ${name}`}

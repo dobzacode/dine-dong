@@ -435,3 +435,50 @@ async def modify_user(
             status_code=500,
             detail="Une erreur est survenue lors de la modification du repas",
         )
+
+
+@router.delete(
+    "/{meal_id}",
+    description="Supprimer un repas de l'utilisateur",
+    response_model=MealResponse,
+    status_code=200,
+)
+async def delete_meal(
+    meal_id: str,
+    session: AsyncSession = Depends(deps.get_session),
+    token: dict[str, str] = Depends(deps.extract_sub_email_from_jwt),
+    logger: logging.Logger = Depends(deps.get_logger),
+    user: dict = Security(auth.verify),
+):
+    meal = await session.scalar(select(Meal).where(Meal.meal_id == meal_id))
+
+    if not meal:
+        raise HTTPException(status_code=404, detail="Repas non trouvé")
+
+    if meal.user_sub != token.get("sub"):
+        raise HTTPException(
+            status_code=401,
+            detail="Vous n'êtes pas autorisé à supprimer ce repas",
+        )
+
+    if meal.is_ordered:
+        raise HTTPException(
+            status_code=401,
+            detail="Il n'est pas possible de supprimer le repas car celui-ci a déjà été commandé",
+        )
+
+    try:
+        await session.delete(meal)
+        await session.commit()
+
+        logger.info(f"Repas {meal_id} supprimé avec succès")
+
+        return meal
+    except Exception as e:
+        logger.error(
+            f"Une erreur est survenue lors de la suppression du repas {meal_id} : {e}"
+        )
+        raise HTTPException(
+            status_code=500,
+            detail="Une erreur est survenue lors de la suppression du repas",
+        )

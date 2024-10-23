@@ -54,8 +54,6 @@ export default async function Home({
   params: { username: string };
   searchParams: getMealsParams;
 }) {
-
-
   return (
     <section className="section-px section-py inner-section-gap container flex flex-col">
       <Suspense fallback={<InformationsSectionSkeleton />}>

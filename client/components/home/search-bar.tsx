@@ -21,9 +21,7 @@ export default function SearchBar({ className }: { className?: string }) {
     const newSearchParams = new URLSearchParams(currentUrl.search);
     const trimLength = debouncedSearchTerm.trim().length;
 
-    trimLength
-      ? newSearchParams.set('name', debouncedSearchTerm)
-      : newSearchParams.delete('name');
+    trimLength ? newSearchParams.set('name', debouncedSearchTerm) : newSearchParams.delete('name');
 
     if (currentUrl.pathname !== '/' && trimLength) {
       currentUrl.pathname = '/';

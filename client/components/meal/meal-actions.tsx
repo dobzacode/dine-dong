@@ -2,19 +2,23 @@ import { getUserInformations } from '@/lib/user/user-fetch';
 import { cn, getErrorMessage } from '@/lib/utils';
 import { getSession } from '@auth0/nextjs-auth0';
 import { kv } from '@vercel/kv';
+import { Pencil } from 'lucide-react';
 import Link from 'next/link';
 import { buttonVariants } from '../ui/button';
+import { DeleteButton } from './delete-button';
 
-export default async function MealBuyButton({
+export default async function MealActions({
   mealId,
-  ownerSub
+  ownerSub,
+  isOrdered
 }: {
   mealId: string;
   ownerSub: string;
+  isOrdered: boolean;
 }) {
   const session = await getSession();
 
-  if (!session?.user.sub) {
+  if (!session?.user.sub || !session.accessToken) {
     return (
       <a
         className={cn(buttonVariants({ variant: 'default' }), 'w-full rounded-sm')}
@@ -39,12 +43,20 @@ export default async function MealBuyButton({
 
   if (user?.user_sub === ownerSub) {
     return (
-      <Link
-        className={cn(buttonVariants({ variant: 'default' }), 'w-full rounded-sm')}
-        href={`/repas/${mealId}/modifier`}
-      >
-        Modifier le repas
-      </Link>
+      <div className="grid gap-sm">
+        <Link
+          className={cn(
+            buttonVariants({ variant: 'default' }),
+            'w-full gap-sm rounded-sm',
+            paymentIntentUserId || isOrdered ? 'pointer-events-none opacity-50' : ''
+          )}
+          href={`/repas/${mealId}/modifier`}
+        >
+          <Pencil className="h-4 w-4 shrink-0 text-primary-1" />
+          Modifier le repas
+        </Link>
+        <DeleteButton mealId={mealId} token={session.accessToken} isOrdered={isOrdered} />
+      </div>
     );
   }
 

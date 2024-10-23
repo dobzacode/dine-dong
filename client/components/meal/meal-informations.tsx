@@ -1,7 +1,7 @@
 import { type MealDetailsResponse } from '@/types/query';
 
 import { Separator } from '../ui/separator';
-import MealBuyButton from './meal-buy-button';
+import MealActions from './meal-actions';
 import LocationMap from './meal-form/location-map';
 import { dietEnum } from './meal-form/meal-schema';
 
@@ -65,7 +65,8 @@ export function MealInformations(props: MealDetailsResponse) {
           <span className="font-semibold">{weight} grammes</span>
         </p>
       </div>
-      {!is_ordered && <MealBuyButton mealId={meal_id} ownerSub={user_sub} />}
+      {!is_ordered && <MealActions isOrdered={is_ordered} mealId={meal_id} ownerSub={user_sub} />}
+
       <Separator />
       <div className="flex flex-col">
         <h2 className="heading-h4 font-bold text-primary-container-fg">Livraison</h2>
