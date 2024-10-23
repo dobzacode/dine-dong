@@ -17,7 +17,10 @@ export default async function UserSection() {
         <a className={cn(buttonVariants({ variant: 'outline' }))} href="/api/auth/login">
           Connexion
         </a>
-        <a className={cn(buttonVariants({ variant: 'default' }))} href="/api/auth/login">
+        <a
+          className={cn(buttonVariants({ variant: 'default' }), 'max-mobile-lg:hidden')}
+          href="/api/auth/login"
+        >
           Vendre un repas
         </a>
       </>
