@@ -34,16 +34,21 @@ webhook_secret = get_settings().webhook_secret
 async def remove_payment_intent_and_kv_entry(meal_id: str, payment_intent_id: str):
     await asyncio.sleep(180)
     logger: logging.Logger = deps.get_logger()
-    payment_intent = stripe.PaymentIntent.retrieve(payment_intent_id)
+
     try:
-        print(payment_intent)
-        if payment_intent.status not in ["amount_capturable_updated", "succeeded"]:
-            logger.info(f"Payment intent {payment_intent.id} annulé avec succès")
+        payment_intent = stripe.PaymentIntent.retrieve(payment_intent_id)
+        if payment_intent.status not in ["requires_capture", "succeeded"]:
             stripe.PaymentIntent.cancel(payment_intent_id)
+            logger.info(f"Le pi {payment_intent.id} a été annulé avec succès")
+
         kv.delete(meal_id)
     except Exception as e:
-        logger.error(f"Error removing payment intent or KV entry: {e}")
-        print(f"Error removing payment intent or KV entry: {e}")
+        logger.error(
+            f"Erreur lors de la suppression de l'intention de paiement ou de l'entrée KV: {e}"
+        )
+        print(
+            f"Erreur lors de la suppression de l'intention de paiement ou de l'entrée KV: {e}"
+        )
 
 
 @router.post("/payment-intent/", response_model=dict[str, str])
@@ -146,6 +151,8 @@ async def webhook_received(
         kv.delete(metadata["mealId"])
         event_type = event["type"]
 
+        pi_status = event["data"]["object"]["status"]
+
         meal = await session.scalar(
             select(Meal).where(Meal.meal_id == metadata["mealId"])
         )
@@ -153,7 +160,10 @@ async def webhook_received(
         if meal is None:
             raise HTTPException(status_code=404, detail="Repas non trouvé")
 
-        if event_type == "payment_intent.amount_capturable_updated":
+        if (
+            event_type == "payment_intent.amount_capturable_updated"
+            and pi_status == "requires_capture"
+        ):
             new_order = Order(
                 meal_id=metadata["mealId"],
                 user_sub=metadata["userSub"],
@@ -165,11 +175,9 @@ async def webhook_received(
             session.add(new_order)
             await session.commit()
             await session.refresh(new_order)
-
             logger.info(f"Commande {new_order.order_id} créé avec succès")
 
             return {"status": "success", "order_id": new_order.order_id}
-
         if event_type == "payment_intent.canceled":
             query = select(Order).where(Order.pi_id == pi_id)
             result = await session.execute(query)
@@ -191,14 +199,30 @@ async def webhook_received(
             logger.info(
                 f"Commande {modified_order.order_id} annulé avec succès pour le pi: {pi_id}"
             )
-            return {"status": "success"}
 
-        else:
-            print(f"unhandled event: {event_type}")
-            return JSONResponse(
-                status_code=403,
-                content={"message": f"Evénement non géré : {event_type}"},
-            )
+            return {"status": "success"}
+        if event_type == "payment_intent.succeeded":
+            query = select(Order).where(Order.pi_id == pi_id)
+            result = await session.execute(query)
+            order = result.scalars().first()
+            if not order:
+                logger.error(
+                    f"Une erreur est survenue lors de la récupération de la commande {pi_id}"
+                )
+                return JSONResponse(
+                    status_code=404,
+                    content={"message": f"Pas de commande trouvée pour le pi: {pi_id}"},
+                )
+            order.status = "FINALIZED"
+            await session.commit()
+            await session.refresh(order)
+            logger.info(f"La commande {order.order_id} a été finalisée avec succès")
+
+        print(f"unhandled event: {event_type}")
+        return JSONResponse(
+            status_code=403,
+            content={"message": f"Evénement non géré : {event_type}"},
+        )
 
         return {"status": "success"}
     except Exception as e:

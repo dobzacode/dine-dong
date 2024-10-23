@@ -69,4 +69,4 @@ unfixable = ["F401"]
 [tool.ruff.lint]
 # pycodestyle, pyflakes, isort, pylint, pyupgrade
 select = ["E", "F", "I", "PL", "UP", "W"]
-ignore = ["E501", "PLR0913"]
+ignore = ["E501", "PLR0913", "PLR0915"]
