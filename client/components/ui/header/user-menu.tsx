@@ -41,7 +41,7 @@ export default function UserMenu({ user }: { user: UserResponse }) {
           <Link href={`/nouveau/repas`}>Vendre un repas</Link>
         </DropdownMenuItem>
 
-        <DropdownMenuItem asChild>
+        <DropdownMenuItem asChild className="mobile-lg:rounded-t-smd">
           <Link href={`/utilisateur/${user.username}`}>Mon profil</Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>

@@ -70,7 +70,7 @@ export default function AccountForm({
       log.info(`Account modified successfully`, { user_sub, data });
       customRevalidateTag(`user-informations-${sub}`);
       toast({
-        title: `Votre profile a été modifié avec succès !`,
+        title: `Votre profil a été modifié avec succès !`,
         description: 'Vous pouvez le consulter dans votre tableau de bord',
         className: 'bottom-0 right-0 w-fit ml-auto',
         duration: 5000

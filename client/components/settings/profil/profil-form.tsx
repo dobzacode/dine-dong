@@ -108,7 +108,7 @@ export default function ProfilForm({
       console.log('Profile modified successfully:', data);
       log.info('Profile modified successfully:', { last_name, first_name });
       toast({
-        title: `Votre profile a été modifié avec succès !`,
+        title: `Votre profil a été modifié avec succès !`,
         description: 'Vous pouvez le consulter dans votre tableau de bord',
         className: 'bottom-0 right-0 w-fit ml-auto',
         duration: 5000
