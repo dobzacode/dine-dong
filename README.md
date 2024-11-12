@@ -5,7 +5,7 @@
 
 > Dine-Dong is a community-driven application where users can sell homemade meals and discover meals available nearby. It connects food lovers with local home chefs, fostering a convenient and delicious food-sharing experience.
 
-### ✨ [Demo](https://dine-dong.vercel.app)
+### ✨ [Demo](https://dine-dong.fr)
 
 ## Features
 
